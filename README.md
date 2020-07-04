@@ -1,3 +1,5 @@
+[![time tracker](https://wakatime.com/badge/github/Yukaii/bestdoctorcare-shop.svg)](https://wakatime.com/badge/github/Yukaii/bestdoctorcare-shop)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
