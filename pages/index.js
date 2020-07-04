@@ -1,7 +1,9 @@
 import Head from 'next/head'
+import { useContext } from 'react'
 import { gql } from 'apollo-boost'
 import { useQuery } from '@apollo/react-hooks'
 import withApollo from '../hooks/withApollo'
+import UserContext from '../components/UserContext'
 
 const query = gql`{
   shop {
@@ -19,8 +21,9 @@ const query = gql`{
   }
 }`
 
-function Home ({ liffState }) {
+function Home () {
   const { loading, data } = useQuery(query)
+  const { liffState } = useContext(UserContext)
 
   if (loading || !data) {
     return <h1>loading...</h1>

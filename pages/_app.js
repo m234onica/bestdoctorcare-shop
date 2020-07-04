@@ -1,4 +1,5 @@
 import App from 'next/app'
+import UserContext from '../components/UserContext'
 
 class MyApp extends App {
   constructor () {
@@ -57,7 +58,11 @@ class MyApp extends App {
 
   render () {
     const { Component, pageProps } = this.props
-    return <Component {...pageProps} liff={this.liff} liffState={this.state} />
+    return (
+      <UserContext.Provider value={{ liff: this.liff, liffState: this.state }}>
+        <Component {...pageProps} />
+      </UserContext.Provider>
+    )
   }
 }
 
