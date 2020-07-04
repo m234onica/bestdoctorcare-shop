@@ -19,7 +19,7 @@ const query = gql`{
   }
 }`
 
-function Home () {
+function Home ({ liffState }) {
   const { loading, data } = useQuery(query)
 
   if (loading || !data) {
@@ -34,7 +34,10 @@ function Home () {
       </Head>
 
       <main>
-        {JSON.stringify(data)}
+        <code>
+          {JSON.stringify(liffState)}
+          {JSON.stringify(data)}
+        </code>
       </main>
 
       <style jsx global>{`
