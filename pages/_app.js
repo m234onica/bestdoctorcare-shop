@@ -32,12 +32,27 @@ class MyApp extends App {
       })
     }
 
-    this.setState({
-      profile,
-      loaded: true,
-      isInClient: this.liff.isInClient(),
-      isLoggedIn: this.liff.isLoggedIn()
-    })
+    window.fetch('/api/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        profile
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json())
+      .then(data => {
+        if (data.status === 'ok') {
+          const { customer } = data.data
+          this.setState({
+            profile,
+            customer,
+            loaded: true,
+            isInClient: this.liff.isInClient(),
+            isLoggedIn: this.liff.isLoggedIn()
+          })
+        }
+      })
   }
 
   render () {
