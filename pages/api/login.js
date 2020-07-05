@@ -26,7 +26,7 @@ export default async (req, res) => {
   if (!entry) {
     // TODO: get the email from line profile
     customer = await shopify.customer.create({
-      first_name: lineProfile.name,
+      first_name: lineProfile.displayName,
       email: `${userId}@lineapp.com`,
       verified_email: true,
       send_email_welcome: false
