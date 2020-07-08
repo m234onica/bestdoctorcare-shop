@@ -23,7 +23,7 @@ export default async (req, res) => {
     TotalAmount: '100',
     TradeDesc: '測試交易描述',
     ItemName: '測試商品等',
-    ReturnURL: 'https://box.yukai.dev/api/webhook',
+    ReturnURL: 'https://box.yukai.dev/api/paymentSuccess',
     EncryptType: '1',
     // PaymentInfoURL: 'https://box.yukai.dev/api/webhook',
     // OrderResultURL: 'http://192.168.0.1/payment_result',
