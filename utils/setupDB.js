@@ -19,6 +19,18 @@ async function setup () {
       terms: [{ field: ['data', 'shopify_customer_id'] }]
     })
   )
+
+  await faunadb.query(q.CreateCollection({ name: 'orders' }))
+  await faunadb.query(
+    q.CreateIndex({
+      name: 'draft_order_id_ecpay_order_id_index',
+      source: q.Collection('users'),
+      terms: [
+        { field: ['data', 'draft_order_id'] },
+        { field: ['data', 'ecpay_order_id'] }
+      ]
+    })
+  )
 }
 
 setup()
