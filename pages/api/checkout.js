@@ -30,7 +30,7 @@ export default async (req, res) => {
   const create = new EcpayPayment()
   const htm = create.payment_client.aio_check_out_atm(baseParam, payInfoUrl, exp, clientRedirectURL)
 
-  res.writeHead(200, { 'Content-Type': 'text/html' })
+  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
   res.write(htm)
   return res.end()
 }
