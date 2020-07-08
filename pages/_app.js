@@ -29,7 +29,7 @@ class MyApp extends App {
       profile = await this.liff.getProfile()
     } else {
       this.liff.login({
-        redirectUri: process.env.NEXT_PUBLIC_LIFF_DOMAIN
+        redirectUri: process.env.NEXT_PUBLIC_LIFF_DOMAIN // TODO: handle dynamic path redirection
       })
     }
 
