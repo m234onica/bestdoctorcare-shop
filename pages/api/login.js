@@ -5,9 +5,15 @@ import faunadb from '../../utils/faunadb'
 
 export default async (req, res) => {
   const lineProfile = req.body.profile
-  const { userId } = lineProfile
 
-  // TODO: validate body
+  if (!lineProfile) {
+    return res.json({
+      status: 'error',
+      message: 'No liff account'
+    })
+  }
+
+  const { userId } = lineProfile
 
   let entry
   try {
