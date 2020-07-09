@@ -1,5 +1,6 @@
 import App from 'next/app'
 import UserContext from '../components/UserContext'
+import Header from '../components/Header'
 
 class MyApp extends App {
   constructor () {
@@ -60,6 +61,7 @@ class MyApp extends App {
     const { Component, pageProps } = this.props
     return (
       <UserContext.Provider value={{ liff: this.liff, liffState: this.state }}>
+        <Header profile={this.state.profile} />
         <Component {...pageProps} />
       </UserContext.Provider>
     )
