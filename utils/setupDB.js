@@ -31,6 +31,15 @@ async function setup () {
       ]
     })
   )
+  await faunadb.query(
+    q.CreateIndex({
+      name: 'orders_by_ecpay_order_id_index',
+      source: q.Collection('users'),
+      terms: [
+        { field: ['data', 'ecpay_order_id'] }
+      ]
+    })
+  )
 }
 
 setup()

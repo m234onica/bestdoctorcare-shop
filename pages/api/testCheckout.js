@@ -4,6 +4,8 @@ import shopify from '../../utils/shopify'
 
 export default async (req, res) => {
   const draftOrder = await shopify.draftOrder.create({
+    email: 'U4b1e176a9359872cd9ec6a2e4b01dc64@lineapp.com', // TODO: fill customer email explicitly
+    use_customer_default_address: true,
     line_items: [
       {
         variant_id: 34935559520407, // TODO: get line items from url param

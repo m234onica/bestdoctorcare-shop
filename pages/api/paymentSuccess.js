@@ -1,3 +1,7 @@
+// import { query as q } from 'faunadb'
+// import faunadb from '../../utils/faunadb'
+import shopify from '../../utils/shopify'
+
 // TotalSuccessTimes: '',
 // PaymentNo: '',
 // red_dan: '',
@@ -46,10 +50,36 @@
 // WebATMBankName: '',
 // AlipayID: ''
 
-export default (req, res) => {
-  console.log(req.body)
+export default async (req, res) => {
+  const paymentData = req.body
 
-  res.writeHead(200, { 'Content-Type': 'text/html' })
-  res.write('1|OK')
-  return res.end()
+  if (!paymentData) {
+    return res.json({
+      status: 'error'
+    })
+  }
+
+  try {
+    /*
+    let entry
+    entry = await faunadb.query(
+      q.Get(
+        q.Match(
+          q.Index('orders_by_ecpay_order_id_index'),
+          req.body.TradeNo
+        )
+      )
+    )
+
+    */
+    console.log(`completing shopify order ${paymentData.CustomField1}`)
+    await shopify.draftOrder.complete(Number(paymentData.CustomField1))
+
+    res.writeHead(200, { 'Content-Type': 'text/html' })
+    res.write('1|OK')
+    return res.end()
+  } catch (err) {
+    console.error(err)
+    return res.end()
+  }
 }
