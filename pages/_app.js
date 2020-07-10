@@ -7,7 +7,9 @@ class MyApp extends App {
     super()
 
     this.state = {
-      loaded: false
+      liffState: {
+        loaded: false
+      }
     }
   }
 
@@ -47,11 +49,13 @@ class MyApp extends App {
         if (data.status === 'ok') {
           const { customer } = data.data
           this.setState({
-            profile,
-            customer,
-            loaded: true,
-            isInClient: this.liff.isInClient(),
-            isLoggedIn: this.liff.isLoggedIn()
+            liffState: {
+              profile,
+              customer,
+              loaded: true,
+              isInClient: this.liff.isInClient(),
+              isLoggedIn: this.liff.isLoggedIn()
+            }
           })
         }
       })
@@ -60,8 +64,8 @@ class MyApp extends App {
   render () {
     const { Component, pageProps } = this.props
     return (
-      <UserContext.Provider value={{ liff: this.liff, liffState: this.state }}>
-        <Header profile={this.state.profile} />
+      <UserContext.Provider value={{ liff: this.liff, liffState: this.state.liffState }}>
+        <Header profile={this.state.liffState.profile} />
         <Component {...pageProps} />
       </UserContext.Provider>
     )
