@@ -1,74 +1,16 @@
 import Head from 'next/head'
 import { useContext } from 'react'
-import { gql } from 'apollo-boost'
-import { useQuery } from '@apollo/react-hooks'
 
 import withApollo from '../hooks/withApollo'
 import UserContext from '../components/UserContext'
+import AppContext from '../components/AppContext'
 import Product from '../components/Product'
 
-const query = gql`
-  query query {
-    shop {
-      name
-      description
-      products(first:20) {
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-        }
-        edges {
-          node {
-            id
-            title
-            options {
-              id
-              name
-              values
-            }
-            variants(first: 250) {
-              pageInfo {
-                hasNextPage
-                hasPreviousPage
-              }
-              edges {
-                node {
-                  id
-                  title
-                  selectedOptions {
-                    name
-                    value
-                  }
-                  image {
-                    src
-                  }
-                  price
-                }
-              }
-            }
-            images(first: 250) {
-              pageInfo {
-                hasNextPage
-                hasPreviousPage
-              }
-              edges {
-                node {
-                  src
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`
-
 function Home () {
-  const { loading, data } = useQuery(query)
   const { liffState } = useContext(UserContext)
+  const { productsData, productsLoading } = useContext(AppContext)
 
-  if (loading || !data) {
+  if (productsLoading || !productsData) {
     return <h1>loading...</h1>
   }
 
@@ -81,7 +23,7 @@ function Home () {
       </Head>
 
       <div className='Product-wrapper'>
-        {data.shop.products.edges.map(product =>
+        {productsData.shop.products.edges.map(product =>
           <Product key={product.node.id.toString()} product={product.node} />
         )}
       </div>
@@ -89,7 +31,7 @@ function Home () {
       <main>
         <code>
           {JSON.stringify(liffState)}
-          {JSON.stringify(data)}
+          {JSON.stringify(productsData)}
         </code>
       </main>
 

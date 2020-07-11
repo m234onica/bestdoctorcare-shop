@@ -2,6 +2,7 @@ import App from 'next/app'
 import UserContext from '../components/UserContext'
 import Header from '../components/Header'
 import { withCartContext } from '../components/CartContext'
+import { withAppContext } from '../components/AppContext'
 
 class MyApp extends App {
   constructor () {
@@ -73,4 +74,4 @@ class MyApp extends App {
   }
 }
 
-export default withCartContext(MyApp)
+export default withAppContext(withCartContext(MyApp))
