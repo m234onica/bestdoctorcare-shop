@@ -40,7 +40,6 @@ export default ({ product }) => {
         .Product__image {
           width: 150px;
           overflow: hidden;
-          margin-right: 20px;
         }
 
         .Product__image img {
@@ -52,6 +51,12 @@ export default ({ product }) => {
         .Product__detail {
           display: flex;
           flex-direction: column;
+          padding: 10px 15px 10px 20px;
+        }
+
+        .Product__title {
+          margin-block-start: .5em;
+          margin-block-end: .5em;
         }
       `}
       </style>
