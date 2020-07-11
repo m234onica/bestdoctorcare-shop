@@ -59,6 +59,9 @@ export default async (req, res) => {
     })
   }
 
+  // TODO: verify request
+  // TODO: verify request order amount
+
   try {
     /*
     let entry
