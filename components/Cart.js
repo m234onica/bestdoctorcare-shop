@@ -1,3 +1,4 @@
+/* global fetch */
 import { useContext } from 'react'
 import { useRouter } from 'next/router'
 
@@ -16,6 +17,24 @@ const LineItem = ({ variant, quantity }) => {
       <button onClick={() => removeVariantFromCart(variant.id)}>x</button>
     </div>
   )
+}
+
+const submitForm = ({ method = 'POST', action, values }) => {
+  const form = document.createElement('form')
+
+  values.forEach(({ name, value }) => {
+    const input = document.createElement('input')
+    input.type = 'hidden'
+    input.name = name
+    input.value = value
+    form.appendChild(input)
+  })
+
+  form.method = method
+  form.action = action
+
+  document.body.appendChild(form)
+  form.submit()
 }
 
 export default props => {
@@ -41,6 +60,18 @@ export default props => {
     />
   )
 
+  const checkout = () => {
+    fetch('/api/checkout', {
+      method: 'POST',
+      body: JSON.stringify({
+        // TODO: stringify checkout payloads
+      })
+    }).then(r => r.json())
+      .then(data => {
+        submitForm(data)
+      })
+  }
+
   return (
     <div className={`Cart ${cartOpen ? 'Cart--open' : ''}`}>
       <header className='Cart__header'>
@@ -64,7 +95,7 @@ export default props => {
               <span className='pricing'>$ {totalPrice}</span>
             </div>
           </div>
-          <button className='Cart__checkout button' onClick={() => setCartOpen(true)}>Checkout</button>
+          <button className='Cart__checkout button' onClick={checkout}>Checkout</button>
         </footer>
       </section>
 

@@ -60,7 +60,5 @@ export default async (req, res) => {
   const create = new EcpayPayment()
   const html = create.payment_client.aio_check_out_atm(baseParam, payInfoUrl, exp, clientRedirectURL)
 
-  return res.json({
-    data: parseFormData(html)
-  })
+  return res.json(parseFormData(html))
 }
