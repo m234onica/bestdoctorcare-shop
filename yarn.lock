@@ -1363,10 +1363,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@yukaii/ecpay_payment_nodejs@^1.0.0":
-  version "1.0.0"
-  resolved "https://npm.pkg.github.com/download/@yukaii/ecpay_payment_nodejs/1.0.0/f27a920c27867ba3131e0d07d6c2dc5124ff841f7457c673500fd464e43e2b6c#fbed47e2eb528d4df3e75463fb6430a5691109fb"
-  integrity sha512-qQhzxvmro5/1ofMTOVYIpy+73s8zvu4tYnyHIDqvEC6jKs3wMXFirtEFLZnlLVuAGInBY9nzxpiCgWT90rS7NQ==
+"@yukaii/ecpay_payment_nodejs@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@yukaii/ecpay_payment_nodejs/-/ecpay_payment_nodejs-1.0.2.tgz#8399edef61665d9233e16027202c3808b9d6fe4f"
+  integrity sha512-c7FwvHrdX7c0rZxYve9I4w76hdVIUGD3NW1+C+JYPBCgukuFfCvj/jf0IGisuoWAA3daWhJ+w3hAb5zLuDKG+Q==
   dependencies:
     buffer "^5.0.6"
     elementtree "^0.1.7"
