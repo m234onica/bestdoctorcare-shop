@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default props => {
   const profile = props.profile || {
     displayName: '未登入',
@@ -6,7 +8,9 @@ export default props => {
 
   return (
     <header>
-      <div className='brand'>百漢中醫</div>
+      <div className='brand'>
+        <Link href='/'><a>百漢中醫</a></Link>
+      </div>
       <div className='profile'>
         <span>{profile.displayName}</span>
         <img src={profile.pictureUrl} className='avatar' />
