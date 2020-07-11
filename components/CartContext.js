@@ -29,6 +29,10 @@ export const withCartContext = Components => (props) => {
     }
   }
 
+  const removeVariantFromCart = (variantId) => {
+    setCartItems(items.filter(item => item.variantId !== variantId))
+  }
+
   const [cartOpen, setCartOpen] = useState(false)
   const toggleCartOpen = () => {
     setCartOpen(!cartOpen)
@@ -40,7 +44,8 @@ export const withCartContext = Components => (props) => {
       addVariantToCart,
       cartOpen,
       setCartOpen,
-      toggleCartOpen
+      toggleCartOpen,
+      removeVariantFromCart
     }}
     >
       <Components {...props} />

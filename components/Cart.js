@@ -4,10 +4,16 @@ import { useRouter } from 'next/router'
 import CartContext from './CartContext'
 
 const LineItem = ({ variant, quantity }) => {
+  const { addVariantToCart, removeVariantFromCart } = useContext(CartContext)
+
   return (
-    <div>
+    <div className='LineItem'>
       <img src={variant.image.src} width={50} height={50} />
-      {variant.title} * {quantity} $ {variant.price}
+      {variant.title} $ {variant.price}
+
+      <input value={quantity} type='number' min={1} onChange={(e) => addVariantToCart(variant, parseInt(e.target.value, 10))} />
+
+      <button onClick={() => removeVariantFromCart(variant.id)}>x</button>
     </div>
   )
 }
@@ -105,7 +111,7 @@ export default props => {
 
         .Cart.Cart--open {
           transform: translateY(0);
-          transition: transform .5s ease-in-out;
+          transition: transform 300ms ease-in-out;
         }
 
         .Cart.Cart--open {
