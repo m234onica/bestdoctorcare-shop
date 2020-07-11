@@ -1,4 +1,5 @@
 import App from 'next/app'
+import Head from 'next/head'
 import UserContext from '../components/UserContext'
 import Header from '../components/Header'
 import Cart from '../components/Cart'
@@ -68,9 +69,37 @@ class MyApp extends App {
     const { Component, pageProps } = this.props
     return (
       <UserContext.Provider value={{ liff: this.liff, liffState: this.state.liffState }}>
+        <Head>
+          <title>Bestdoctorcare line store</title>
+          <link rel='icon' href='/favicon.ico' />
+          <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+        </Head>
         <Header profile={this.state.liffState.profile} />
         <Component {...pageProps} />
         <Cart />
+        <style jsx global>{`
+          html,
+          body {
+            padding: 0;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+              Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+              sans-serif;
+
+            overflow-x: hidden;
+            overflow-y: auto;
+            max-width: 100%;
+          }
+
+          .page-container {
+            padding-top: 50px;
+          }
+
+          * {
+            box-sizing: border-box;
+          }
+        `}
+        </style>
       </UserContext.Provider>
     )
   }

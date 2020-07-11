@@ -50,7 +50,7 @@ export default async function (req, res) {
   )
 
   res.writeHead(301,
-    { Location: `/orders/${order.CustomField1}` } // Render orders
+    { Location: `/orders?orderId=${order.CustomField1}` } // Render orders
   )
   return res.end()
 }

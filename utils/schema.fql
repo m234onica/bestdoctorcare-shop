@@ -16,7 +16,7 @@ CreateCollection({ name: 'orders' })
 
 CreateIndex({
   name: 'draft_order_id_ecpay_order_id_index',
-  source: Collection('users'),
+  source: Collection('orders'),
   terms: [
     { field: ['data', 'draft_order_id'] },
     { field: ['data', 'ecpay_order_id'] }
@@ -25,8 +25,16 @@ CreateIndex({
 
 CreateIndex({
   name: 'orders_by_ecpay_order_id_index',
-  source: Collection('users'),
+  source: Collection('orders'),
   terms: [
     { field: ['data', 'ecpay_order_id'] }
+  ]
+})
+
+CreateIndex({
+  name: 'orders_by_line_user_id_index',
+  source: Collection('orders'),
+  terms: [
+    { field: ['data', 'line_user_id'] }
   ]
 })
