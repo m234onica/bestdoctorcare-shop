@@ -1,6 +1,7 @@
 import App from 'next/app'
 import UserContext from '../components/UserContext'
 import Header from '../components/Header'
+import Cart from '../components/Cart'
 import { withCartContext } from '../components/CartContext'
 import { withAppContext } from '../components/AppContext'
 
@@ -69,6 +70,7 @@ class MyApp extends App {
       <UserContext.Provider value={{ liff: this.liff, liffState: this.state.liffState }}>
         <Header profile={this.state.liffState.profile} />
         <Component {...pageProps} />
+        <Cart />
       </UserContext.Provider>
     )
   }

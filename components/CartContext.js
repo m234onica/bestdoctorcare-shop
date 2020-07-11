@@ -7,7 +7,8 @@ export default CartContext
 export const withCartContext = Components => (props) => {
   const [items, setCartItems] = useState([])
 
-  const addVariantToCart = (variantId, quantity) => {
+  const addVariantToCart = (variant, quantity) => {
+    const variantId = variant.id
     const cartItems = [...items]
     const item = cartItems.find(i => i.variantId === variantId)
 
@@ -20,6 +21,7 @@ export const withCartContext = Components => (props) => {
       setCartItems([
         ...items,
         {
+          variant,
           variantId,
           quantity
         }
@@ -27,8 +29,20 @@ export const withCartContext = Components => (props) => {
     }
   }
 
+  const [cartOpen, setCartOpen] = useState(false)
+  const toggleCartOpen = () => {
+    setCartOpen(!cartOpen)
+  }
+
   return (
-    <CartContext.Provider value={{ items, addVariantToCart }}>
+    <CartContext.Provider value={{
+      items,
+      addVariantToCart,
+      cartOpen,
+      setCartOpen,
+      toggleCartOpen
+    }}
+    >
       <Components {...props} />
     </CartContext.Provider>
   )

@@ -20,7 +20,7 @@ export default ({ product }) => {
         數量
         <input min='1' type='number' defaultValue={variantQuantity} onChange={handleQuantityChange} />
       </label>
-      <button className='Product__buy button' onClick={() => addVariantToCart(variant.id, variantQuantity)}>Add to Cart</button>
+      <button className='Product__buy button' onClick={() => addVariantToCart(variant, variantQuantity)}>Add to Cart</button>
     </div>
   )
 }

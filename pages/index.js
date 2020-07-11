@@ -30,7 +30,6 @@ function Home () {
 
       <main>
         <code>
-          {JSON.stringify(liffState)}
           {JSON.stringify(productsData)}
         </code>
       </main>

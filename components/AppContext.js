@@ -67,6 +67,8 @@ const query = gql`
 export const withAppContext = Components => withApollo((props) => {
   const { loading, data } = useQuery(query)
 
+  // TODO: build product variant lookup releationship manually
+
   return (
     <AppContext.Provider value={{
       productsData: data,
