@@ -7,7 +7,6 @@ import AppContext from '../components/AppContext'
 import Product from '../components/Product'
 
 function Home () {
-  const { liffState } = useContext(UserContext)
   const { productsData, productsLoading } = useContext(AppContext)
 
   if (productsLoading || !productsData) {
@@ -22,16 +21,12 @@ function Home () {
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
       </Head>
 
-      <div className='Product-wrapper'>
-        {productsData.shop.products.edges.map(product =>
-          <Product key={product.node.id.toString()} product={product.node} />
-        )}
-      </div>
-
       <main>
-        <code>
-          {JSON.stringify(productsData)}
-        </code>
+        <div className='Product-wrapper'>
+          {productsData.shop.products.edges.map(product =>
+            <Product key={product.node.id.toString()} product={product.node} />
+          )}
+        </div>
       </main>
 
       <style jsx global>{`

@@ -13,14 +13,48 @@ export default ({ product }) => {
 
   return (
     <div className='Product'>
-      {product.images.edges.length ? <img src={variantImage} alt={`${product.title} product shot`} /> : null}
-      <h5 className='Product__title'>{product.title}</h5>
-      <span className='Product__price'>${variant.price}</span>
-      <label className='Product__option'>
-        數量
-        <input min='1' type='number' defaultValue={variantQuantity} onChange={handleQuantityChange} />
-      </label>
-      <button className='Product__buy button' onClick={() => addVariantToCart(variant, variantQuantity)}>Add to Cart</button>
+      <div className='Product__image'>
+        {product.images.edges.length ? <img src={variantImage} alt={`${product.title} product shot`} /> : null /* TODO: default placeholder image */}
+      </div>
+      <div className='Product__detail'>
+        <h5 className='Product__title'>{product.title}</h5>
+        <span className='Product__price'>${variant.price}</span>
+        <label className='Product__option'>
+          數量
+          <input min='1' type='number' defaultValue={variantQuantity} onChange={handleQuantityChange} />
+        </label>
+        <button className='Product__buy button' onClick={() => addVariantToCart(variant, variantQuantity)}>Add to Cart</button>
+      </div>
+
+      <style jsx>{`
+        .Product {
+          max-width: 100%;
+          border: solid 1px #eee;
+          background-color: white;
+          margin: 10px 15px;
+
+          display: flex;
+          height: 150px;
+        }
+
+        .Product__image {
+          width: 150px;
+          overflow: hidden;
+          margin-right: 20px;
+        }
+
+        .Product__image img {
+          object-fit: cover;
+          width: 150px;
+          height: 150px;
+        }
+
+        .Product__detail {
+          display: flex;
+          flex-direction: column;
+        }
+      `}
+      </style>
     </div>
   )
 }
