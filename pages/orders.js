@@ -40,15 +40,17 @@ export default () => {
             <th>status</th>
           </tr>
         </thead>
-        {
-          orders.map(order => (
-            <tr key={order.id}>
-              <td>{order.id}</td>
-              <td>{order.total_price}</td>
-              <td>{order.status}</td>
-            </tr>
-          ))
-        }
+        <tbody>
+          {
+            orders.map(order => (
+              <tr key={order.id}>
+                <td>{order.id}</td>
+                <td>{order.total_price}</td>
+                <td>{order.status}</td>
+              </tr>
+            ))
+          }
+        </tbody>
       </table>
     </div>
   )

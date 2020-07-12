@@ -1,5 +1,5 @@
-// import { query as q } from 'faunadb'
-// import faunadb from '../../utils/faunadb'
+import { query as q } from 'faunadb'
+import faunadb from '../../utils/faunadb'
 import shopify from '../../utils/shopify'
 
 // TotalSuccessTimes: '',
@@ -63,19 +63,20 @@ export default async (req, res) => {
   // TODO: verify request order amount
 
   try {
-    /*
-    let entry
-    entry = await faunadb.query(
-      q.Get(
+    await faunadb.query(
+      q.Update(
         q.Match(
           q.Index('orders_by_ecpay_order_id_index'),
           req.body.TradeNo
-        )
+        ),
+        {
+          data: {
+            paymentData
+          }
+        }
       )
     )
 
-    */
-    console.log(`completing shopify order ${paymentData.CustomField1}`)
     await shopify.draftOrder.complete(Number(paymentData.CustomField1))
 
     res.writeHead(200, { 'Content-Type': 'text/html' })

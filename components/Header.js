@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default props => {
   const profile = props.profile || {
-    displayName: '未登入',
+    displayName: '訪客',
     pictureUrl: 'https://www.gravatar.com/avatar/'
   }
 
