@@ -19,20 +19,62 @@ function parseFormData (html) {
 }
 
 export default async (req, res) => {
-  // TODO: form validation
-  // TODO: req.method validation
+  const { lineItems, userId } = req.body
 
-  const draftOrder = await shopify.draftOrder.create({
-    email: 'U4b1e176a9359872cd9ec6a2e4b01dc64@lineapp.com', // TODO: fill customer email explicitly
-    use_customer_default_address: true,
-    line_items: [
-      {
-        variant_id: 34935559520407, // TODO: get line items from url param
-        quantity: 1
+  if (!lineItems || !Array.isArray(lineItems)) {
+    return res.json({
+      error: 'lineItems is required and should be Array'
+    })
+  }
+
+  if (!userId) {
+    return res.json({
+      error: 'userId is required'
+    })
+  }
+
+  if (req.method !== 'POST') {
+    res.writeHead(404, { 'Content-Type': 'text/plain' })
+    res.write('Not Found')
+    return res.end()
+  }
+
+  let order
+  try {
+    const { draftOrderCreate: { draftOrder, userErrors } } = await shopify.graphql(`
+    mutation draftOrderCreate($input: DraftOrderInput!) {
+      draftOrderCreate(input: $input) {
+        draftOrder {
+          id
+          legacyResourceId
+          totalPrice
+        }
+        userErrors {
+          field
+          message
+        }
       }
-    ]
-    // TODO: shipping info
-  })
+    }
+  `, {
+      input: {
+        email: `${userId}@lineapp.com`, // TODO: fill customer email explicitly
+        useCustomerDefaultAddress: true,
+        lineItems
+      }
+    })
+
+    if (userErrors.length > 0) {
+      return res.json({
+        error: userErrors
+      })
+    }
+
+    order = draftOrder
+  } catch (e) {
+    return res.json({
+      error: e.response.body
+    })
+  }
 
   // '7/7/2020, 00:09:01'
   const dateString = new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei', hour12: false })
@@ -43,14 +85,14 @@ export default async (req, res) => {
   const baseParam = {
     MerchantTradeNo: uuid().replace(/-/g, '').slice(0, 20),
     MerchantTradeDate: now,
-    TotalAmount: '100',
-    TradeDesc: '測試交易描述',
-    ItemName: '測試商品等',
+    TotalAmount: `${parseInt(Math.round(parseFloat(order.totalPrice)), 10)}`,
+    TradeDesc: '測試交易描述', // TODO: fill description
+    ItemName: '測試商品等', // TODO: item name
     ReturnURL: `${process.env.NEXT_PUBLIC_LIFF_DOMAIN}api/paymentSuccess`,
     EncryptType: '1',
     NeedExtraPaidInfo: 'Y',
-    CustomField1: String(draftOrder.id),
-    CustomField2: String('U4b1e176a9359872cd9ec6a2e4b01dc64') // TODO: Line User ID
+    CustomField1: String(order.legacyResourceId),
+    CustomField2: userId
   }
 
   const payInfoUrl = process.env.NEXT_PUBLIC_LIFF_DOMAIN

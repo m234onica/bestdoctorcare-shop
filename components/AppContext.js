@@ -8,7 +8,7 @@ const AppContext = createContext()
 export default AppContext
 
 const query = gql`
-  query query {
+  query {
     shop {
       name
       description

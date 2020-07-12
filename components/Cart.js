@@ -3,6 +3,7 @@ import { useContext } from 'react'
 import { useRouter } from 'next/router'
 
 import CartContext from './CartContext'
+import UserContext from './UserContext'
 
 const LineItem = ({ variant, quantity }) => {
   const { addVariantToCart, removeVariantFromCart } = useContext(CartContext)
@@ -39,6 +40,7 @@ const submitForm = ({ method = 'POST', action, values }) => {
 
 export default props => {
   const { items, cartOpen, setCartOpen, toggleCartOpen } = useContext(CartContext)
+  const { liffState } = useContext(UserContext)
   const router = useRouter()
 
   const cartAvailablePaths = [
@@ -61,11 +63,20 @@ export default props => {
   )
 
   const checkout = () => {
+    if (!liffState.profile.userId) {
+      return
+    }
+
     fetch('/api/checkout', {
       method: 'POST',
       body: JSON.stringify({
+        userId: liffState.profile.userId,
+        lineItems: items.map(({ variantId, quantity }) => ({ variantId, quantity }))
         // TODO: stringify checkout payloads
-      })
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     }).then(r => r.json())
       .then(data => {
         submitForm(data)
