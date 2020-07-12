@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid'
 import cheerio from 'cheerio'
-import EcpayPayment from '@yukaii/ecpay_payment_nodejs'
+import Ecpay from '../../utils/ecpay'
 import shopify from '../../utils/shopify'
 
 function parseFormData (html) {
@@ -99,8 +99,7 @@ export default async (req, res) => {
   const exp = '7'
   const clientRedirectURL = `${process.env.NEXT_PUBLIC_LIFF_DOMAIN}api/completeCheckout`
 
-  const create = new EcpayPayment()
-  const html = create.payment_client.aio_check_out_atm(baseParam, payInfoUrl, exp, clientRedirectURL)
+  const html = Ecpay.payment_client.aio_check_out_atm(baseParam, payInfoUrl, exp, clientRedirectURL)
 
   return res.json(parseFormData(html))
 }
