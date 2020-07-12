@@ -67,7 +67,7 @@ export default async (req, res) => {
       q.Update(
         q.Match(
           q.Index('orders_by_ecpay_order_id_index'),
-          req.body.TradeNo
+          req.body.MerchantTradeNo
         ),
         {
           data: {

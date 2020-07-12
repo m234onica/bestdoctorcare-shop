@@ -42,7 +42,7 @@ export default async function (req, res) {
         data: {
           draft_order_id: order.CustomField1,
           line_user_id: order.CustomField2,
-          ecpay_order_id: order.TradeNo,
+          ecpay_order_id: order.MerchantTradeNo,
           ...order
         }
       }
