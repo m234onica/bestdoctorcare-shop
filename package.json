@@ -7,9 +7,12 @@
     "inspect": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start -p $PORT",
-    "lint": "standard"
+    "lint": "standard",
+    "checkOrderStatus": "babel-node ./tasks/run.js checkOrderStatus"
   },
   "dependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/node": "^7.10.4",
     "@line/liff": "^2.3.0",
     "@yukaii/ecpay_payment_nodejs": "1.0.2",
     "apollo-boost": "^0.4.9",
@@ -25,6 +28,7 @@
     "uuid": "^8.2.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.10.4",
     "standard": "^14.3.4"
   }
 }
