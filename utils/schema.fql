@@ -38,3 +38,11 @@ CreateIndex({
     { field: ['data', 'line_user_id'] }
   ]
 })
+
+CreateIndex({
+  name: 'orders_by_draft_order_id_index',
+  source: Collection('orders'),
+  terms: [
+    { field: ['data', 'draft_order_id'] }
+  ]
+})
