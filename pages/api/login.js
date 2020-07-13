@@ -1,6 +1,5 @@
 import shopify from '../../utils/shopify'
-
-const getLineEmail = userId => `${userId}@lineapp.com`
+import { geteEmailFromUserId } from '../../utils/user'
 
 export default async (req, res) => {
   const lineProfile = req.body.profile
@@ -33,7 +32,7 @@ export default async (req, res) => {
       }
     }
   `, {
-    query: `email:${getLineEmail(userId)}`
+    query: `email:${geteEmailFromUserId(userId)}`
   })
 
   if (customers.edges[0]) {
@@ -68,7 +67,7 @@ export default async (req, res) => {
     `, {
       input: {
         firstName: lineProfile.displayName,
-        email: getLineEmail(userId),
+        email: geteEmailFromUserId(userId),
         metafields: [
           {
             key: 'line_user_id',
