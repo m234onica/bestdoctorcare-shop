@@ -1,7 +1,5 @@
-import { query as q } from 'faunadb'
-
 import shopify from '../../utils/shopify'
-import faunadb from '../../utils/faunadb'
+import { geteEmailFromUserId } from '../../utils/user'
 
 export default async (req, res) => {
   const lineProfile = req.body.profile
@@ -15,47 +13,30 @@ export default async (req, res) => {
 
   const { userId } = lineProfile
 
-  let entry
-  try {
-    entry = await faunadb.query(
-      q.Get(
-        q.Match(
-          q.Index('users_by_line_user_id_index'),
-          userId
-        )
-      )
-    )
-  } catch (e) {}
-
-  /** @type {import('shopify-api-node').ICustomer} */
-  let customer
-  if (!entry) {
-    // TODO: get the email from line profile
-    customer = await shopify.customer.create({
-      first_name: lineProfile.displayName,
-      email: `${userId}@lineapp.com`,
-      verified_email: true,
-      send_email_welcome: false
-    })
-
-    await faunadb.query(
-      q.Create(
-        q.Collection('users'),
-        { data: { line_user_id: userId, shopify_customer_id: customer.id } }
-      )
-    )
-  } else {
-    try {
-      customer = await shopify.customer.get(entry.data.shopify_customer_id)
-    } catch (e) {
-      // TODO: handle customer not found
-      // step:
-      // 1. remove database mapping record
-      // 2. try to recreate
+  const { customers } = await shopify.graphql(`
+    query ($query: String) {
+      customers (first: 1, query: $query) {
+        edges {
+          node {
+            id
+            email
+            displayName
+            firstName
+            lastName
+            createdAt
+            metafield (key: "line_user_id", namespace: "line") {
+              value
+            }
+          }
+        }
+      }
     }
-  }
+  `, {
+    query: `email:${geteEmailFromUserId(userId)}`
+  })
 
-  if (customer) {
+  if (customers.edges[0]) {
+    const customer = customers.edges[0].node
     return res.json({
       status: 'ok',
       data: {
@@ -63,9 +44,54 @@ export default async (req, res) => {
       }
     })
   } else {
+    const { customerCreate: { customer, userErrors } } = await shopify.graphql(`
+    mutation customerCreate($input: CustomerInput!) {
+      customerCreate(input: $input) {
+        customer {
+          id
+          email
+          displayName
+          firstName
+          lastName
+          createdAt
+          metafield (key: "line_user_id", namespace: "line") {
+            value
+          }
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+    `, {
+      input: {
+        firstName: lineProfile.displayName,
+        email: geteEmailFromUserId(userId),
+        metafields: [
+          {
+            key: 'line_user_id',
+            namespace: 'line',
+            value: userId,
+            valueType: 'STRING'
+          }
+        ]
+      }
+    })
+
+    if (userErrors.length > 0) {
+      return res.json({
+        status: 'error',
+        error: 'Customer creation failed',
+        userErrors
+      })
+    }
+
     return res.json({
-      status: 'error',
-      description: 'Customer not found'
+      status: 'ok',
+      data: {
+        customer
+      }
     })
   }
 }

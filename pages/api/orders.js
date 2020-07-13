@@ -1,7 +1,5 @@
-import { query as q } from 'faunadb'
-
 import shopify from '../../utils/shopify'
-import faunadb from '../../utils/faunadb'
+import { geteEmailFromUserId } from '../../utils/user'
 
 export default async (req, res) => {
   const { userId } = req.query
@@ -12,22 +10,40 @@ export default async (req, res) => {
     })
   }
 
-  const result = await faunadb.query(
-    q.Map(
-      q.Paginate(
-        q.Match(q.Index('orders_by_line_user_id_index'), userId)
-      ),
-      q.Lambda(
-        'order',
-        q.Get(q.Var('order'))
-      )
-    )
-  )
-
-  const draftOrders = await shopify.draftOrder.list({
-    ids: result.data.map(order => order.data.draft_order_id).join(',')
+  const { draftOrders } = await shopify.graphql(`
+    query ($query: String){
+      draftOrders (first: 20, query: $query) {
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+        }
+        edges {
+          cursor
+          node {
+            id
+            shippingAddress {
+              address1
+            }
+            totalPrice
+            legacyResourceId
+            status
+            metafields (first: 5) {
+              edges {
+                node {
+                  key
+                  value
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `, {
+    query: `email:${geteEmailFromUserId(userId)}`
   })
+
   return res.json({
-    draftOrders
+    draftOrders: draftOrders.edges.map(edge => edge.node)
   })
 }
