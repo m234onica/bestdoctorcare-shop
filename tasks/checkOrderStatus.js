@@ -1,41 +1,65 @@
-import { query as q } from 'faunadb'
-
 import Ecpay, { parseTradeInfo } from '../utils/ecpay'
-import faunadb from '../utils/faunadb'
 import shopify from '../utils/shopify'
 
 export async function run () {
-  const openDraftOrders = await shopify.draftOrder.list({
-    status: 'open'
-  })
-  const orderIds = openDraftOrders.map(order => String(order.id))
+  let c = null
+  let results = []
+  for (;;) {
+    const { draftOrders: { edges, pageInfo: { hasNextPage } } } = await shopify.graphql(`
+    query ($cursor: String) {
+      draftOrders (first: 50, query: "status:OPEN", after: $cursor, sortKey: UPDATED_AT) {
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+        }
+        edges {
+          cursor
+          node {
+            id
+            legacyResourceId
+            metafields (first: 5, namespace: "ecpay") {
+              edges {
+                node {
+                  key
+                  value
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `, {
+      cursor: c
+    })
 
-  const { data } = await faunadb.query(
-    q.Map(
-      q.Paginate(
-        q.Union(
-          ...orderIds.map(id => q.Match(q.Index('orders_by_draft_order_id_index'), id))
-        )
-      ),
-      q.Lambda(
-        'order',
-        q.Get(q.Var('order'))
-      )
-    )
-  )
+    results = results.concat(edges)
 
-  return Promise.allSettled(data.map(async d => {
-    console.log(d.data.MerchantTradeNo)
+    if (hasNextPage) {
+      c = edges[0].cursor
+    } else {
+      break
+    }
+  }
+
+  const ecpayTradeNos = results.map(edge => {
+    const e = edge.node.metafields.edges.find(edge => edge.node.key === 'ecpay_trade_no')
+    return e && e.node.value
+  }).filter(Boolean)
+
+  // TODO: watch and remove this later
+  console.log(ecpayTradeNos)
+
+  return Promise.allSettled(ecpayTradeNos.map(async merchantTradeNo => {
     const res = await Ecpay.query_client.query_trade_info({
-      MerchantTradeNo: d.data.MerchantTradeNo
+      MerchantTradeNo: merchantTradeNo
     })
 
     if (res) {
       const paymentData = parseTradeInfo(res)
       if (paymentData.TradeStatus === '1') {
-        await shopify.draftOrder.complete(Number(paymentData.CustomField1))
-
-        // TODO: update local?
+        // TODO: change this graphql mutation
+        await shopify.draftOrder.complete(Number(paymentData.CustomField3))
       }
     }
   }))
