@@ -1,5 +1,3 @@
-import { query as q } from 'faunadb'
-import faunadb from '../../utils/faunadb'
 import shopify from '../../utils/shopify'
 
 // TotalSuccessTimes: '',
@@ -50,6 +48,10 @@ import shopify from '../../utils/shopify'
 // WebATMBankName: '',
 // AlipayID: ''
 
+/**
+ * @param {import('next/types').NextApiRequest} req
+ * @param {import('next/types').NextApiResponse} res
+ */
 export default async (req, res) => {
   const paymentData = req.body
 
@@ -62,28 +64,31 @@ export default async (req, res) => {
   // TODO: verify request
   // TODO: verify request order amount
 
-  try {
-    await faunadb.query(
-      q.Update(
-        q.Match(
-          q.Index('orders_by_ecpay_order_id_index'),
-          req.body.MerchantTradeNo
-        ),
-        {
-          data: {
-            paymentData
-          }
+  const { draftOrderComplete: { userErrors } } = await shopify.graphql(`
+    mutation draftOrderComplete($id: ID!) {
+      draftOrderComplete(id: $id) {
+        draftOrder {
+          id
         }
-      )
-    )
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `, {
+    id: paymentData.CustomField1
+  })
 
-    await shopify.draftOrder.complete(Number(paymentData.CustomField1))
-
-    res.writeHead(200, { 'Content-Type': 'text/html' })
-    res.write('1|OK')
-    return res.end()
-  } catch (err) {
-    console.error(err)
+  if (userErrors.length > 0) {
+    console.error({
+      type: 'draftOrderCompleteError',
+      userErrors
+    })
     return res.end()
   }
+
+  res.writeHead(200, { 'Content-Type': 'text/html' })
+  res.write('1|OK')
+  return res.end()
 }
