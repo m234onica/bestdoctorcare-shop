@@ -2,6 +2,7 @@ import { v4 as uuid } from 'uuid'
 import cheerio from 'cheerio'
 import Ecpay from '../../utils/ecpay'
 import shopify from '../../utils/shopify'
+import { geteEmailFromUserId } from '../../utils/user'
 
 function parseFormData (html) {
   const $ = cheerio.load(html)
@@ -40,6 +41,7 @@ export default async (req, res) => {
   }
 
   let order
+  const ecpayOrderId = uuid().replace(/-/g, '').slice(0, 20)
   try {
     const { draftOrderCreate: { draftOrder, userErrors } } = await shopify.graphql(`
     mutation draftOrderCreate($input: DraftOrderInput!) {
@@ -57,9 +59,17 @@ export default async (req, res) => {
     }
   `, {
       input: {
-        email: `${userId}@lineapp.com`, // TODO: fill customer email explicitly
+        email: geteEmailFromUserId(userId),
         useCustomerDefaultAddress: true,
-        lineItems
+        lineItems,
+        metafields: [
+          {
+            key: 'ecpay_order_id',
+            namespace: 'ecpay',
+            value: ecpayOrderId,
+            valueType: 'STRING'
+          }
+        ]
       }
     })
 
@@ -80,19 +90,20 @@ export default async (req, res) => {
   const dateString = new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei', hour12: false })
   const [, m, d, y, time] = dateString.match(/(\d+)\/(\d+)\/(\d+), (.+)/)
   // now should be in the format: 2017/02/13 15:45:30
-  const now = `${y}/${m.padStart(2, '0')}/${d.padStart(2, '0')} ${time}`
+  const tradeDate = `${y}/${m.padStart(2, '0')}/${d.padStart(2, '0')} ${time}`
 
   const baseParam = {
-    MerchantTradeNo: uuid().replace(/-/g, '').slice(0, 20),
-    MerchantTradeDate: now,
+    MerchantTradeNo: ecpayOrderId,
+    MerchantTradeDate: tradeDate,
     TotalAmount: `${parseInt(Math.round(parseFloat(order.totalPrice)), 10)}`,
     TradeDesc: '測試交易描述', // TODO: fill description
     ItemName: '測試商品等', // TODO: item name
     ReturnURL: `${process.env.NEXT_PUBLIC_LIFF_DOMAIN}api/paymentSuccess`,
     EncryptType: '1',
     NeedExtraPaidInfo: 'Y',
-    CustomField1: String(order.legacyResourceId),
-    CustomField2: userId
+    CustomField1: String(order.id),
+    CustomField2: userId,
+    CustomField3: String(order.legacyResourceId)
   }
 
   const payInfoUrl = process.env.NEXT_PUBLIC_LIFF_DOMAIN
