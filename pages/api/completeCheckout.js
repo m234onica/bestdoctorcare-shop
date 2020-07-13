@@ -1,7 +1,4 @@
-/* eslint-disable-next-line */
-import * as http from 'http'
-import { query as q } from 'faunadb'
-import faunadb from '../../utils/faunadb'
+import shopify from '../../utils/shopify'
 
 // BankCode: 806
 // ExpireDate: 2020/07/14
@@ -22,8 +19,8 @@ import faunadb from '../../utils/faunadb'
 // CheckMacValue: 887DC8D332DB9986D44BAB064D483558E46D75C058410357DACD384458340185
 
 /**
- * @param {http.IncomingMessage} req
- * @param {http.ServerResponse} res
+ * @param {import('next/types').NextApiRequest} req
+ * @param {import('next/types').NextApiResponse} res
  */
 export default async function (req, res) {
   if (req.method !== 'POST') {
@@ -35,22 +32,50 @@ export default async function (req, res) {
 
   const order = req.body
 
-  await faunadb.query(
-    q.Create(
-      q.Collection('orders'),
-      {
-        data: {
-          draft_order_id: order.CustomField1,
-          line_user_id: order.CustomField2,
-          ecpay_order_id: order.MerchantTradeNo,
-          ...order
+  const { draftOrderUpdate: { userErrors } } = await shopify.graphql(`
+    mutation draftOrderUpdate($id: ID!, $input: DraftOrderInput!) {
+      draftOrderUpdate(id: $id, input: $input) {
+        draftOrder {
+          id
+        }
+        userErrors {
+          field
+          message
         }
       }
-    )
-  )
+    }
+  `, {
+    id: order.CustomField1,
+    input: {
+      metafields: [
+        {
+          key: 'ecpay_trade_no',
+          namespace: 'ecpay',
+          value: order.MerchantTradeNo,
+          valueType: 'STRING'
+        },
+        {
+          key: 'ecpay_payment_type',
+          namespace: 'ecpay',
+          value: order.PaymentType,
+          valueType: 'STRING'
+        },
+        {
+          key: 'ecpay_virtual_account',
+          namespace: 'ecpay',
+          value: order.vAccount,
+          valueType: 'STRING'
+        }
+      ]
+    }
+  })
+
+  if (userErrors.length > 0) {
+    return res.status(500).write(userErrors)
+  }
 
   res.writeHead(301,
-    { Location: `/orders?orderId=${order.CustomField1}` } // Render orders
+    { Location: `/orders?orderId=${order.CustomField3}` } // Render orders
   )
   return res.end()
 }
