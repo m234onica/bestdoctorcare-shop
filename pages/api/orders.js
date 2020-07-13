@@ -1,5 +1,3 @@
-import { query as q } from 'faunadb'
-
 import shopify from '../../utils/shopify'
 import { geteEmailFromUserId } from '../../utils/user'
 
