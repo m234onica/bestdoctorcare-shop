@@ -42,17 +42,17 @@ export async function run () {
     }
   }
 
-  const ecpayTradeNos = results.map(edge => {
-    const e = edge.node.metafields.edges.find(edge => edge.node.key === 'ecpay_trade_no')
+  const ecpayOrderIds = results.map(edge => {
+    const e = edge.node.metafields.edges.find(edge => edge.node.key === 'ecpay_order_id')
     return e && e.node.value
   }).filter(Boolean)
 
   // TODO: watch and remove this later
-  console.log(ecpayTradeNos)
+  console.log(ecpayOrderIds)
 
-  return Promise.allSettled(ecpayTradeNos.map(async merchantTradeNo => {
+  return Promise.allSettled(ecpayOrderIds.map(async ecpayOrderId => {
     const res = await Ecpay.query_client.query_trade_info({
-      MerchantTradeNo: merchantTradeNo
+      MerchantTradeNo: ecpayOrderId
     })
 
     if (res) {

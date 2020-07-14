@@ -49,12 +49,6 @@ export default async function (req, res) {
     input: {
       metafields: [
         {
-          key: 'ecpay_trade_no',
-          namespace: 'ecpay',
-          value: order.MerchantTradeNo,
-          valueType: 'STRING'
-        },
-        {
           key: 'ecpay_payment_type',
           namespace: 'ecpay',
           value: order.PaymentType,
