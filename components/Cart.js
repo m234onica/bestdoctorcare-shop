@@ -67,11 +67,22 @@ export default props => {
       return
     }
 
+    const shippingAddress = {
+      firstName: 'Shipping address first name',
+      address1: 'address 1',
+      address2: 'address 2',
+      country: 'Taiwan',
+      company: 'momokatw',
+      phone: '+886914321234',
+      zip: '12312'
+    }
+
     fetch('/api/checkout', {
       method: 'POST',
       body: JSON.stringify({
         userId: liffState.profile.userId,
-        lineItems: items.map(({ variantId, quantity }) => ({ variantId, quantity }))
+        lineItems: items.map(({ variantId, quantity }) => ({ variantId, quantity })),
+        shippingAddress
         // TODO: stringify checkout payloads
       }),
       headers: {

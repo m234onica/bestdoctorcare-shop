@@ -20,7 +20,7 @@ function parseFormData (html) {
 }
 
 export default async (req, res) => {
-  const { lineItems, userId } = req.body
+  const { lineItems, userId, shippingAddress } = req.body
 
   if (!lineItems || !Array.isArray(lineItems)) {
     return res.json({
@@ -50,6 +50,9 @@ export default async (req, res) => {
           id
           legacyResourceId
           totalPrice
+          customer {
+            id
+          }
         }
         userErrors {
           field
@@ -69,7 +72,8 @@ export default async (req, res) => {
             value: ecpayOrderId,
             valueType: 'STRING'
           }
-        ]
+        ],
+        shippingAddress
       }
     })
 
@@ -84,6 +88,39 @@ export default async (req, res) => {
     return res.json({
       error
     })
+  }
+
+  console.log(`input = ${JSON.stringify({
+    input: {
+      customer: {
+        id: order.customer.id
+      },
+      addresses: [shippingAddress]
+    }
+  })}`)
+
+  // TODO: update customer default address
+  if (!order.defaultAddress || shippingAddress) {
+    const { customerUpdate: { userErrors } } = await shopify.graphql(`
+      mutation customerUpdate($input: CustomerInput!) {
+        customerUpdate(input: $input) {
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+    `, {
+      input: {
+        id: order.customer.id,
+        addresses: [shippingAddress]
+      }
+    })
+
+    if (userErrors.length > 0) {
+      console.error('Update customer address failed')
+      console.error(userErrors)
+    }
   }
 
   // '7/7/2020, 00:09:01'
