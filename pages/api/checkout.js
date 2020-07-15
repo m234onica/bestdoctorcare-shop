@@ -80,9 +80,9 @@ export default async (req, res) => {
     }
 
     order = draftOrder
-  } catch (e) {
+  } catch (error) {
     return res.json({
-      error: e.response.body
+      error
     })
   }
 
