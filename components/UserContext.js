@@ -5,11 +5,13 @@ const UserContext = createContext()
 export default UserContext
 
 export const withUserContext = Components => (props) => {
-  const [liffLoaded, setLiffLoaded] = useState(false)
   /** @type [import('@line/liff').default] */
   const [liffClient, setLiffClient] = useState(null)
-  const [liffState, setLiffState] = useState(null)
-  const [liffProfile, setLiffProfile] = useState(null)
+  const [liffState, setLiffState] = useState({
+    loaded: false
+  })
+
+  const [user, setUser] = useState(null)
 
   const initializeLiffClient = async (liff) => {
     await liff.init({
@@ -36,16 +38,14 @@ export const withUserContext = Components => (props) => {
     }).then(res => res.json())
       .then(data => {
         if (data.status === 'ok') {
-          const { customer } = data.data
-
-          setLiffProfile(profile)
+          const { data: {user } } = data
+          setUser(user)
 
           setLiffState({
-            customer, // TODO: move this out
             isInClient: liff.isInClient(),
-            isLoggedIn: liff.isLoggedIn()
+            isLoggedIn: liff.isLoggedIn(),
+            loaded: true
           })
-          setLiffLoaded(true)
         }
       })
   }
@@ -57,29 +57,29 @@ export const withUserContext = Components => (props) => {
     })
   }, [])
 
+  const getLineProfile = (user) => {
+    const metafields = user && user.metafields?.edges
+    if (!metafields) {
+      return null
+    }
+
+    const metafield = metafields.find(m => m.node.key === 'line_profile')
+    if (!metafield) {
+      return null
+    }
+
+    return JSON.parse(metafield.node.value)
+  }
+
   return (
     <UserContext.Provider value={{
-      liffLoaded,
       liff: liffClient,
+      user,
       liffState,
-      profile: liffProfile
+      getLineProfile
     }}
     >
       <Components {...props} />
     </UserContext.Provider>
   )
 }
-
-/*
-export async function getServerSideProps ({ req, res }) {
-  await applySession(req, res)
-
-  console.log(`session = ${JSON.stringify(req.session)}`)
-
-  return {
-    props: {
-      customer: req.session.customer
-    }
-  }
-}
-*/

@@ -2,10 +2,10 @@ import Link from 'next/link'
 import { useContext } from 'react'
 import UserContext from './UserContext'
 
-export default () => {
-  const { profile: contextProfile } = useContext(UserContext)
+export default ({ user: serverUser }) => {
+  const { user, getLineProfile } = useContext(UserContext)
 
-  const profile = contextProfile || {
+  const profile = getLineProfile(serverUser || user) || {
     displayName: '訪客',
     pictureUrl: 'https://www.gravatar.com/avatar/'
   }

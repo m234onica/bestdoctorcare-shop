@@ -3,12 +3,30 @@ import { withSession } from 'next-session'
 import shopify from '../../utils/shopify'
 import { geteEmailFromUserId } from '../../utils/user'
 
+const customerFields = `
+id
+email
+displayName
+firstName
+lastName
+createdAt
+metafields (first: 10, namespace: "line") {
+  edges {
+    node {
+      key
+      value
+      valueType
+    }
+  }
+}
+`
+
 export default withSession(async (req, res) => {
   if (req.session.user) {
     return res.json({
       status: 'ok',
       data: {
-        customer: req.session.user
+        user: req.session.user
       }
     })
   }
@@ -29,15 +47,7 @@ export default withSession(async (req, res) => {
       customers (first: 1, query: $query) {
         edges {
           node {
-            id
-            email
-            displayName
-            firstName
-            lastName
-            createdAt
-            metafield (key: "line_user_id", namespace: "line") {
-              value
-            }
+            ${customerFields}
           }
         }
       }
@@ -46,30 +56,69 @@ export default withSession(async (req, res) => {
     query: `email:${geteEmailFromUserId(userId)}`
   })
 
-  if (customers.edges[0]) {
-    const customer = customers.edges[0].node
-    req.session.user = customer
+  const existingUser = customers.edges?.[0]?.node
+  const metafields = existingUser && existingUser.metafields?.edges
+  const lineProfileMetafield = metafields && metafields.find(m => m.node.key === 'line_profile')
+
+  if (lineProfileMetafield) {
+    req.session.user = existingUser
 
     return res.json({
       status: 'ok',
       data: {
-        customer
+        user: existingUser
+      }
+    })
+  } else if (existingUser) {
+    // !FIXME: update metafieds
+    const { customerUpdate: { customer: user, userErrors } } = await shopify.graphql(`
+      mutation customerUpdate($input: CustomerInput!) {
+        customerUpdate(input: $input) {
+          customer {
+            ${customerFields}
+          }
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+    `, {
+      input: {
+        id: existingUser.id,
+        metafields: [
+          {
+            key: 'line_profile',
+            namespace: 'line',
+            value: JSON.stringify(lineProfile),
+            valueType: 'JSON_STRING'
+          }
+        ]
+      }
+    })
+
+    if (userErrors.length > 0) {
+      return res.json({
+        status: 'error',
+        error: 'Customer update failed',
+        userErrors
+      })
+    }
+
+    req.session.user = user
+
+    return res.json({
+      status: 'ok',
+      data: {
+        user
       }
     })
   } else {
-    const { customerCreate: { customer, userErrors } } = await shopify.graphql(`
+    const { customerCreate: { customer: user, userErrors } } = await shopify.graphql(`
     mutation customerCreate($input: CustomerInput!) {
       customerCreate(input: $input) {
         customer {
-          id
-          email
-          displayName
-          firstName
-          lastName
-          createdAt
-          metafield (key: "line_user_id", namespace: "line") {
-            value
-          }
+          ${customerFields}
         }
         userErrors {
           field
@@ -87,6 +136,12 @@ export default withSession(async (req, res) => {
             namespace: 'line',
             value: userId,
             valueType: 'STRING'
+          },
+          {
+            key: 'line_profile',
+            namespace: 'line',
+            value: JSON.stringify(lineProfile),
+            valueType: 'JSON_STRING'
           }
         ]
       }
@@ -100,12 +155,12 @@ export default withSession(async (req, res) => {
       })
     }
 
-    req.session.user = customer
+    req.session.user = user
 
     return res.json({
       status: 'ok',
       data: {
-        customer
+        user
       }
     })
   }

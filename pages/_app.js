@@ -1,9 +1,5 @@
 import Head from 'next/head'
 
-import Header from '../components/Header'
-import Cart from '../components/Cart'
-
-import { withUserContext } from '../components/UserContext'
 import { withCartContext } from '../components/CartContext'
 import { withAppContext } from '../components/AppContext'
 
@@ -14,9 +10,7 @@ const App = ({ Component, pageProps }) => (
       <link rel='icon' href='/favicon.ico' />
       <meta name='viewport' content='width=device-width, initial-scale=1.0' />
     </Head>
-    <Header />
     <Component {...pageProps} />
-    <Cart />
     <style jsx global>{`
       html,
       body {
@@ -43,4 +37,4 @@ const App = ({ Component, pageProps }) => (
   </div>
 )
 
-export default withAppContext(withCartContext(withUserContext(App)))
+export default withAppContext(withCartContext(App))
