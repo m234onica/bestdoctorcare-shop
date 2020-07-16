@@ -20,7 +20,7 @@ function parseFormData (html) {
 }
 
 export default async (req, res) => {
-  const { lineItems, userId, shippingAddress } = req.body
+  const { lineItems, userId, shippingAddress, note } = req.body
 
   if (!lineItems || !Array.isArray(lineItems)) {
     return res.json({
@@ -73,7 +73,8 @@ export default async (req, res) => {
             valueType: 'STRING'
           }
         ],
-        shippingAddress
+        shippingAddress,
+        note
       }
     })
 
@@ -90,16 +91,6 @@ export default async (req, res) => {
     })
   }
 
-  console.log(`input = ${JSON.stringify({
-    input: {
-      customer: {
-        id: order.customer.id
-      },
-      addresses: [shippingAddress]
-    }
-  })}`)
-
-  // TODO: update customer default address
   if (!order.defaultAddress || shippingAddress) {
     const { customerUpdate: { userErrors } } = await shopify.graphql(`
       mutation customerUpdate($input: CustomerInput!) {

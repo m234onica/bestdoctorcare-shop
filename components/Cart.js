@@ -77,12 +77,19 @@ export default props => {
       zip: '12312'
     }
 
+    const note = Object.entries({
+      shippingTime: '中午前、中午後',
+      shippingType: '收貨方式??',
+      note: '備註'
+    }).map(([key, value]) => `${key}: ${value}`).join('\n')
+
     fetch('/api/checkout', {
       method: 'POST',
       body: JSON.stringify({
         userId: liffState.profile.userId,
         lineItems: items.map(({ variantId, quantity }) => ({ variantId, quantity })),
-        shippingAddress
+        shippingAddress,
+        note
         // TODO: stringify checkout payloads
       }),
       headers: {
