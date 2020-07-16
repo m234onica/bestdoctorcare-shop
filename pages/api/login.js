@@ -1,7 +1,18 @@
+import { withSession } from 'next-session'
+
 import shopify from '../../utils/shopify'
 import { geteEmailFromUserId } from '../../utils/user'
 
-export default async (req, res) => {
+export default withSession(async (req, res) => {
+  if (req.session.user) {
+    return res.json({
+      status: 'ok',
+      data: {
+        customer: req.session.user
+      }
+    })
+  }
+
   const lineProfile = req.body.profile
 
   if (!lineProfile) {
@@ -37,6 +48,8 @@ export default async (req, res) => {
 
   if (customers.edges[0]) {
     const customer = customers.edges[0].node
+    req.session.user = customer
+
     return res.json({
       status: 'ok',
       data: {
@@ -87,6 +100,8 @@ export default async (req, res) => {
       })
     }
 
+    req.session.user = customer
+
     return res.json({
       status: 'ok',
       data: {
@@ -94,4 +109,4 @@ export default async (req, res) => {
       }
     })
   }
-}
+})
