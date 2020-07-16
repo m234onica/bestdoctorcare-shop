@@ -1,7 +1,11 @@
 import Link from 'next/link'
+import { useContext } from 'react'
+import UserContext from './UserContext'
 
-export default props => {
-  const profile = props.profile || {
+export default () => {
+  const { profile: contextProfile } = useContext(UserContext)
+
+  const profile = contextProfile || {
     displayName: '訪客',
     pictureUrl: 'https://www.gravatar.com/avatar/'
   }
