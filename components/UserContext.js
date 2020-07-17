@@ -38,8 +38,11 @@ export const withUserContext = Components => (props) => {
     }).then(res => res.json())
       .then(data => {
         if (data.status === 'ok') {
-          const { data: {user } } = data
-          setUser(user)
+          const { data: { user } } = data
+
+          if (JSON.stringify(props.user) !== JSON.stringify(user)) {
+            setUser(user)
+          }
 
           setLiffState({
             isInClient: liff.isInClient(),
