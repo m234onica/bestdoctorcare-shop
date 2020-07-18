@@ -1,10 +1,14 @@
 import { withSession } from 'next-session'
+import shortId from 'shortid'
 
 import shopify from '../../utils/shopify'
+import { getMongoClient } from '../../utils/mongodb'
+
 import { geteEmailFromUserId } from '../../utils/user'
 
 const customerFields = `
 id
+legacyResourceId
 email
 displayName
 firstName
@@ -145,6 +149,14 @@ export default withSession(async (req, res) => {
           }
         ]
       }
+    })
+
+    // Create invitation code
+    const client = await getMongoClient()
+    const invitationCode = client.db(process.env.MONGODB_DATABASE).collection('InvitationCode')
+    await invitationCode.insertOne({
+      userId: user.legacyResourceId,
+      code: shortId.generate()
     })
 
     if (userErrors.length > 0) {
