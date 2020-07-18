@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start -p $PORT",
     "lint": "standard",
-    "checkOrderStatus": "babel-node ./tasks/run.js checkOrderStatus"
+    "checkOrderStatus": "babel-node ./tasks/run.js checkOrderStatus",
+    "setupInvitation": "babel-node ./tasks/run.js setupInvitation"
   },
   "dependencies": {
     "@babel/core": "^7.10.4",

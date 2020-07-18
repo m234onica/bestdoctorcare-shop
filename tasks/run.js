@@ -1,7 +1,8 @@
 import { initTaskEnvrionment } from './utils'
 
 const runners = [
-  'checkOrderStatus'
+  'checkOrderStatus',
+  'setupInvitation'
 ]
 
 ;(async function () {
@@ -12,7 +13,13 @@ const runners = [
   if (runners.includes(module)) {
     const { run } = require(`./${module}`)
 
-    await Promise.resolve(run())
+    try {
+      await Promise.resolve(run())
+    } catch (err) {
+      console.error(err)
+    }
+  } else {
+    console.error('Runners is not found. Please edit run.js#runners')
   }
 
   process.exit(0)
