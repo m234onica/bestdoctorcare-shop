@@ -63,7 +63,7 @@ export default props => {
   )
 
   const checkout = () => {
-    if (!liffState.profile.userId) {
+    if (!liffState.profile?.userId) {
       return
     }
 

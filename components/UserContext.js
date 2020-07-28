@@ -47,7 +47,8 @@ export const withUserContext = Components => (props) => {
           setLiffState({
             isInClient: liff.isInClient(),
             isLoggedIn: liff.isLoggedIn(),
-            loaded: true
+            loaded: true,
+            profile
           })
         }
       })
