@@ -1,4 +1,4 @@
-import { initTaskEnvrionment } from './utils'
+import { initEnv } from '../utils'
 
 const runners = [
   'checkOrderStatus',
@@ -6,7 +6,7 @@ const runners = [
 ]
 
 ;(async function () {
-  initTaskEnvrionment()
+  initEnv()
 
   const module = process.argv.slice(-1)[0]
 

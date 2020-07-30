@@ -11,7 +11,9 @@
     "checkOrderStatus": "babel-node ./tasks/run.js checkOrderStatus",
     "setupInvitation": "babel-node ./tasks/run.js setupInvitation"
   },
-  "cacheDirectories": [".next/cache"],
+  "cacheDirectories": [
+    ".next/cache"
+  ],
   "dependencies": {
     "@babel/core": "^7.10.4",
     "@babel/node": "^7.10.4",
@@ -34,6 +36,7 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.10.4",
+    "@line/bot-sdk": "^7.0.0",
     "standard": "^14.3.4"
   }
 }
