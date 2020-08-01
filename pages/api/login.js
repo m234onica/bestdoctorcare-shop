@@ -2,7 +2,7 @@ import { withSession } from 'next-session'
 import shortId from 'shortid'
 
 import shopify from '../../utils/shopify'
-import { getMongoClient } from '../../utils/mongodb'
+import { initConnection, InvitationCode } from '../../utils/models'
 
 import { geteEmailFromUserId } from '../../utils/user'
 
@@ -152,9 +152,8 @@ export default withSession(async (req, res) => {
     })
 
     // Create invitation code
-    const client = await getMongoClient()
-    const invitationCode = client.db(process.env.MONGODB_DATABASE).collection('InvitationCode')
-    await invitationCode.insertOne({
+    await initConnection()
+    await InvitationCode.create({
       userId: user.legacyResourceId,
       code: shortId.generate()
     })

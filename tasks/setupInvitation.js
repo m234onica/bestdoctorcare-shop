@@ -1,10 +1,10 @@
 // Setup invitation for existing customers in database
 import shortId from 'shortid'
 import shopify from '../utils/shopify'
-import { getMongoClient } from '../utils/mongodb'
+import { initConnection, InvitationCode } from '../utils/models'
 
 export async function run () {
-  const client = await getMongoClient()
+  await initConnection()
 
   let c
   let customers = []
@@ -38,15 +38,13 @@ export async function run () {
     }
   }
 
-  const InvitationCode = client.db(process.env.MONGODB_DATABASE).collection('InvitationCode')
-
   for (const customer of customers.map(edge => edge.node)) {
     const codeRecord = await InvitationCode.findOne({
       userId: customer.legacyResourceId
     })
 
     if (!codeRecord) {
-      await InvitationCode.insertOne({
+      await InvitationCode.create({
         userId: customer.legacyResourceId,
         code: shortId()
       })

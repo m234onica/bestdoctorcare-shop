@@ -1,4 +1,4 @@
-import { getMongoClient } from '../../utils/mongodb'
+import { initConnection, Invitation, InvitationCode } from '../../utils/models'
 import { applySession } from 'next-session'
 import shortId from 'shortid'
 
@@ -17,7 +17,7 @@ export default async (req, res) => {
     })
   }
 
-  const client = await getMongoClient()
+  await initConnection()
 
   const { code } = req.body
 
@@ -26,9 +26,6 @@ export default async (req, res) => {
       error: 'Invitation code not given'
     })
   }
-
-  const InvitationCode = client.db(process.env.MONGODB_DATABASE).collection('InvitationCode')
-  const Invitation = client.db(process.env.MONGODB_DATABASE).collection('Invitation')
 
   const codeRecord = await InvitationCode.findOne({
     code
@@ -39,10 +36,9 @@ export default async (req, res) => {
   })
 
   if (codeRecord && !invitationRecord && req.session.user.id) {
-    await Invitation.insertOne({
+    await Invitation.create({
       userId: codeRecord.userId,
-      invitedUserId: req.session.user.legacyResourceId,
-      createdAt: Date.now()
+      invitedUserId: req.session.user.legacyResourceId
     })
 
     const { priceRuleCreate: { priceRuleDiscountCode, priceRuleUserErrors } } = await shopify.graphql(`

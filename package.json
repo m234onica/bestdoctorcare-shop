@@ -23,7 +23,7 @@
     "cheerio": "^1.0.0-rc.3",
     "faunadb": "^2.14.2",
     "graphql": "^15.2.0",
-    "mongodb": "^3.5.9",
+    "mongoose": "^5.9.27",
     "next": "9.4.4",
     "next-session": "^3.2.3",
     "next-with-apollo": "^5.0.1",
