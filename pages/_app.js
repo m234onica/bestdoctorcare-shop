@@ -28,7 +28,7 @@ const App = ({ Component, pageProps }) => (
       }
 
       .page-container {
-        padding-top: 50px;
+        padding-top: 60px;
       }
 
       * {

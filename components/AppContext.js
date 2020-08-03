@@ -7,54 +7,63 @@ const AppContext = createContext()
 
 export default AppContext
 
+const ProductFragment = `
+id
+title
+options {
+  id
+  name
+  values
+}
+variants(first: 250) {
+  pageInfo {
+    hasNextPage
+    hasPreviousPage
+  }
+  edges {
+    node {
+      id
+      title
+      selectedOptions {
+        name
+        value
+      }
+      image {
+        transformedSrc
+      }
+      priceV2 {
+        amount
+      }
+    }
+  }
+}
+images(first: 250) {
+  pageInfo {
+    hasNextPage
+    hasPreviousPage
+  }
+  edges {
+    node {
+      transformedSrc
+    }
+  }
+}
+`
+
 const query = gql`
   query {
-    shop {
-      name
-      description
-      products(first:200) {
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-        }
-        edges {
-          node {
-            id
-            title
-            options {
-              id
-              name
-              values
-            }
-            variants(first: 250) {
-              pageInfo {
-                hasNextPage
-                hasPreviousPage
-              }
-              edges {
-                node {
-                  id
-                  title
-                  selectedOptions {
-                    name
-                    value
-                  }
-                  image {
-                    src
-                  }
-                  price
-                }
-              }
-            }
-            images(first: 250) {
-              pageInfo {
-                hasNextPage
-                hasPreviousPage
-              }
-              edges {
-                node {
-                  src
-                }
+    collections(first: 20) {
+      edges {
+        node {
+          id
+          title
+          image {
+            transformedSrc
+          }
+          products(first: 200) {
+            edges {
+              node {
+                ${ProductFragment}
               }
             }
           }
@@ -65,14 +74,14 @@ const query = gql`
 `
 
 export const withAppContext = Components => withApollo((props) => {
-  const { loading, data } = useQuery(query)
+  const { loading, data: { collections } = {} } = useQuery(query)
 
   // TODO: build product variant lookup releationship manually
 
   return (
     <AppContext.Provider value={{
-      productsData: data,
-      productsLoading: loading
+      collections,
+      collectionsLoading: loading
     }}
     >
       <Components {...props} />
