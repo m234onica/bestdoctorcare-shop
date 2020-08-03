@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import '../polo/scss/plugins/plugins.css'
 import '../polo/scss/style.scss'
 
 import { withCartContext } from '../components/CartContext'
