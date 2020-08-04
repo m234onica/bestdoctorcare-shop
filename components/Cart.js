@@ -48,7 +48,7 @@ export default () => {
     '/product'
   ]
 
-  if (!cartAvailablePaths.includes(router.pathname)) {
+  if (!cartAvailablePaths.some(p => router.pathname.includes(p))) {
     return null
   }
 
@@ -104,7 +104,7 @@ export default () => {
   */
 
   return (
-    <div className='shopping-cart fixed-bottom d-flex justify-content-center align-items-center py-3'>
+    <div className='shopping-cart fixed-bottom d-flex justify-content-center align-items-center py-3 bg-white'>
       <button className='btn btn-large' type='button'>
         結帳 總金額 NT$ ${totalPrice}
       </button>

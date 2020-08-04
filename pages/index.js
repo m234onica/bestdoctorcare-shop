@@ -1,14 +1,10 @@
 import { useContext } from 'react'
-import { applySession } from 'next-session'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import withApollo from '../hooks/withApollo'
 
 import AppContext from '../components/AppContext'
-import Header from '../components/Header'
-import Cart from '../components/Cart'
-import { withUserContext } from '../components/UserContext'
 import { encodeCollectionKey, decodeCollectionKey } from '../utils/browser'
 
 function Home ({ user }) {
@@ -88,28 +84,14 @@ function Home ({ user }) {
   }
 
   return (
-    <div>
-      <Header user={user} />
-      <Cart />
-      <div className='page-container container'>
-        <main>
-          {
-            targetedCollection ? renderProductList() : renderCollectionCards()
-          }
-        </main>
-      </div>
+    <div className='page-container container'>
+      <main>
+        {
+          targetedCollection ? renderProductList() : renderCollectionCards()
+        }
+      </main>
     </div>
   )
 }
 
-export const getServerSideProps = async ({ req, res }) => {
-  await applySession(req, res)
-
-  return {
-    props: {
-      user: req.session.user || null
-    }
-  }
-}
-
-export default withApollo(withUserContext(Home))
+export default withApollo(Home)
