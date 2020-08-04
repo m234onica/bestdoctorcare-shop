@@ -2,27 +2,6 @@
 .grid-layout {
     overflow: hidden;
     margin-bottom: -2px !important;
-
-    >* {
-        opacity: 0;
-        transition: opacity .5s ease;
-    }
-
-    .grid-loader {
-        transition: opacity .1s ease;
-        opacity: 1;
-        z-index: -1;
-    }
-
-    &.grid-loaded {
-        >* {
-            opacity: 1;
-        }
-
-        .grid-loader {
-            opacity: 0;
-        }
-    }
 }
 
 .grid-layout,
@@ -549,7 +528,7 @@
 }
 
 @media (max-width: 479px) {
-    .grid-filter { 
+    .grid-filter {
         li {
             margin-right: 0;
         }

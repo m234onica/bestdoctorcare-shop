@@ -15,6 +15,7 @@ options {
   name
   values
 }
+descriptionHtml
 variants(first: 250) {
   pageInfo {
     hasNextPage

@@ -48,7 +48,7 @@ function Home ({ user }) {
 
     return (
       <div className='shop'>
-        <div className='grid-layout grid-2-columns grid-loaded'>
+        <div className='grid-layout grid-2-columns'>
           {
             products.map(product => {
               const images = product.images.edges.map(e => e.node)
@@ -60,11 +60,9 @@ function Home ({ user }) {
               return (
                 <div className='grid-item' key={product.id}>
                   <div className='product'>
-                    <div className='product-image'>
+                    <div className='product-image' style={{ width: 380, height: 507 }}>
                       <Link href='/product/[id]' as={productLink}>
-                        <div style={{ width: 380, height: 507 }}>
-                          <img alt='Shop product image!' src={firstImage} style={{ objectFit: 'cover' }} />
-                        </div>
+                        <img alt='Shop product image!' src={firstImage} style={{ objectFit: 'cover' }} />
                       </Link>
                     </div>
                     <div className='product-description'>

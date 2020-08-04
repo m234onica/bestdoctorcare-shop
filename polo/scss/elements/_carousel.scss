@@ -423,17 +423,6 @@ Carousel: Dots
 
 /* Owl Carousel - Settings
 -----------------------------------------------------------------*/
-.carousel {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity .3s ease;
-
-    &.carousel-loaded {
-        opacity: 1;
-        visibility: visible;
-    }
-}
-
 .item-video {
     position: relative;
     width: 100%;
