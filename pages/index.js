@@ -35,6 +35,7 @@ function Home ({ user }) {
         <style jsx>{`
           .collection-card {
             height: 300px;
+            max-height: 23vh;
           }
         `}
         </style>
