@@ -38,7 +38,7 @@ const submitForm = ({ method = 'POST', action, values }) => {
   form.submit()
 }
 
-export default props => {
+export default () => {
   const { items, cartOpen, setCartOpen, toggleCartOpen } = useContext(CartContext)
   const { liffState } = useContext(UserContext)
   const router = useRouter()
@@ -52,8 +52,9 @@ export default props => {
     return null
   }
 
-  const totalPrice = items.reduce((acc, { variant, quantity }) => acc + parseFloat(variant.price) * quantity, 0)
+  const totalPrice = items.reduce((acc, { variant, quantity }) => acc + parseFloat(variant.priceV2.amount) * quantity, 0)
 
+  /*
   const lineItems = items.map(item =>
     <LineItem
       variant={item.variant}
@@ -100,86 +101,16 @@ export default props => {
         submitForm(data)
       })
   }
+  */
 
   return (
-    <div className={`Cart ${cartOpen ? 'Cart--open' : ''}`}>
-      <header className='Cart__header'>
-        <div className='Cart__header_clickarea' onClick={toggleCartOpen} />
-        <div
-          onClick={() => setCartOpen(false)}
-          className='Cart__close'
-        >
-          {cartOpen ? 'x' : '結帳'}
-        </div>
-      </header>
-
-      <section className='Cart__body'>
-        <ul className='Cart__line-items'>
-          {lineItems}
-        </ul>
-        <footer className='Cart__footer'>
-          <div className='Cart-info clearfix'>
-            <div className='Cart-info__total Cart-info__small'>Total</div>
-            <div className='Cart-info__pricing'>
-              <span className='pricing'>$ {totalPrice}</span>
-            </div>
-          </div>
-          <button className='Cart__checkout button' onClick={checkout}>Checkout</button>
-        </footer>
-      </section>
-
+    <div className='shopping-cart fixed-bottom d-flex justify-content-center align-items-center py-3'>
+      <button className='btn btn-large' type='button'>
+        結帳 總金額 NT$ ${totalPrice}
+      </button>
       <style jsx>{`
-        .Cart {
-          position: fixed;
-          top: 0;
-          height: 100%;
-          width: 100%;
-          background-color: white;
-          display: flex;
-
-          transform: translateY(calc(100% - 60px));
-          transition: transform .5s ease-in-out;
-        }
-
-        .Cart__header {
-          position: absolute;
-          top: 0;
-          display: flex;
-          justify-content: flex-end;
-          height: 60px;
-          align-items: center;
-          width: 100%;
-          padding: 0 15px;
-
-          border: solid 1px #eee;
-          background-color: #fefefe;
-          border-width: 1px 0;
-        }
-
-        .Cart__body {
-          padding: 60px 15px 10px;
-          width: 100%;
-        }
-
-        .Cart__header_clickarea {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          top: 0;
-          left: 0;
-        }
-
-        .Cart.Cart--open {
-          transform: translateY(0);
-          transition: transform 300ms ease-in-out;
-        }
-
-        .Cart.Cart--open {
-          top: 0;
-        }
-
-        .Cart__line-items {
-          padding-inline-start: 0;
+        .shopping-cart {
+          box-shadow: 0px -12px 65px rgba(0, 0, 0, 0.06);
         }
       `}
       </style>

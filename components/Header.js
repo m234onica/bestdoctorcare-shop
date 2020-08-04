@@ -22,6 +22,7 @@ export default ({ user: serverUser }) => {
 
       <style jsx>{`
         header {
+          z-index: 99;
           position: fixed;
           top: 0;
           height: 50px;

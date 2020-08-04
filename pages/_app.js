@@ -25,6 +25,11 @@ const App = ({ Component, pageProps }) => (
         overflow-x: hidden;
         overflow-y: auto;
         max-width: 100%;
+        height: 100%;
+      }
+
+      #__next {
+        height: 100%;
       }
 
       .page-container {
