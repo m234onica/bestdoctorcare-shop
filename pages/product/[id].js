@@ -3,16 +3,14 @@ import { useRouter } from 'next/router'
 import { Carousel } from 'react-bootstrap'
 
 import withApollo from '../../hooks/withApollo'
-import AppContext from '../../components/AppContext'
+import AppContext, { collectionProductIterator } from '../../components/AppContext'
 import CartContext from '../../components/CartContext'
 
 function getProductFromCollections (collections, productId) {
-  for (let collection of collections.edges) {
-    for (let e of collection.node.products.edges) {
-      const product = e.node
-      if (product.id === productId) {
-        return product
-      }
+  const products = collectionProductIterator(collections)
+  for (const product of products) {
+    if (product.id === productId) {
+      return product
     }
   }
   return null

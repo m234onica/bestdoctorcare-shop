@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react'
+import { createContext, useState, useMemo } from 'react'
 
 const CartContext = createContext()
 
@@ -38,9 +38,12 @@ export const withCartContext = Components => (props) => {
     setCartOpen(!cartOpen)
   }
 
+  const totalPrice = useMemo(() => items.reduce((acc, { variant, quantity }) => acc + parseFloat(variant.priceV2.amount) * quantity, 0), [items])
+
   return (
     <CartContext.Provider value={{
       items,
+      totalPrice,
       addVariantToCart,
       cartOpen,
       setCartOpen,

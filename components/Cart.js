@@ -5,21 +5,6 @@ import { useRouter } from 'next/router'
 import CartContext from './CartContext'
 import UserContext from './UserContext'
 
-const LineItem = ({ variant, quantity }) => {
-  const { addVariantToCart, removeVariantFromCart } = useContext(CartContext)
-
-  return (
-    <div className='LineItem'>
-      <img src={variant.image.src} width={50} height={50} />
-      {variant.title} $ {variant.price}
-
-      <input value={quantity} type='number' min={1} onChange={(e) => addVariantToCart(variant, parseInt(e.target.value, 10))} />
-
-      <button onClick={() => removeVariantFromCart(variant.id)}>x</button>
-    </div>
-  )
-}
-
 const submitForm = ({ method = 'POST', action, values }) => {
   const form = document.createElement('form')
 
@@ -39,8 +24,7 @@ const submitForm = ({ method = 'POST', action, values }) => {
 }
 
 export default () => {
-  const { items, cartOpen, setCartOpen, toggleCartOpen } = useContext(CartContext)
-  const { liffState } = useContext(UserContext)
+  const { items, totalPrice } = useContext(CartContext)
   const router = useRouter()
 
   const cartAvailablePaths = [
@@ -51,8 +35,6 @@ export default () => {
   if (!cartAvailablePaths.some(p => router.pathname.includes(p))) {
     return null
   }
-
-  const totalPrice = items.reduce((acc, { variant, quantity }) => acc + parseFloat(variant.priceV2.amount) * quantity, 0)
 
   /*
   const lineItems = items.map(item =>
@@ -105,7 +87,7 @@ export default () => {
 
   return (
     <div className='shopping-cart fixed-bottom d-flex justify-content-center align-items-center py-3 bg-white'>
-      <button className='btn btn-large' type='button'>
+      <button className='btn btn-large' type='button' onClick={() => router.push('/cart')}>
         結帳 總金額 NT$ ${totalPrice}
       </button>
       <style jsx>{`
