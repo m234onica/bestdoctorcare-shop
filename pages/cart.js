@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import CartContext from '../components/CartContext'
 import AppContext from '../components/AppContext'
 
-
 export default () => {
   const { items, addVariantToCart, removeVariantFromCart, totalPrice } = useContext(CartContext)
   const { collections, variantsMap } = useContext(AppContext)
@@ -98,7 +97,7 @@ export default () => {
                 </tr>
               </tbody>
             </table>
-            <button className='btn btn-lg d-block mx-auto'>確定結帳</button>
+            <button className='btn btn-lg d-block mx-auto' onClick={() => router.push('/checkout')}>確定結帳</button>
           </div>
         ) : <button className='btn btn-lg btn-success d-block mx-auto' onClick={() => router.push('/')}>先來逛逛吧</button>
       }

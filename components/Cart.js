@@ -24,15 +24,16 @@ const submitForm = ({ method = 'POST', action, values }) => {
 }
 
 export default () => {
-  const { items, totalPrice } = useContext(CartContext)
+  const { totalPrice } = useContext(CartContext)
   const router = useRouter()
 
   const cartAvailablePaths = [
     '/',
+    '/cart',
     '/product'
   ]
 
-  if (!cartAvailablePaths.some(p => router.pathname.includes(p))) {
+  if (!cartAvailablePaths.some(p => router.pathname === p)) {
     return null
   }
 
