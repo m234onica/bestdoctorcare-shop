@@ -1,61 +1,71 @@
-/* global fetch */
-import { useState, useEffect, useContext } from 'react'
+/* eslint-env browser */
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
-import Header from '../components/Header'
-import UserContext, { withUserContext } from '../components/UserContext'
+import Link from 'next/link'
 
-export default withUserContext(() => {
+export default () => {
   const [highlightedOrderId, setOrderId] = useState(null)
   const [orders, setOrders] = useState([])
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    setOrderId(params.get('orderId'))
+    fetch('/api/orders')
+      .then(r => r.json())
+      .then(data => {
+        if (data.draftOrders) {
+          console.log(data.draftOrders)
+          setOrders(data.draftOrders.map(order => {
+            return {
+              ...order,
+              createdAt: new Date(order.createdAt),
+              updatedAt: new Date(order.updatedAt)
+            }
+          }).sort((a, b) => b.createdAt - a.createdAt))
+
+          const params = new URLSearchParams(window.location.search)
+          setOrderId(params.get('orderId'))
+        }
+      })
   }, [])
 
-  const { profile } = useContext(UserContext)
-  useEffect(() => {
-    const userId = profile?.userId
-    if (userId) {
-      fetch(`/api/orders?userId=${userId}`)
-        .then(r => r.json())
-        .then(data => {
-          if (data.draftOrders) {
-            setOrders(data.draftOrders)
-          }
-        })
-    }
-  }, [profile?.userId])
+  const orderStatusName = {
+    OPEN: '未付款',
+    COMPLETED: '已付款'
+  }
 
   return (
-    <div>
-      <Header />
-      <div className='page-container'>
-        <Head>
-          <title>所有訂單</title>
-        </Head>
+    <div className='page-container'>
+      <Head>
+        <title>所有訂單</title>
+      </Head>
 
-        <table>
-          <thead>
-            <tr>
-              <th>id</th>
-              <th>price</th>
-              <th>status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              orders.map(order => (
-                <tr key={order.id}>
-                  <td>{order.legacyResourceId}</td>
-                  <td>{order.totalPrice}</td>
-                  <td>{order.status}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
+      <div className='container'>
+        <div className='table table-striped table-responsive'>
+          <table className='table'>
+            <thead>
+              <tr>
+                <th>訂單編號</th>
+                <th>金額</th>
+                <th>狀態</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                orders.map(order => (
+                  <tr key={order.id}>
+                    <td>
+                      <Link href='/orders/[id]' as={`/orders/${order.legacyResourceId}`}>
+                        <a>{order.legacyResourceId}</a>
+                      </Link>
+                    </td>
+                    <td>NT$ {order.totalPrice}</td>
+                    <td>{orderStatusName[order.status]}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )
-})
+}

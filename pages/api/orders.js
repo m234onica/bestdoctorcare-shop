@@ -1,49 +1,96 @@
+import { withSession } from 'next-session'
 import shopify from '../../utils/shopify'
-import { geteEmailFromUserId } from '../../utils/user'
+import { getEmailFromCustomer } from '../../utils/user'
 
-export default async (req, res) => {
-  const { userId } = req.query
+const DraftOrderDetailFragment = `
+id
+totalPrice
+legacyResourceId
+status
+updatedAt
+createdAt
+metafields (first: 5) {
+  edges {
+    node {
+      key
+      value
+    }
+  }
+}
+shippingAddress {
+  address1
+}
+lineItems (first: 30) {
+  edges {
+    node {
+      product {
+        title
+      }
+      variant {
+        title
+      }
+      originalTotal
+      quantity
+    }
+  }
+}
+appliedDiscount {
+  amountV2 {
+    amount
+  }
+  description
+}
+`
 
-  if (!userId) {
+export default withSession(async (req, res) => {
+  const { user } = req.session
+
+  if (!user) {
     return res.json({
-      error: 'userId is not provided'
+      error: 'Login required'
     })
   }
 
-  const { draftOrders } = await shopify.graphql(`
-    query ($query: String){
-      draftOrders (first: 20, query: $query) {
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
+  if (req.query.orderId) {
+    const draftOrderId = `gid://shopify/DraftOrder/${req.query.orderId}`
+    const { draftOrder: order } = await shopify.graphql(`
+      query ($draftOrderId: ID!) {
+        draftOrder(id: $draftOrderId) {
+          ${DraftOrderDetailFragment}
         }
-        edges {
-          cursor
-          node {
-            id
-            shippingAddress {
-              address1
-            }
-            totalPrice
-            legacyResourceId
-            status
-            metafields (first: 5) {
-              edges {
-                node {
-                  key
-                  value
-                }
-              }
+      }
+    `, {
+      draftOrderId
+    })
+
+    return res.json({ order })
+  } else {
+    const { draftOrders } = await shopify.graphql(`
+      query ($query: String) {
+        draftOrders (first: 20, query: $query) {
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+          }
+          edges {
+            cursor
+            node {
+              id
+              totalPrice
+              legacyResourceId
+              status
+              updatedAt
+              createdAt
             }
           }
         }
       }
-    }
-  `, {
-    query: `email:${geteEmailFromUserId(userId)}`
-  })
+    `, {
+      query: `email:${getEmailFromCustomer(user)}`
+    })
 
-  return res.json({
-    draftOrders: draftOrders.edges.map(edge => edge.node)
-  })
-}
+    return res.json({
+      draftOrders: draftOrders.edges.map(edge => edge.node)
+    })
+  }
+})

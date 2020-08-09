@@ -27,7 +27,7 @@ export default () => {
     <div className='page-container'>
       <h1 className='text-center'>購物車</h1>
 
-      <div className='container-fluid px-3'>
+      <div className='container px-3 table table-striped table-responsive'>
         <table className='table table-striped'>
           <thead className='thead'>
             <tr>
