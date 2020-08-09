@@ -1,8 +1,11 @@
+import { withSession } from 'next-session'
+
 import { v4 as uuid } from 'uuid'
 import cheerio from 'cheerio'
+
 import Ecpay from '../../utils/ecpay'
 import shopify from '../../utils/shopify'
-import { geteEmailFromUserId } from '../../utils/user'
+import { getLineUserIdFromCustomer } from '../../utils/user'
 
 function parseFormData (html) {
   const $ = cheerio.load(html)
@@ -19,18 +22,19 @@ function parseFormData (html) {
   }
 }
 
-export default async (req, res) => {
-  const { lineItems, userId, shippingAddress, note } = req.body
+export default withSession(async (req, res) => {
+  const { lineItems, shippingAddress, note } = req.body
+  const { user } = req.session
+
+  if (!user) {
+    return res.json({
+      error: 'Login required'
+    })
+  }
 
   if (!lineItems || !Array.isArray(lineItems)) {
     return res.json({
       error: 'lineItems is required and should be Array'
-    })
-  }
-
-  if (!userId) {
-    return res.json({
-      error: 'userId is required'
     })
   }
 
@@ -62,7 +66,7 @@ export default async (req, res) => {
     }
   `, {
       input: {
-        email: geteEmailFromUserId(userId),
+        email: user.email,
         useCustomerDefaultAddress: true,
         lineItems,
         metafields: [
@@ -79,6 +83,7 @@ export default async (req, res) => {
     })
 
     if (userErrors.length > 0) {
+      console.error(userErrors)
       return res.json({
         error: userErrors
       })
@@ -86,8 +91,9 @@ export default async (req, res) => {
 
     order = draftOrder
   } catch (error) {
+    console.error(error)
     return res.json({
-      error
+      error: JSON.stringify(error)
     })
   }
 
@@ -130,7 +136,7 @@ export default async (req, res) => {
     EncryptType: '1',
     NeedExtraPaidInfo: 'Y',
     CustomField1: String(order.id),
-    CustomField2: userId,
+    CustomField2: getLineUserIdFromCustomer(user),
     CustomField3: String(order.legacyResourceId)
   }
 
@@ -141,4 +147,4 @@ export default async (req, res) => {
   const html = Ecpay.payment_client.aio_check_out_atm(baseParam, payInfoUrl, exp, clientRedirectURL)
 
   return res.json(parseFormData(html))
-}
+})

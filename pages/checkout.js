@@ -26,9 +26,10 @@ export default () => {
       zip: zip.current.value,
       address1: address1.current.value,
       city: city.current.value,
-      name: name.current.value,
+      firstName: name.current.value,
       province: province.current.value,
-      phone: phone.current.value
+      phone: phone.current.value,
+      country: 'Taiwan'
     }
 
     /*
@@ -42,7 +43,6 @@ export default () => {
     fetch('/api/checkout', {
       method: 'POST',
       body: JSON.stringify({
-        userId: liffState.profile.userId,
         lineItems: items.map(({ variantId, quantity }) => ({ variantId, quantity })),
         shippingAddress
         // note
