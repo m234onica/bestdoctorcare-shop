@@ -10,7 +10,7 @@ export default () => {
   const cartAvailablePaths = [
     '/',
     '/cart',
-    '/product'
+    '/product/[id]'
   ]
 
   if (!cartAvailablePaths.some(p => router.pathname === p)) {
