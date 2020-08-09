@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { useContext } from 'react'
+import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
+
 import UserContext from './UserContext'
 
 export default ({ user: serverUser }) => {
@@ -11,50 +13,32 @@ export default ({ user: serverUser }) => {
   }
 
   return (
-    <header>
-      <div className='brand'>
-        <Link href='/'><a>百漢中醫</a></Link>
-      </div>
-      <div className='profile'>
-        <span>{profile.displayName}</span>
-        <img src={profile.pictureUrl} className='avatar' />
-      </div>
+    <Navbar bg='light' expand='sm' fixed='top'>
+      <Navbar.Brand>
+        <Link href='/'>
+          <a>
+            <span className='logo-default'>
+              百漢中醫
+            </span>
+          </a>
+        </Link>
+      </Navbar.Brand>
+      <Navbar.Toggle aria-controls='basic-navbar-nav' />
+      <Navbar.Collapse id='basic-navbar-nav'>
+        <Nav className='ml-auto align-items-center-sm align-items-start-xs'>
+          <Nav.Item className='mr-3'>
+            <Link href='/orders'>
+              <a>我的訂單</a>
+            </Link>
+          </Nav.Item>
 
-      <style jsx>{`
-        header {
-          z-index: 99;
-          position: fixed;
-          top: 0;
-          height: 50px;
-          overflow: hidden;
-          padding: 0 10px;
-          border-style: solid;
-          border-width: 0 0 1px 0;
-          border-color: #eee;
+          <div className='profile'>
+            <span>{profile.displayName}</span>
+            <img src={profile.pictureUrl} className='avatar ml-2' style={{ width: 23, height: 23 }} />
+          </div>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
 
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-
-          width: 100%;
-          background-color: #fefefe;
-        }
-
-        header img.avatar {
-          width: 25px;
-          height: 25px;
-          border-radius: 50%;
-          overflow: hidden;
-
-          margin-left: 5px;
-        }
-
-        header .profile {
-          display: flex;
-          align-items: center;
-        }
-      `}
-      </style>
-    </header>
   )
 }
