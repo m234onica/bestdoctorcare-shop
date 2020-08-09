@@ -9,7 +9,6 @@ export default () => {
 
   const cartAvailablePaths = [
     '/',
-    '/cart',
     '/product/[id]'
   ]
 
