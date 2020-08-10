@@ -59,3 +59,13 @@ export const BANK_DATA = {
 }
 
 export const getBankData = (paymentType = '') => BANK_DATA[paymentType.split('ATM_')[1]]
+
+export const getMetafield = (obj, key) => {
+  return obj.metafields.edges.find(e => {
+    const field = e.node
+    return field.key === key
+  })?.node?.value
+}
+
+export const getPaymentType = order => getMetafield(order, 'ecpay_payment_type')
+export const getPaymentVirtualAccount = order => getMetafield(order, 'ecpay_virtual_account')

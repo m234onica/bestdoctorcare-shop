@@ -69,7 +69,7 @@ export default async function (req, res) {
   }
 
   res.writeHead(301,
-    { Location: `/orders?orderId=${order.CustomField3}` } // Render orders
+    { Location: `/completed/${order.CustomField3}` } // Render orders
   )
   return res.end()
 }

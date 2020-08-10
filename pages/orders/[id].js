@@ -1,23 +1,12 @@
 import { useRouter } from 'next/router'
 import { useState, useEffect, useMemo } from 'react'
 import { Card } from 'react-bootstrap'
-import { getBankData } from '../../utils/browser'
-
-const getMetafield = (obj, key) => {
-  console.log(obj.metafields)
-  return obj.metafields.edges.find(e => {
-    const field = e.node
-    return field.key === key
-  })?.node?.value
-}
-
-const getPaymentType = order => getMetafield(order, 'ecpay_payment_type')
-const getPaymentVirtualAccount = order => getMetafield(order, 'ecpay_virtual_account')
+import { getBankData, getPaymentType, getPaymentVirtualAccount } from '../../utils/browser'
 
 export default () => {
   const router = useRouter()
   const [order, setOrder] = useState(null)
-  const orderId = router.query.id
+  const { id: orderId } = router.query
 
   useEffect(() => {
     if (orderId) {
