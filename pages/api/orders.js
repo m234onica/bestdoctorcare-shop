@@ -18,18 +18,24 @@ metafields (first: 5) {
   }
 }
 shippingAddress {
+  country
+  zip
   address1
+  city
+  firstName
+  province
+  phone
 }
 lineItems (first: 30) {
   edges {
     node {
+      id
       product {
         title
       }
-      variant {
-        title
-      }
+      variantTitle
       originalTotal
+      discountedTotal
       quantity
     }
   }

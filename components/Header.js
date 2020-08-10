@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useContext } from 'react'
-import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
+import { Navbar, Nav } from 'react-bootstrap'
 
 import UserContext from './UserContext'
 
