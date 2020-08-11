@@ -4,19 +4,14 @@ import { useContext } from 'react'
 import { Navbar, Nav } from 'react-bootstrap'
 
 import UserContext from './UserContext'
+import { isLiffPages } from '../utils/routesHelper'
 
 export default ({ user: serverUser }) => {
   const { user, getLineProfile } = useContext(UserContext)
 
   const router = useRouter()
 
-  const cartExcludePaths = [
-    '/liff',
-    '/liff/myInvitation',
-    '/liff/applyInvitation'
-  ]
-
-  if (cartExcludePaths.some(p => router.pathname === p)) {
+  if (isLiffPages(router.pathname)) {
     return null
   }
 
