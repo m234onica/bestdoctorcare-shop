@@ -14,16 +14,26 @@ export const withUserContext = Components => (props) => {
   const [user, setUser] = useState(null)
 
   const initializeLiffClient = async (liff) => {
+    let liffId, redirectUri
+    if (window.location.pathname === '/liff') {
+      liffId = process.env.NEXT_PUBLIC_INVITATION_LIFF_ID
+      redirectUri = process.env.NEXT_PUBLIC_INVITATION_LIFF_DOMAIN
+    } else {
+      liffId = process.env.NEXT_PUBLIC_LIFF_ID
+      redirectUri = process.env.NEXT_PUBLIC_LIFF_DOMAIN
+    }
+
     await liff.init({
-      liffId: process.env.NEXT_PUBLIC_LIFF_ID
+      liffId
     })
 
     let profile
     if (liff.isLoggedIn()) {
       profile = await liff.getProfile()
     } else {
+      // TODO: handle dynamic path redirection
       liff.login({
-        redirectUri: process.env.NEXT_PUBLIC_LIFF_DOMAIN // TODO: handle dynamic path redirection
+        redirectUri
       })
     }
 

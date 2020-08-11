@@ -42,6 +42,10 @@ const App = ({ Component, pageProps }) => {
         height: 100%;
       }
 
+      #__next > div {
+        height: 100%;
+      }
+
       .page-container {
         padding-top: 45px;
         padding-bottom: 60px;
