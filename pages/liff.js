@@ -3,14 +3,14 @@ import Link from 'next/link'
 export default () => {
   return (
     <div className='w-100 h-100 d-flex justify-content-center align-items-center'>
-      <Link href='/liff/myInvitation'>
+      <Link href='/liff/applyInvitation'>
         <div className='touch-box w-100 h-100 d-flex justify-content-center align-items-center'>
           <a className='text-decoration-none'>
             輸入邀請碼
           </a>
         </div>
       </Link>
-      <Link href='/liff/applyInvitation'>
+      <Link href='/liff/myInvitation'>
         <div className='touch-box w-100 h-100 d-flex justify-content-center align-items-center'>
           <a className='text-decoration-none'>
             取得邀請碼
