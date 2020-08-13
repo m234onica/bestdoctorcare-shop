@@ -1,5 +1,5 @@
 /* eslint-env browser */
-import { useRef, useContext } from 'react'
+import { useRef, useContext, useState } from 'react'
 import { submitForm } from '../utils/browser'
 import UserContext from '../components/UserContext'
 import CartContext from '../components/CartContext'
@@ -15,10 +15,18 @@ export default () => {
   const { liffState } = useContext(UserContext)
   const { items } = useContext(CartContext)
 
+  const [submitting, setSubmitting] = useState(false)
+
   const checkout = (e) => {
+    if (submitting) {
+      return
+    }
+
     e.preventDefault()
+    setSubmitting(true)
 
     if (!liffState.profile?.userId || items.length === 0) {
+      setSubmitting(false)
       return
     }
 
@@ -53,6 +61,9 @@ export default () => {
     }).then(r => r.json())
       .then(data => {
         submitForm(data)
+      })
+      .finally(() => {
+        setSubmitting(false)
       })
   }
 
@@ -110,7 +121,7 @@ export default () => {
 
           <div className='text-right'>
             <button className='btn btn-danger mr-3' onClick={clear}>清空</button>
-            <button className='btn' type='submit' onClick={checkout}>前往付款</button>
+            <button className='btn' type='submit' onClick={checkout} disabled={submitting}>前往付款</button>
           </div>
         </form>
       </div>
