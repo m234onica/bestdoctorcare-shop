@@ -1,18 +1,10 @@
-import { Client, middleware } from '@line/bot-sdk'
+import { lineMiddleware, client } from '../../utils/line'
 
 export const config = {
   api: {
     bodyParser: false
   }
 }
-
-const lineConfig = {
-  channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
-  channelSecret: process.env.LINE_CHANNEL_SECRET
-}
-
-const client = new Client(lineConfig)
-const lineMiddleware = middleware(lineConfig)
 
 function runMiddleware (req, res, fn) {
   return new Promise((resolve, reject) => {
