@@ -18,7 +18,7 @@ const App = ({ Component, pageProps }) => {
       <Head>
         <title>Bestdoctorcare line store</title>
         <link rel='icon' href='/favicon.ico' />
-        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+        <meta name='viewport' content='width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1' />
       </Head>
       <Header user={user} />
       <Cart />
