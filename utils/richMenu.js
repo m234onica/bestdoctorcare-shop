@@ -36,15 +36,15 @@ async function createRichMenu () {
       },
       {
         bounds: {
-          x: 0,
-          y: 843,
+          x: 1666,
+          y: 0,
           width: 833,
           height: 843
         },
         action: {
           type: 'uri',
           label: '邀請朋友',
-          uri: 'https://liff.line.me/1654439637-r0vQnP14?page=profile'
+          uri: 'https://liff.line.me/1654439637-QlJvLenq'
         }
       }
     ]
@@ -56,4 +56,4 @@ async function createRichMenu () {
   await client.setDefaultRichMenu(menu)
 }
 
-// createRichMenu()
+createRichMenu()
