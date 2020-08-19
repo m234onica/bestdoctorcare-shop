@@ -30,15 +30,29 @@ export default async (req, res) => {
   const codeRecord = await InvitationCode.findOne({
     code
   })
+  if (!codeRecord) {
+    return res.send({
+      error: 'Invitation code not found'
+    })
+  }
+
+  const invitedUserId = req.session.user.legacyResourceId
+
   const invitationRecord = await Invitation.findOne({
     userId: codeRecord.userId,
-    invitedUserId: req.session.user.legacyResourceId
+    invitedUserId
   })
 
-  if (codeRecord && !invitationRecord && req.session.user.id) {
+  if (invitedUserId === codeRecord.userId) {
+    return res.send({
+      error: 'Cannot use invitation code of yourself'
+    })
+  }
+
+  if (codeRecord && !invitationRecord && invitedUserId !== codeRecord.userId) {
     await Invitation.create({
       userId: codeRecord.userId,
-      invitedUserId: req.session.user.legacyResourceId
+      invitedUserId
     })
 
     const { priceRuleCreate: { priceRuleDiscountCode, priceRuleUserErrors } } = await shopify.graphql(`
