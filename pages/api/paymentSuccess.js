@@ -1,4 +1,5 @@
 import shopify from '../../utils/shopify'
+import { client } from '../../utils/line'
 
 // TotalSuccessTimes: '',
 // PaymentNo: '',
@@ -53,9 +54,9 @@ import shopify from '../../utils/shopify'
  * @param {import('next/types').NextApiResponse} res
  */
 export default async (req, res) => {
-  const paymentData = req.body
+  const order = req.body
 
-  if (!paymentData) {
+  if (!order) {
     return res.json({
       status: 'error'
     })
@@ -77,7 +78,7 @@ export default async (req, res) => {
       }
     }
   `, {
-    id: paymentData.CustomField1
+    id: order.CustomField1
   })
 
   if (userErrors.length > 0) {
@@ -86,6 +87,15 @@ export default async (req, res) => {
       userErrors
     })
     return res.end()
+  }
+
+  try {
+    await client.pushMessage(order.CustomField2, [{
+      type: 'text',
+      text: `已收到您付款的 ${order.TradeAmt} 整`
+    }])
+  } catch (err) {
+    console.error(err)
   }
 
   res.writeHead(200, { 'Content-Type': 'text/html' })
