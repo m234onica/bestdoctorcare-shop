@@ -1,4 +1,6 @@
 import shopify from '../../utils/shopify'
+import { client } from '../../utils/line'
+import { getBankData } from '../../utils/browser'
 
 // BankCode: 806
 // ExpireDate: 2020/07/14
@@ -66,6 +68,23 @@ export default async function (req, res) {
 
   if (userErrors.length > 0) {
     return res.status(500).write(userErrors)
+  }
+
+  const bankData = getBankData(order.PaymentType)
+
+  try {
+    await client.pushMessage(order.CustomField2, [
+      {
+        type: 'text',
+        text: '您已完成結帳，請記得付款'
+      },
+      {
+        type: 'text',
+        text: `NT$ ${order.TradeAmt} 元\n(${bankData.code}) ${order.vAccount}`
+      }
+    ])
+  } catch (err) {
+    console.error(err)
   }
 
   res.writeHead(301,

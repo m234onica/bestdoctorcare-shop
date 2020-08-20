@@ -83,7 +83,7 @@ export default () => {
       <div className='container-fluid px-3'>
         <form>
           <div className='form-group'>
-            <label for=''>請填寫貨運資訊</label>
+            <label>請填寫貨運資訊</label>
 
             <div className='col-4 mx-0 my-2 px-0'>
               <input type='text' name='zip' id='zip' className='form-control d-block' placeholder='郵遞區號' required ref={zip} />
