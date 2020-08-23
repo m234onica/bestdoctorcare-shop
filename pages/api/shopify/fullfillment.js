@@ -1,6 +1,7 @@
 import shopify from '../../../utils/shopify'
 import { getLineUserIdFromCustomer } from '../../../utils/user'
 import { client } from '../../../utils/line'
+import { initConnection, DraftOrderRelation } from '../../../utils/models'
 
 const customerField = `
 metafields (first: 10, namespace: "line") {
@@ -19,10 +20,12 @@ metafields (first: 10, namespace: "line") {
  * @param {import('next/types').NextApiResponse} res
  */
 async function handler (req, res) {
-  const fullfillment = req.body
+  const order = req.body
 
   try {
-    if (fullfillment.fulfillment_status === 'fulfilled') {
+    if (order.fulfillment_status === 'fulfilled') {
+      await initConnection()
+
       const { customer } = await shopify.graphql(`
         query ($customerId: ID!) {
           customer (id: $customerId) {
@@ -30,8 +33,15 @@ async function handler (req, res) {
           }
         }
       `, {
-        customerId: fullfillment.customer.admin_graphql_api_id
+        customerId: order.customer.admin_graphql_api_id
       })
+
+      // fetch draftOrder Id
+      const record = await DraftOrderRelation.findOne({
+        orderId: order.id
+      })
+
+      const draftOrderIdText = record ? `訂單 #${record.draftOrderId} ` : ''
 
       if (customer) {
         const lineId = getLineUserIdFromCustomer(customer)
@@ -39,7 +49,7 @@ async function handler (req, res) {
         if (lineId) {
           await client.pushMessage(lineId, [{
             type: 'text',
-            text: '已為您發貨' // TODO: query order details and numbers
+            text: `${draftOrderIdText}已為您發貨`
           }])
         }
       }

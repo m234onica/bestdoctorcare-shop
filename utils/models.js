@@ -19,6 +19,7 @@ export async function initConnection () {
   })
 }
 
+/** @type {mongoose.Model} */
 let InvitationCode
 try {
   InvitationCode = model('InvitationCode')
@@ -29,6 +30,7 @@ try {
   }))
 }
 
+/** @type {mongoose.Model} */
 let Invitation
 try {
   Invitation = model('Invitation')
@@ -43,7 +45,19 @@ try {
   }))
 }
 
+/** @type {mongoose.Model} */
+let DraftOrderRelation
+try {
+  DraftOrderRelation = model('DraftOrderRelation')
+} catch (err) {
+  DraftOrderRelation = model('DraftOrderRelation', new Schema({
+    orderId: String,
+    draftOrderId: String
+  }))
+}
+
 export {
   InvitationCode,
-  Invitation
+  Invitation,
+  DraftOrderRelation
 }
