@@ -4,7 +4,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 
 export default () => {
-  const [highlightedOrderId, setOrderId] = useState(null)
+  const [, setOrderId] = useState(null)
   const [orders, setOrders] = useState([])
 
   useEffect(() => {

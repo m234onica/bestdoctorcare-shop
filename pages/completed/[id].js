@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -42,20 +43,22 @@ export default () => {
 
   return order && (
     <div className='page-container'>
-      <div className='container' className='text-center'>
+      <div className='text-center container'>
         <h1>已完成結帳</h1>
 
         {
-          bankData && <div>
-            <p>
-              請記得在 {dueDate.toString()} 前轉帳至以下銀行帳號，該帳號為本次交易專屬
-            </p>
-
+          bankData && (
             <div>
-              <h2>金額 {order.totalPrice} 元</h2>
-              <h2 className='mt-2'>({bankData.code}) {bankAccount}</h2>
+              <p>
+                請記得在 {dueDate.toString()} 前轉帳至以下銀行帳號，該帳號為本次交易專屬
+              </p>
+
+              <div>
+                <h2>金額 {order.totalPrice} 元</h2>
+                <h2 className='mt-2'>({bankData.code}) {bankAccount}</h2>
+              </div>
             </div>
-          </div>
+          )
         }
 
         <Link href='/'>

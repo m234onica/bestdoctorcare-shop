@@ -32,7 +32,7 @@ function Product () {
 
   const variants = product.variants.edges.map(e => e.node)
   const variant = variants[0]
-  const [variantId, setVariantId] = useState(variant.id)
+  const [variantId] = useState(variant.id)
   const [quantity, setQuantity] = useState(1)
 
   const increment = () => {
@@ -56,11 +56,11 @@ function Product () {
           {
             product.images.edges.map(e => e.node).map(image => (
               <Carousel.Item key={image.transformedSrc}>
-              <img
-                className="d-block w-100"
-                src={image.transformedSrc}
-              />
-            </Carousel.Item>))
+                <img
+                  className='d-block w-100'
+                  src={image.transformedSrc}
+                />
+              </Carousel.Item>))
           }
         </Carousel>
 
@@ -94,6 +94,5 @@ function Product () {
     </div>
   )
 }
-
 
 export default withApollo(Product)
