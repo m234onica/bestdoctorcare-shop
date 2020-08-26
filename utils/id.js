@@ -1,14 +1,18 @@
 // gid://shopify/DraftOrder/668686254231
 
+/**
+ *
+ * @param {string} id
+ */
 const isGraphQLID = (id) => {
-  return id.includes('gid://shopify')
+  return typeof id === 'string' && id.includes('gid://shopify')
 }
 
 /**
  * @param {string} model
  * @param {string} id
  */
-export const getGraphQLId = (model, id) => {
+export const getGraphQLID = (model, id) => {
   if (!id) {
     return id
   }

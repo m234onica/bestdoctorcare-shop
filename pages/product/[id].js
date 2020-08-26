@@ -32,7 +32,7 @@ function Product () {
 
   const variants = product.variants.edges.map(e => e.node)
   const variant = variants[0]
-  const [variantId] = useState(variant.id)
+  const [variantId, /* setVariantId */] = useState(variant.id)
   const [quantity, setQuantity] = useState(1)
 
   const increment = () => {

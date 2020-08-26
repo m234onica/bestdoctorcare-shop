@@ -1,4 +1,7 @@
+import shopify from '../utils/shopify'
+import { client } from '../utils/line'
 import { DraftOrderRelation, initConnection } from '../utils/models'
+import { getLegacyId, getGraphQLID } from '../utils/id'
 
 export async function createDraftOrderRelation (orderId, draftOrderId) {
   await initConnection()
@@ -13,4 +16,38 @@ export async function createDraftOrderRelation (orderId, draftOrderId) {
   } else {
     await DraftOrderRelation.create(data)
   }
+}
+
+export class DraftOrderCompleteError extends Error {};
+
+export async function completeDraftOrder (draftOrderId, lineUserId, tradeAmount) {
+  const { draftOrderComplete: { userErrors, draftOrder } } = await shopify.graphql(`
+    mutation draftOrderComplete($id: ID!) {
+      draftOrderComplete(id: $id) {
+        draftOrder {
+          id
+          order {
+            id
+          }
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `, {
+    id: getGraphQLID('DraftOrder', draftOrderId)
+  })
+
+  if (userErrors) {
+    throw DraftOrderCompleteError(JSON.stringify(userErrors))
+  }
+
+  await createDraftOrderRelation(getLegacyId(draftOrder.order.id), getLegacyId(draftOrderId))
+
+  await client.pushMessage(lineUserId, [{
+    type: 'text',
+    text: `已收到您付款的 ${tradeAmount} 整`
+  }])
 }

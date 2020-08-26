@@ -1,4 +1,4 @@
-import { getLegacyId, getGraphQLId } from '../utils/id'
+import { getLegacyId, getGraphQLID } from '../utils/id'
 
 const test = require('ava')
 
@@ -9,9 +9,9 @@ test('#getLegacyId', t => {
   t.falsy(getLegacyId())
 })
 
-test('#getGraphQLId', t => {
-  t.assert(getGraphQLId('DraftOrder', '668686254231') === 'gid://shopify/DraftOrder/668686254231')
-  t.assert(getGraphQLId('DraftOrder', 'gid://shopify/DraftOrder/668686254231') === 'gid://shopify/DraftOrder/668686254231')
-  t.falsy(getGraphQLId('DraftOrder', null))
-  t.falsy(getGraphQLId('DraftOrder'))
+test('#getGraphQLID', t => {
+  t.assert(getGraphQLID('DraftOrder', '668686254231') === 'gid://shopify/DraftOrder/668686254231')
+  t.assert(getGraphQLID('DraftOrder', 'gid://shopify/DraftOrder/668686254231') === 'gid://shopify/DraftOrder/668686254231')
+  t.falsy(getGraphQLID('DraftOrder', null))
+  t.falsy(getGraphQLID('DraftOrder'))
 })

@@ -83,6 +83,7 @@ export default withSession(async (req, res) => {
     })
 
     if (userErrors.length > 0) {
+      console.error('Cannot create draftOrder')
       console.error(userErrors)
       return res.json({
         error: userErrors
@@ -91,6 +92,7 @@ export default withSession(async (req, res) => {
 
     order = draftOrder
   } catch (error) {
+    console.error('draftOrder request error')
     console.error(error)
     return res.json({
       error: JSON.stringify(error)

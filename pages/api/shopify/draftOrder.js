@@ -1,4 +1,5 @@
 import { createDraftOrderRelation } from '../../../services/order'
+import { getLegacyId } from '../../../utils/id'
 
 /**
  * @param {import('next/types').NextApiRequest} req
@@ -6,11 +7,11 @@ import { createDraftOrderRelation } from '../../../services/order'
  */
 async function handler (req, res) {
   const draftOrder = req.body
-  const orderId = draftOrder.order_id
+  const orderId = getLegacyId(draftOrder.order_id)
 
   try {
     if (draftOrder.status === 'completed' && orderId) {
-      await createDraftOrderRelation(orderId, draftOrder.id)
+      await createDraftOrderRelation(orderId, getLegacyId(draftOrder.id))
     }
   } catch (err) {
     console.error(err)

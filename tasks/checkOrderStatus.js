@@ -1,5 +1,6 @@
 import Ecpay, { parseTradeInfo } from '../utils/ecpay'
 import shopify from '../utils/shopify'
+import { completeDraftOrder } from '../services/order'
 
 export async function run () {
   let c = null
@@ -47,8 +48,7 @@ export async function run () {
     return e && e.node.value
   }).filter(Boolean)
 
-  // TODO: watch and remove this later
-  console.log(ecpayOrderIds)
+  // console.log(ecpayOrderIds)
 
   return Promise.allSettled(ecpayOrderIds.map(async ecpayOrderId => {
     const res = await Ecpay.query_client.query_trade_info({
@@ -58,8 +58,19 @@ export async function run () {
     if (res) {
       const paymentData = parseTradeInfo(res)
       if (paymentData.TradeStatus === '1') {
-        // TODO: change this graphql mutation
-        await shopify.draftOrder.complete(Number(paymentData.CustomField3))
+        const draftOrderId = paymentData.CustomField1
+        const lineUserId = paymentData.CustomField2
+
+        try {
+          await completeDraftOrder(
+            draftOrderId,
+            lineUserId,
+            paymentData.TradeAmt
+          )
+        } catch (err) {
+          console.error('checkOrderStatus error')
+          console.error(err)
+        }
       }
     }
   }))

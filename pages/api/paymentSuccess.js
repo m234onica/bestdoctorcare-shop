@@ -1,6 +1,4 @@
-import shopify from '../../utils/shopify'
-import { client } from '../../utils/line'
-import { createDraftOrderRelation } from '../../services/order'
+import { completeDraftOrder, DraftOrderCompleteError } from '../../services/order'
 
 // TotalSuccessTimes: '',
 // PaymentNo: '',
@@ -66,42 +64,23 @@ export default async (req, res) => {
   // TODO: verify request
   // TODO: verify request order amount
 
-  const { draftOrderComplete: { userErrors, draftOrder } } = await shopify.graphql(`
-    mutation draftOrderComplete($id: ID!) {
-      draftOrderComplete(id: $id) {
-        draftOrder {
-          id
-          order {
-            id
-          }
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }
-  `, {
-    id: order.CustomField1
-  })
-
-  if (userErrors.length > 0) {
-    console.error({
-      type: 'draftOrderCompleteError',
-      userErrors
-    })
-    return res.end()
-  }
+  const draftOrderId = order.CustomField1
+  const lineUserId = order.CustomField2
 
   try {
-    await createDraftOrderRelation(draftOrder.order.id, order.CustomField1)
-
-    await client.pushMessage(order.CustomField2, [{
-      type: 'text',
-      text: `已收到您付款的 ${order.TradeAmt} 整`
-    }])
+    await completeDraftOrder(draftOrderId, lineUserId, order.TradeAmt)
   } catch (err) {
-    console.error(err)
+    if (err instanceof DraftOrderCompleteError) {
+      console.error({
+        type: 'draftOrderCompleteError',
+        userErrors: err.message
+      })
+    } else {
+      console.error({
+        error: err
+      })
+    }
+    return res.end()
   }
 
   res.writeHead(200, { 'Content-Type': 'text/html' })

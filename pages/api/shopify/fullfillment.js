@@ -2,6 +2,7 @@ import shopify from '../../../utils/shopify'
 import { getLineUserIdFromCustomer } from '../../../utils/user'
 import { client } from '../../../utils/line'
 import { initConnection, DraftOrderRelation } from '../../../utils/models'
+import { getLegacyId } from '../../../utils/id'
 
 const customerField = `
 metafields (first: 10, namespace: "line") {
@@ -37,8 +38,9 @@ async function handler (req, res) {
       })
 
       // fetch draftOrder Id
+      const orderId = getLegacyId(order.id)
       const record = await DraftOrderRelation.findOne({
-        orderId: order.id
+        orderId
       })
 
       const draftOrderIdText = record ? `訂單 #${record.draftOrderId} ` : ''
