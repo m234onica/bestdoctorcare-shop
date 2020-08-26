@@ -1,5 +1,6 @@
 import shopify from '../../utils/shopify'
 import { client } from '../../utils/line'
+import { createDraftOrderRelation } from '../../services/order'
 
 // TotalSuccessTimes: '',
 // PaymentNo: '',
@@ -65,11 +66,14 @@ export default async (req, res) => {
   // TODO: verify request
   // TODO: verify request order amount
 
-  const { draftOrderComplete: { userErrors } } = await shopify.graphql(`
+  const { draftOrderComplete: { userErrors, draftOrder } } = await shopify.graphql(`
     mutation draftOrderComplete($id: ID!) {
       draftOrderComplete(id: $id) {
         draftOrder {
           id
+          order {
+            id
+          }
         }
         userErrors {
           field
@@ -90,6 +94,8 @@ export default async (req, res) => {
   }
 
   try {
+    await createDraftOrderRelation(draftOrder.order.id, order.CustomField1)
+
     await client.pushMessage(order.CustomField2, [{
       type: 'text',
       text: `已收到您付款的 ${order.TradeAmt} 整`

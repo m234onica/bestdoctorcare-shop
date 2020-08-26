@@ -1,4 +1,4 @@
-import { DraftOrderRelation, initConnection } from '../../../utils/models'
+import { createDraftOrderRelation } from '../../../services/order'
 
 /**
  * @param {import('next/types').NextApiRequest} req
@@ -10,18 +10,7 @@ async function handler (req, res) {
 
   try {
     if (draftOrder.status === 'completed' && orderId) {
-      await initConnection()
-      const data = {
-        orderId,
-        draftOrderId: draftOrder.id
-      }
-
-      const record = await DraftOrderRelation.findOne(data)
-      if (record) {
-        await DraftOrderRelation.update(data)
-      } else {
-        await DraftOrderRelation.create(data)
-      }
+      await createDraftOrderRelation(orderId, draftOrder.id)
     }
   } catch (err) {
     console.error(err)
