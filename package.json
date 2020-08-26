@@ -9,7 +9,8 @@
     "start": "next start -p $PORT",
     "lint": "standard",
     "checkOrderStatus": "babel-node ./tasks/run.js checkOrderStatus",
-    "setupInvitation": "babel-node ./tasks/run.js setupInvitation"
+    "setupInvitation": "babel-node ./tasks/run.js setupInvitation",
+    "test": "ava"
   },
   "cacheDirectories": [
     ".next/cache"
@@ -37,8 +38,20 @@
     "uuid": "^8.2.0"
   },
   "devDependencies": {
+    "@ava/babel": "^1.0.1",
     "@babel/cli": "^7.10.4",
     "@line/bot-sdk": "^7.0.0",
+    "ava": "^3.12.1",
+    "babel-register": "^6.26.0",
     "standard": "^14.3.4"
+  },
+  "ava": {
+    "files": [
+      "test/**/*"
+    ],
+    "require": [
+			"@babel/register"
+		],
+    "babel": true
   }
 }
