@@ -1,29 +1,10 @@
 import { withSession } from 'next-session'
 import shortId from 'shortid'
 
-import shopify from '../../utils/shopify'
+import shopify, { customerFragment } from '../../utils/shopify'
 import { initConnection, InvitationCode } from '../../utils/models'
 
 import { geteEmailFromUserId } from '../../utils/user'
-
-const customerFields = `
-id
-legacyResourceId
-email
-displayName
-firstName
-lastName
-createdAt
-metafields (first: 10, namespace: "line") {
-  edges {
-    node {
-      key
-      value
-      valueType
-    }
-  }
-}
-`
 
 export default withSession(async (req, res) => {
   if (req.session.user) {
@@ -51,11 +32,12 @@ export default withSession(async (req, res) => {
       customers (first: 1, query: $query) {
         edges {
           node {
-            ${customerFields}
+            ...customerFields
           }
         }
       }
     }
+    ${customerFragment}
   `, {
     query: `email:${geteEmailFromUserId(userId)}`
   })
@@ -79,7 +61,7 @@ export default withSession(async (req, res) => {
       mutation customerUpdate($input: CustomerInput!) {
         customerUpdate(input: $input) {
           customer {
-            ${customerFields}
+            ...customerFields
           }
           userErrors {
             field
@@ -87,6 +69,7 @@ export default withSession(async (req, res) => {
           }
         }
       }
+      ${customerFragment}
     `, {
       input: {
         id: existingUser.id,
@@ -122,7 +105,7 @@ export default withSession(async (req, res) => {
     mutation customerCreate($input: CustomerInput!) {
       customerCreate(input: $input) {
         customer {
-          ${customerFields}
+          ...customerFields
         }
         userErrors {
           field
@@ -130,6 +113,7 @@ export default withSession(async (req, res) => {
         }
       }
     }
+    ${customerFragment}
     `, {
       input: {
         firstName: lineProfile.displayName,

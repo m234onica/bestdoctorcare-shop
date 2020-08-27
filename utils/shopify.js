@@ -9,3 +9,23 @@ const shopify = new Shopify({
 shopify.on('callLimits', (limits) => console.log(limits))
 
 export default shopify
+
+export const customerFragment = `
+fragment customerFields on Customer {
+  id
+  legacyResourceId
+  email
+  displayName
+  firstName
+  lastName
+  createdAt
+  metafields (first: 10, namespace: "line") {
+    edges {
+      node {
+        key
+        value
+        valueType
+      }
+    }
+  }
+}`
