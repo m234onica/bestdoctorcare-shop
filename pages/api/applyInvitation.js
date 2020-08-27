@@ -1,8 +1,9 @@
-import { initConnection, Invitation, InvitationCode } from '../../utils/models'
 import { applySession } from 'next-session'
 import shortId from 'shortid'
 
+import { initConnection, Invitation, InvitationCode } from '../../utils/models'
 import shopify from '../../utils/shopify'
+import { notifyInvitationComplete } from '../../services/discount'
 
 /**
  * @param {import('next/types').NextApiRequest} req
@@ -86,6 +87,7 @@ export default async (req, res) => {
         customerSelection: {
           forAllCustomers: false,
           customerIdsToAdd: [
+            // TODO: getGraphQLID utility method
             `gid://shopify/Customer/${codeRecord.userId}`,
             req.session.user.id
           ],
@@ -105,6 +107,12 @@ export default async (req, res) => {
       return res.send({
         error: priceRuleUserErrors
       })
+    }
+
+    try {
+      notifyInvitationComplete(codeRecord.userId, invitedUserId)
+    } catch (err) {
+      console.error(err)
     }
 
     return res.send({
