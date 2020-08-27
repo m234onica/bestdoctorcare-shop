@@ -41,7 +41,7 @@ export async function completeDraftOrder (draftOrderId, lineUserId, tradeAmount)
   })
 
   if (userErrors) {
-    throw DraftOrderCompleteError(JSON.stringify(userErrors))
+    throw new DraftOrderCompleteError(JSON.stringify(userErrors))
   }
 
   await createDraftOrderRelation(getLegacyId(draftOrder.order.id), getLegacyId(draftOrderId))
