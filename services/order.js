@@ -40,7 +40,7 @@ export async function completeDraftOrder (draftOrderId, lineUserId, tradeAmount)
     id: getGraphQLID('DraftOrder', draftOrderId)
   })
 
-  if (userErrors) {
+  if (userErrors.length > 0) {
     throw new DraftOrderCompleteError(JSON.stringify(userErrors))
   }
 
