@@ -2,7 +2,9 @@
 import { useRouter } from 'next/router'
 import { useState, useEffect, useMemo } from 'react'
 import { Card } from 'react-bootstrap'
+import classNames from 'classnames'
 import { getBankData, getPaymentType, getPaymentVirtualAccount } from '../../utils/browser'
+import { orderStatusName } from '../../common/order'
 
 export default () => {
   const router = useRouter()
@@ -35,8 +37,18 @@ export default () => {
   }, [order])
 
   return (
-    <div className='page-container'>
+    <div className='page-container px-2'>
       <h1 className='text-center'>訂單編號 {orderId}</h1>
+
+      {
+        order && (
+          <div className='container px-3'>
+            <span className={classNames('badge', { 'badge-success': order.status === 'COMPLETED', 'badge-warning': order.status === 'OPEN' })}>
+              {orderStatusName[order.status]}
+            </span>
+          </div>
+        )
+      }
 
       <div className='container px-3 table table-striped table-responsive'>
         <h3>購物明細</h3>
@@ -58,7 +70,7 @@ export default () => {
                     const item = e.node
                     return (
                       <tr key={item.id}>
-                        <td>{item.product.title}</td>
+                        <td>{item.product?.title}</td>
                         <td>{item.quantity}</td>
                         <td>{item.originalTotal / item.quantity}</td>
                         <td>{item.originalTotal}</td>

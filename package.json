@@ -22,6 +22,7 @@
     "@yukaii/ecpay_payment_nodejs": "1.0.2",
     "apollo-boost": "^0.4.9",
     "cheerio": "^1.0.0-rc.3",
+    "classnames": "^2.2.6",
     "graphql": "^15.2.0",
     "mongoose": "^5.9.27",
     "next": "9.4.4",
@@ -50,8 +51,8 @@
       "test/**/*"
     ],
     "require": [
-			"@babel/register"
-		],
+      "@babel/register"
+    ],
     "babel": true
   }
 }

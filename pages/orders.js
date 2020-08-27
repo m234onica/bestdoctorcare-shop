@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 
+import { orderStatusName } from '../common/order'
+
 export default () => {
   const [, setOrderId] = useState(null)
   const [orders, setOrders] = useState([])
@@ -26,11 +28,6 @@ export default () => {
         }
       })
   }, [])
-
-  const orderStatusName = {
-    OPEN: '未付款',
-    COMPLETED: '已付款'
-  }
 
   return (
     <div className='page-container'>
