@@ -16,6 +16,10 @@ metafields (first: 10, namespace: "line") {
 }
 `
 
+const getShippingCode = order => {
+  return order.fulfillments?.[0]?.tracking_number
+}
+
 /**
  * @param {import('next/types').NextApiRequest} req
  * @param {import('next/types').NextApiResponse} res
@@ -43,7 +47,9 @@ async function handler (req, res) {
         orderId
       })
 
-      const draftOrderIdText = record ? `訂單 #${record.draftOrderId} ` : ''
+      const draftOrderIdText = record ? `#${record.draftOrderId} ` : ''
+      const shippingCode = getShippingCode(order)
+      const shippingText = shippingCode ? `，貨運追蹤碼 ${shippingCode}` : ''
 
       if (customer) {
         const lineId = getLineUserIdFromCustomer(customer)
@@ -51,7 +57,7 @@ async function handler (req, res) {
         if (lineId) {
           await client.pushMessage(lineId, [{
             type: 'text',
-            text: `${draftOrderIdText}已為您發貨`
+            text: `您的訂單 ${draftOrderIdText} 已出貨${shippingText}`
           }])
         }
       }
