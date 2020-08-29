@@ -23,7 +23,7 @@ function Home ({ user }) {
       <div className='collection-card card text-white bg-dark' style={{ cursor: 'pointer', overflow: 'hidden' }}>
         <img className='card-img' src={collection.image.transformedSrc} alt='' />
         <div className='card-img-overlay text-center d-flex align-items-center justify-content-center'>
-          <h2 className='card-title'>
+          <h2 className='card-title' style={{ textShadow: '2px 2px 11px #0000008a, -2px -2px 11px #0000008a' }}>
             {collection.title}
           </h2>
         </div>
