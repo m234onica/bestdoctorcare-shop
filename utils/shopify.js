@@ -19,6 +19,14 @@ fragment customerFields on Customer {
   firstName
   lastName
   createdAt
+  defaultAddress {
+    zip
+    address1
+    city
+    firstName
+    province
+    phone
+  }
   metafields (first: 10, namespace: "line") {
     edges {
       node {

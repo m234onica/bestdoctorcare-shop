@@ -1,5 +1,5 @@
 /* eslint-env browser */
-import { useRef, useContext, useState } from 'react'
+import { useRef, useContext, useState, useEffect } from 'react'
 import { submitForm } from '../utils/browser'
 import UserContext from '../components/UserContext'
 import CartContext from '../components/CartContext'
@@ -12,8 +12,21 @@ export default () => {
   const name = useRef()
   const phone = useRef()
 
-  const { liffState } = useContext(UserContext)
+  const { liffState, user } = useContext(UserContext)
   const { items } = useContext(CartContext)
+
+  useEffect(() => {
+    if (user?.defaultAddress) {
+      const { defaultAddress } = user
+
+      zip.current.value = defaultAddress.zip || ''
+      city.current.value = defaultAddress.city || ''
+      province.current.value = defaultAddress.province || ''
+      address1.current.value = defaultAddress.address1 || ''
+      name.current.value = defaultAddress.name || ''
+      phone.current.value = defaultAddress.phone || ''
+    }
+  }, [user, user?.defaultAddress])
 
   const [submitting, setSubmitting] = useState(false)
 
