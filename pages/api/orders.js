@@ -1,6 +1,6 @@
 import { withSession } from 'next-session'
 import shopify from '../../utils/shopify'
-import { getEmailFromCustomer } from '../../utils/user'
+import { getLegacyId } from '../../utils/id'
 
 const DraftOrderDetailFragment = `
 id
@@ -9,6 +9,9 @@ legacyResourceId
 status
 updatedAt
 createdAt
+customer {
+  id
+}
 metafields (first: 5) {
   edges {
     node {
@@ -69,6 +72,12 @@ export default withSession(async (req, res) => {
       draftOrderId
     })
 
+    if (order.customer.id !== user.id) {
+      return res.json({
+        error: 403
+      })
+    }
+
     return res.json({ order })
   } else {
     const { draftOrders } = await shopify.graphql(`
@@ -92,7 +101,7 @@ export default withSession(async (req, res) => {
         }
       }
     `, {
-      query: `email:${getEmailFromCustomer(user)}`
+      query: `customer_id:${getLegacyId(user.id)}`
     })
 
     return res.json({
