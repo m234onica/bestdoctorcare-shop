@@ -4,7 +4,7 @@ import { submitForm } from '../utils/browser'
 import UserContext from '../components/UserContext'
 import CartContext from '../components/CartContext'
 
-export default () => {
+const Checkout = () => {
   const zip = useRef()
   const city = useRef()
   const province = useRef()
@@ -141,3 +141,4 @@ export default () => {
     </div>
   )
 }
+export default Checkout

@@ -24,7 +24,7 @@ import { getBankData } from '../../utils/browser'
  * @param {import('next/types').NextApiRequest} req
  * @param {import('next/types').NextApiResponse} res
  */
-export default async function (req, res) {
+export default async function CompleteCheckout (req, res) {
   if (req.method !== 'POST') {
     res.writeHead(301,
       { Location: '/' }

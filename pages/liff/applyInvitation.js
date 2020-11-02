@@ -2,7 +2,7 @@
 import { useState, useContext } from 'react'
 import UserContext from '../../components/UserContext'
 
-export default () => {
+const ApplyInvitation = () => {
   const [code, setCode] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
@@ -78,3 +78,5 @@ export default () => {
     </div>
   )
 }
+
+export default ApplyInvitation

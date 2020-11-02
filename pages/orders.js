@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 import { orderStatusName } from '../common/order'
 
-export default () => {
+const Orders = () => {
   const [, setOrderId] = useState(null)
   const [orders, setOrders] = useState([])
 
@@ -66,3 +66,4 @@ export default () => {
     </div>
   )
 }
+export default Orders

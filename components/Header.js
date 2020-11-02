@@ -6,7 +6,7 @@ import { Navbar, Nav } from 'react-bootstrap'
 import UserContext from './UserContext'
 import { isLiffPages } from '../utils/routesHelper'
 
-export default ({ user: serverUser }) => {
+const Header = ({ user: serverUser }) => {
   const { user, getLineProfile } = useContext(UserContext)
 
   const router = useRouter()
@@ -47,6 +47,7 @@ export default ({ user: serverUser }) => {
         </Nav>
       </Navbar.Collapse>
     </Navbar>
-
   )
 }
+
+export default Header

@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react'
 import CartContext from './CartContext'
 
-export default ({ product }) => {
+const Product = ({ product }) => {
   const variantImage = product.images.edges[0].node.src
   const variant = product.variants.edges[0].node
   const [variantQuantity, setVariantQuantity] = useState(1)
@@ -63,3 +63,5 @@ export default ({ product }) => {
     </div>
   )
 }
+
+export default Product

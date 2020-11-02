@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useCopyToClipboard } from 'react-use'
 
-export default () => {
+const MyInvitation = () => {
   const [code, setCode] = useState(null)
 
   useEffect(() => {
@@ -26,3 +26,5 @@ export default () => {
     </div>
   )
 }
+
+export default MyInvitation

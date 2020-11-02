@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export default () => {
+const LIFF = () => {
   return (
     <div className='w-100 h-100 d-flex justify-content-center align-items-center'>
       <Link href='/liff/applyInvitation'>
@@ -28,3 +28,4 @@ export default () => {
     </div>
   )
 }
+export default LIFF

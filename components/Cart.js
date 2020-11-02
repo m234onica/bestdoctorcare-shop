@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 import CartContext from './CartContext'
 
-export default () => {
+const Cart = () => {
   const { totalPrice } = useContext(CartContext)
   const router = useRouter()
 
@@ -30,3 +30,5 @@ export default () => {
     </div>
   )
 }
+
+export default Cart

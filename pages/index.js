@@ -7,7 +7,7 @@ import withApollo from '../hooks/withApollo'
 import AppContext from '../components/AppContext'
 import { encodeCollectionKey, decodeCollectionKey } from '../utils/browser'
 
-function Home ({ user }) {
+function _Home ({ user }) {
   const { collections, collectionsLoading } = useContext(AppContext)
   const { query: { collection: collectionName } } = useRouter()
 
@@ -94,4 +94,5 @@ function Home ({ user }) {
   )
 }
 
-export default withApollo(Home)
+const Home = withApollo(_Home)
+export default Home

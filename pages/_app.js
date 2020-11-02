@@ -10,7 +10,7 @@ import { withCartContext } from '../components/CartContext'
 import { withAppContext } from '../components/AppContext'
 import UserContext, { withUserContext } from '../components/UserContext'
 
-const App = ({ Component, pageProps }) => {
+const _App = ({ Component, pageProps }) => {
   const { user } = useContext(UserContext)
 
   return (
@@ -60,4 +60,5 @@ const App = ({ Component, pageProps }) => {
   )
 }
 
-export default withAppContext(withCartContext(withUserContext(App)))
+const App = withAppContext(withCartContext(withUserContext(_App)))
+export default App
