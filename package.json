@@ -10,7 +10,8 @@
     "lint": "standard",
     "checkOrderStatus": "babel-node ./tasks/run.js checkOrderStatus",
     "setupInvitation": "babel-node ./tasks/run.js setupInvitation",
-    "test": "ava"
+    "test": "ava",
+    "task:createRichMenu": "babel-node utils/richMenu.js"
   },
   "cacheDirectories": [
     ".next/cache"

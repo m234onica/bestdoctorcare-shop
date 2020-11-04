@@ -21,6 +21,7 @@ async function createRichMenu () {
     name: 'menu',
     chatBarText: '選單',
     areas: [
+      // first row
       {
         bounds: {
           x: 0,
@@ -30,8 +31,21 @@ async function createRichMenu () {
         },
         action: {
           type: 'uri',
+          label: '個人資訊',
+          uri: `https://liff.line.me/${process.env.NEXT_PUBLIC_LIFF_ID}/profile`
+        }
+      },
+      {
+        bounds: {
+          x: 834,
+          y: 0,
+          width: 833,
+          height: 843
+        },
+        action: {
+          type: 'uri',
           label: '我要購買',
-          uri: 'https://liff.line.me/1654439637-r0vQnP14'
+          uri: `https://liff.line.me/${process.env.NEXT_PUBLIC_LIFF_ID}`
         }
       },
       {
@@ -44,13 +58,53 @@ async function createRichMenu () {
         action: {
           type: 'uri',
           label: '邀請朋友',
-          uri: 'https://liff.line.me/1654439637-QlJvLenq'
+          uri: `https://liff.line.me/${process.env.NEXT_PUBLIC_INVITATION_LIFF_ID}`
+        }
+      },
+      // second row
+      {
+        bounds: {
+          x: 0,
+          y: 844,
+          width: 833,
+          height: 843
+        },
+        action: {
+          type: 'uri',
+          label: '衛教資訊',
+          uri: `https://liff.line.me/${process.env.NEXT_PUBLIC_LIFF_ID}/health`
+        }
+      },
+      {
+        bounds: {
+          x: 834,
+          y: 844,
+          width: 833,
+          height: 843
+        },
+        action: {
+          type: 'uri',
+          label: '公告資訊',
+          uri: `https://liff.line.me/${process.env.NEXT_PUBLIC_LIFF_ID}/news`
+        }
+      },
+      {
+        bounds: {
+          x: 1666,
+          y: 844,
+          width: 833,
+          height: 843
+        },
+        action: {
+          type: 'uri',
+          label: '意見回饋',
+          uri: `https://liff.line.me/${process.env.NEXT_PUBLIC_LIFF_ID}/feedback`
         }
       }
     ]
   })
 
-  const image = fs.readFileSync(path.join(__dirname, '../resources/main.png'))
+  const image = fs.readFileSync(path.join(__dirname, '../resources/menu.jpg'))
   await client.setRichMenuImage(menu, image)
 
   await client.setDefaultRichMenu(menu)
