@@ -20,7 +20,7 @@ export const withUserContext = Components => (props) => {
       redirectUri = process.env.NEXT_PUBLIC_INVITATION_LIFF_DOMAIN
     } else {
       liffId = process.env.NEXT_PUBLIC_LIFF_ID
-      redirectUri = process.env.NEXT_PUBLIC_LIFF_DOMAIN
+      redirectUri = process.env.NEXT_PUBLIC_LIFF_DOMAIN + window.location.pathname
     }
 
     await liff.init({
