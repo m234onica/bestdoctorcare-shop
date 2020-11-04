@@ -1,4 +1,4 @@
-import { loadEnvConfig } from 'next/dist/lib/load-env-config'
+import { loadEnvConfig } from '@next/env'
 import path from 'path'
 
 export function initEnv () {
