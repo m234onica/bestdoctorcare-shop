@@ -56,8 +56,20 @@ try {
   }))
 }
 
+/** @type {mongoose.Model} */
+let FeedbackSubmission
+try {
+  FeedbackSubmission = model('FeedbackSubmission')
+} catch (err) {
+  FeedbackSubmission = model('FeedbackSubmission', new Schema({
+    lineUserId: String,
+    submitted_at: Date
+  }))
+}
+
 export {
   InvitationCode,
   Invitation,
-  DraftOrderRelation
+  DraftOrderRelation,
+  FeedbackSubmission
 }
