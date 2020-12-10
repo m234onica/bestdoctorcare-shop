@@ -32,7 +32,7 @@ export const withUserContext = Components => (props) => {
       profile = await liff.getProfile()
     } else {
       // TODO: handle dynamic path redirection
-      liff.login({
+      await liff.login({
         redirectUri
       })
     }
