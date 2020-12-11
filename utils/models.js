@@ -1,13 +1,7 @@
 import mongoose, { model, Schema } from 'mongoose'
 
-let db
-
-export async function initConnection () {
+(async function () {
   return new Promise((resolve, reject) => {
-    if (db) {
-      return db
-    }
-
     mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true
@@ -15,18 +9,17 @@ export async function initConnection () {
       console.error(err)
     })
 
-    db = mongoose.connection
+    const db = mongoose.connection
 
     db.on('error', function (err) {
       console.error(err)
-      db = null
       reject(err)
     })
     db.once('open', function () {
       resolve(db)
     })
   })
-}
+})()
 
 /** @type {mongoose.Model} */
 let InvitationCode

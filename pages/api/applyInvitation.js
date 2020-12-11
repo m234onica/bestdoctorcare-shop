@@ -1,7 +1,7 @@
 import { applySession } from 'next-session'
 import shortId from 'shortid'
 
-import { initConnection, Invitation, InvitationCode } from '../../utils/models'
+import { Invitation, InvitationCode } from '../../utils/models'
 import shopify from '../../utils/shopify'
 import { notifyInvitationComplete } from '../../services/discount'
 
@@ -17,8 +17,6 @@ export default async (req, res) => {
       error: 'User not logined'
     })
   }
-
-  await initConnection()
 
   const { code } = req.body
 

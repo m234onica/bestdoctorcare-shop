@@ -1,7 +1,7 @@
 import shopify from '../../../utils/shopify'
 import { getLineUserIdFromCustomer } from '../../../utils/user'
 import { client } from '../../../utils/line'
-import { initConnection, DraftOrderRelation } from '../../../utils/models'
+import { DraftOrderRelation } from '../../../utils/models'
 import { getLegacyId } from '../../../utils/id'
 
 const customerField = `
@@ -29,8 +29,6 @@ async function handler (req, res) {
 
   try {
     if (order.fulfillment_status === 'fulfilled') {
-      await initConnection()
-
       const { customer } = await shopify.graphql(`
         query ($customerId: ID!) {
           customer (id: $customerId) {

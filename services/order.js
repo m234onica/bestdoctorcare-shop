@@ -1,10 +1,9 @@
 import shopify from '../utils/shopify'
 import { client } from '../utils/line'
-import { DraftOrderRelation, initConnection } from '../utils/models'
+import { DraftOrderRelation } from '../utils/models'
 import { getLegacyId, getGraphQLID } from '../utils/id'
 
 export async function createDraftOrderRelation (orderId, draftOrderId) {
-  await initConnection()
   const data = {
     orderId,
     draftOrderId

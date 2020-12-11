@@ -2,7 +2,7 @@ import { withSession } from 'next-session'
 import shortId from 'shortid'
 
 import shopify, { customerFragment } from '../../utils/shopify'
-import { initConnection, InvitationCode } from '../../utils/models'
+import { InvitationCode } from '../../utils/models'
 
 import { geteEmailFromUserId } from '../../utils/user'
 
@@ -136,7 +136,6 @@ export default withSession(async (req, res) => {
     })
 
     // Create invitation code
-    await initConnection()
     await InvitationCode.create({
       userId: user.legacyResourceId,
       code: shortId.generate()

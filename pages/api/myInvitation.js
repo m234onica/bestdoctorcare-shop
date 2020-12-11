@@ -1,4 +1,4 @@
-import { initConnection, InvitationCode } from '../../utils/models'
+import { InvitationCode } from '../../utils/models'
 import { applySession } from 'next-session'
 
 /**
@@ -13,12 +13,6 @@ export default async (req, res) => {
       error: 'User not logined'
     })
   }
-
-  console.log('init connection...')
-
-  await initConnection()
-
-  console.log('connection initialized.')
 
   const codeRecord = await InvitationCode.findOne({
     userId: req.session.user.legacyResourceId

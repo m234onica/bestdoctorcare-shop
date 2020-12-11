@@ -1,11 +1,9 @@
 // Setup invitation for existing customers in database
 import shortId from 'shortid'
 import shopify from '../utils/shopify'
-import { initConnection, InvitationCode } from '../utils/models'
+import { InvitationCode } from '../utils/models'
 
 export async function run () {
-  await initConnection()
-
   let c
   let customers = []
   for (;;) {

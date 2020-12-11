@@ -2,7 +2,7 @@ import bodyParser from 'body-parser'
 
 import { verifySignature } from '../../../utils/typeform'
 import { runMiddleware } from '../../../utils/middleware'
-import { initConnection, FeedbackSubmission } from '../../../utils/models'
+import { FeedbackSubmission } from '../../../utils/models'
 import { client } from '../../../utils/line'
 
 // {
@@ -55,8 +55,6 @@ async function handler (req, res) {
   }
 
   // TODO: record submit date
-
-  await initConnection()
 
   const submittedAt = new Date(rawSubmittedAt)
   const data = {
