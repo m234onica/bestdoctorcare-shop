@@ -14,7 +14,11 @@ export default async (req, res) => {
     })
   }
 
+  console.log('init connection...')
+
   await initConnection()
+
+  console.log('connection initialized.')
 
   const codeRecord = await InvitationCode.findOne({
     userId: req.session.user.legacyResourceId
