@@ -47,9 +47,9 @@ async function handler (req, res) {
   }
 
   const payload = JSON.parse(req.body)
-  console.log(payload)
   const lineUserId = payload.form_response?.hidden?.line_user_id
   const rawSubmittedAt = payload.form_response?.submitted_at
+
   if (!lineUserId || !rawSubmittedAt) {
     return respondError('Missing fields')
   }
