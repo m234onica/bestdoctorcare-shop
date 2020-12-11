@@ -65,7 +65,6 @@ async function handler (req, res) {
   }
   await FeedbackSubmission.findOneAndUpdate(data, data, { upsert: true })
 
-  // !FIXME: ignore timezone problem for now
   const monthStart = new Date(submittedAt.getTime())
   monthStart.setUTCDate(1)
   monthStart.setUTCHours(0)
