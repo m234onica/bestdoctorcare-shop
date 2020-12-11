@@ -1,16 +1,25 @@
 import mongoose, { model, Schema } from 'mongoose'
 
+let db
+
 export async function initConnection () {
   return new Promise((resolve, reject) => {
+    if (db) {
+      return
+    }
+
     mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true
+    }).catch(err => {
+      console.error(err)
     })
 
-    const db = mongoose.connection
+    db = mongoose.connection
 
     db.on('error', function (err) {
       console.error(err)
+      db = null
       reject(err)
     })
     db.once('open', function () {
