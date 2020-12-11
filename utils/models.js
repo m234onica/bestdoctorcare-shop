@@ -5,7 +5,7 @@ let db
 export async function initConnection () {
   return new Promise((resolve, reject) => {
     if (db) {
-      return
+      return db
     }
 
     mongoose.connect(process.env.MONGODB_URI, {
