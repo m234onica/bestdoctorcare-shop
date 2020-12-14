@@ -4,7 +4,8 @@ import mongoose, { model, Schema } from 'mongoose'
   return new Promise((resolve, reject) => {
     mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      useFindAndModify: false
     }).catch(err => {
       console.error(err)
     })
