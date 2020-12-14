@@ -76,11 +76,15 @@ async function handler (req, res) {
     }
   })
 
-  if (submissions.length === 0) {
-    await client.pushMessage(lineUserId, [{
-      type: 'text',
-      text: '恭喜完成任務'
-    }])
+  if (submissions && submissions.length === 0) {
+    try {
+      await client.pushMessage(lineUserId, [{
+        type: 'text',
+        text: '恭喜完成任務'
+      }])
+    } catch (err) {
+      console.error(err)
+    }
 
     // TODO: Add coupon code
   }
