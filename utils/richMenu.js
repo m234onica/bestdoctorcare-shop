@@ -32,7 +32,7 @@ async function createRichMenu () {
         action: {
           type: 'uri',
           label: '個人資訊',
-          uri: `https://liff.line.me/${process.env.NEXT_PUBLIC_LIFF_ID}/profile`
+          uri: `https://liff.line.me/${process.env.NEXT_PUBLIC_LIFF_ID}/orders`
         }
       },
       {
