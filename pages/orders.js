@@ -1,20 +1,26 @@
 /* eslint-env browser */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 
 import { orderStatusName } from '../common/order'
+import { UserContext } from '../components/UserContext'
 
 const Orders = () => {
   const [, setOrderId] = useState(null)
   const [orders, setOrders] = useState([])
+  const { user } = useContext(UserContext)
 
   useEffect(() => {
+    if (!user) {
+      return
+    }
+
     fetch('/api/orders')
       .then(r => r.json())
       .then(data => {
         if (data.draftOrders) {
-          console.log(data.draftOrders)
+          // console.log(data.draftOrders)
           setOrders(data.draftOrders.map(order => {
             return {
               ...order,
@@ -27,7 +33,7 @@ const Orders = () => {
           setOrderId(params.get('orderId'))
         }
       })
-  }, [])
+  }, [user])
 
   return (
     <div className='page-container'>
