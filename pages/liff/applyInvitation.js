@@ -1,5 +1,5 @@
 /* eslint-env browser */
-import { useState, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import UserContext from '../../components/UserContext'
 
 const ApplyInvitation = () => {
@@ -7,7 +7,6 @@ const ApplyInvitation = () => {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
 
-  /** @type import('@line/liff').default */
   const liff = useContext(UserContext).liff
 
   const onChange = (e) => {

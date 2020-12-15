@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 import '../polo/scss/plugins/plugins.css'
 import '../polo/scss/style.scss'
 

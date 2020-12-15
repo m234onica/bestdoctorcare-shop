@@ -1,5 +1,5 @@
 import { applySession } from 'next-session'
-import { useContext, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 
 import UserContext from '../components/UserContext'
 

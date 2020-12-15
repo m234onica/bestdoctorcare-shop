@@ -1,5 +1,5 @@
 /* eslint-env browser */
-import { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 

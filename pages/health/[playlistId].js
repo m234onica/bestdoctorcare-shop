@@ -1,3 +1,4 @@
+import React from 'react'
 import { youtube } from '../../utils/youtube'
 import YouTube from 'react-youtube'
 

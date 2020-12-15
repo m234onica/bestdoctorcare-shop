@@ -1,6 +1,6 @@
 /* eslint-env browser */
 import { useRouter } from 'next/router'
-import { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Card } from 'react-bootstrap'
 import classNames from 'classnames'
 import { getBankData, getPaymentType, getPaymentVirtualAccount } from '../../utils/browser'

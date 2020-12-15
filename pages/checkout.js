@@ -1,5 +1,5 @@
 /* eslint-env browser */
-import { useRef, useContext, useState, useEffect } from 'react'
+import React, { useRef, useContext, useState, useEffect } from 'react'
 import { submitForm } from '../utils/browser'
 import UserContext from '../components/UserContext'
 import CartContext from '../components/CartContext'
