@@ -82,8 +82,13 @@ async function handler (req, res) {
         type: 'text',
         text: '恭喜完成任務'
       }])
-    } catch (err) {
-      console.error(err)
+    } catch (e) {
+      if (e?.originalError?.isAxiosError) {
+        /** @type {import('axios').AxiosError} */
+        const err = e.originalError
+        console.error(err.toJSON())
+        console.error(err.response.data)
+      }
     }
 
     // TODO: Add coupon code
