@@ -1,14 +1,39 @@
-import { createContext, useState, useEffect } from 'react'
+import React, { createContext, useState, useEffect } from 'react'
 
-export const UserContext = createContext()
+/**
+ * @typedef LiffState
+ * @property {boolean} loaded
+ * @property {boolean} isInClient
+ * @property {boolean} isLoggedIn
+ * @property {any} profile
+ */
+
+/**
+ * @typedef TUserContext
+ * @property {import('@line/liff').default} liff
+ * @property {any} user
+ * @property {LiffState} liffState
+ * @property {any} getLineProfile
+ */
+
+/** @type {import('react').Context<TUserContext>} */
+export const UserContext = createContext({
+  liff: null,
+  user: null,
+  liffState: null,
+  getLineProfile: null
+})
 
 export default UserContext
 
 export const withUserContext = Components => (props) => {
-  /** @type [import('@line/liff').default] */
+  /** @type [import('@line/liff').default, any] */
   const [liffClient, setLiffClient] = useState(null)
   const [liffState, setLiffState] = useState({
-    loaded: false
+    loaded: false,
+    isInClient: false,
+    isLoggedIn: false,
+    profile: null
   })
 
   const [user, setUser] = useState(null)
