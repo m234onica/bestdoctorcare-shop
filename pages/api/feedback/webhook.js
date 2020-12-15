@@ -2,8 +2,8 @@ import bodyParser from 'body-parser'
 
 import { verifySignature } from '../../../utils/typeform'
 import { runMiddleware } from '../../../utils/middleware'
-import { FeedbackSubmission } from '../../../utils/models'
 import { client } from '../../../utils/line'
+import { hasPreviousSubmissionInThisMonth, upsertFeedbackSubmission } from '../../../services/feedback'
 
 // {
 //   event_id: '01ES6JVT3MJTEG9NCGC60J0YGH',
@@ -54,29 +54,12 @@ async function handler (req, res) {
     return respondError('Missing fields')
   }
 
-  // TODO: record submit date
-
   const submittedAt = new Date(rawSubmittedAt)
-  const data = {
-    lineUserId: lineUserId,
-    submitted_at: submittedAt
-  }
-  await FeedbackSubmission.findOneAndUpdate(data, data, { upsert: true })
 
-  const monthStart = new Date(submittedAt.getTime())
-  monthStart.setUTCDate(1)
-  monthStart.setUTCHours(0)
-  monthStart.setUTCMinutes(0)
-  monthStart.setUTCMinutes(0)
+  await upsertFeedbackSubmission(lineUserId, submittedAt)
+  const hasSubmission = await hasPreviousSubmissionInThisMonth(lineUserId, submittedAt)
 
-  const submissions = await FeedbackSubmission.find({
-    submitted_at: {
-      $lt: submittedAt,
-      $gt: monthStart
-    }
-  })
-
-  if (submissions && submissions.length === 0) {
+  if (!hasSubmission) {
     try {
       await client.pushMessage(lineUserId, [{
         type: 'text',
