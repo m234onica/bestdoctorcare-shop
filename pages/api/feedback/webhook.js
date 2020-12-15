@@ -63,7 +63,7 @@ async function handler (req, res) {
     try {
       await client.pushMessage(lineUserId, [{
         type: 'text',
-        text: '恭喜完成任務'
+        text: '恭喜完成本月任務，您已獲得折價券一張。'
       }])
     } catch (e) {
       if (e?.originalError?.isAxiosError) {
