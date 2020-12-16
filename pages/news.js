@@ -15,13 +15,18 @@ const NewsPage = ({ feeds }) => {
         </thead>
         <tbody>
           {
-            feeds.items.map(item => (
-              <tr key={item.link}>
-                <td>{item.pubDate}</td>
-                <td>{item.categories.join(', ')}</td>
-                <td><Link href={`/news/${getPageId(item.link)}`}>{item.title}</Link></td>
-              </tr>
-            ))
+            feeds.items.map(item => {
+              const date = new Date(item.pubDate)
+              const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+
+              return (
+                <tr key={item.link}>
+                  <td>{formattedDate}</td>
+                  <td>{item.categories.join(', ')}</td>
+                  <td><Link href={`/news/${getPageId(item.link)}`}>{item.title}</Link></td>
+                </tr>
+              )
+            })
           }
         </tbody>
       </table>
