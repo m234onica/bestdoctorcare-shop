@@ -8,9 +8,9 @@ const NewsPage = ({ feeds }) => {
       <table className='table table-striped'>
         <thead className='thead'>
           <tr>
-            <th>發表日期</th>
-            <th>分類</th>
             <th>標題</th>
+            <th>分類</th>
+            <th>發表日期</th>
           </tr>
         </thead>
         <tbody>
@@ -21,9 +21,9 @@ const NewsPage = ({ feeds }) => {
 
               return (
                 <tr key={item.link}>
-                  <td>{formattedDate}</td>
-                  <td>{item.categories.join(', ')}</td>
                   <td><Link href={`/news/${getPageId(item.link)}`}>{item.title}</Link></td>
+                  <td>{item.categories.join(', ')}</td>
+                  <td>{formattedDate}</td>
                 </tr>
               )
             })

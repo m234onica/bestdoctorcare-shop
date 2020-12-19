@@ -53,6 +53,14 @@ const _App = ({ Component, pageProps }) => {
       * {
         box-sizing: border-box;
       }
+
+      a {
+        color: black;
+      }
+
+      a:not(.btn):not(.badge):hover, a:not(.btn):not(.badge):focus, a:not(.btn):not(.badge):active {
+        color: #5E5E5E;
+      }
     `}
       </style>
     </div>
