@@ -110,6 +110,7 @@ export default withSession(async (req, res) => {
 
     if (discount) {
       discount.update({
+        draftOrderId: draftOrder.legacyResourceId,
         usedAt: Date.now()
       })
     }

@@ -63,6 +63,7 @@ try {
       type: String,
       default: 'FIXED_AMOUNT'
     },
+    draftOrderId: String,
     usedAt: Date,
     createdAt: {
       type: Date,
