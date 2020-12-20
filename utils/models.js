@@ -55,10 +55,14 @@ try {
 } catch (err) {
   Discount = model('Discount', new Schema({
     userId: String,
+    title: String,
     description: String,
     code: String,
     value: String,
-    type: String,
+    valueType: {
+      type: String,
+      default: 'FIXED_AMOUNT'
+    },
     usedAt: Date,
     createdAt: {
       type: Date,

@@ -64,10 +64,10 @@ export async function createDiscountFromInvitation (invitation) {
   for (const uid of [userId, invitedUserId]) {
     await Discount.create({
       userId: getLegacyId(uid),
-      description: '朋友邀請折扣',
+      title: '朋友邀請折扣',
       value: '-50', // TODO: Change this
       code,
-      type: 'FIXED_AMOUNT'
+      valueType: 'FIXED_AMOUNT'
     })
   }
 
