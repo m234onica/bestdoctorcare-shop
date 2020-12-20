@@ -85,3 +85,14 @@ export async function getAvailableDiscountsFromCustomer (customer) {
   })
 }
 
+export async function findAvailableDiscountFromCode (customer, code) {
+  const userId = getLegacyId(customer.id)
+
+  return Discount.findOne({
+    userId,
+    code,
+    usedAt: {
+      $ne: null
+    }
+  })
+}
