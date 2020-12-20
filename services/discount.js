@@ -73,3 +73,15 @@ export async function createDiscountFromInvitation (invitation) {
 
   return code
 }
+
+export async function getAvailableDiscountsFromCustomer (customer) {
+  const userId = getLegacyId(customer.id)
+
+  return Discount.find({
+    userId,
+    usedAt: {
+      $ne: null
+    }
+  })
+}
+
