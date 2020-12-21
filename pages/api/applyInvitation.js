@@ -1,9 +1,7 @@
 import { applySession } from 'next-session'
-import shortId from 'shortid'
 
 import { Invitation, InvitationCode } from '../../utils/models'
-import shopify from '../../utils/shopify'
-import { notifyInvitationComplete } from '../../services/discount'
+import { notifyInvitationComplete, createDiscountFromInvitation } from '../../services/discount'
 
 /**
  * @param {import('next/types').NextApiRequest} req
@@ -37,7 +35,16 @@ export default async (req, res) => {
 
   const invitedUserId = req.session.user.legacyResourceId
 
-  const invitationRecord = await Invitation.findOne({
+  const existingInvitationRecord = await Invitation.findOne({
+    invitedUserId
+  })
+  if (existingInvitationRecord) {
+    return res.send({
+      error: 'Invitation code applied already'
+    })
+  }
+
+  let invitationRecord = await Invitation.findOne({
     userId: codeRecord.userId,
     invitedUserId
   })
@@ -49,63 +56,12 @@ export default async (req, res) => {
   }
 
   if (codeRecord && !invitationRecord && invitedUserId !== codeRecord.userId) {
-    await Invitation.create({
+    invitationRecord = await Invitation.create({
       userId: codeRecord.userId,
       invitedUserId
     })
 
-    const { priceRuleCreate: { priceRuleDiscountCode, priceRuleUserErrors } } = await shopify.graphql(`
-      mutation priceRuleCreate($priceRule: PriceRuleInput!, $priceRuleDiscountCode: PriceRuleDiscountCodeInput!) {
-        priceRuleCreate(priceRule: $priceRule, priceRuleDiscountCode: $priceRuleDiscountCode) {
-          priceRule {
-            id
-          }
-          priceRuleDiscountCode {
-            id
-            code
-          }
-          priceRuleUserErrors {
-            code
-            field
-            message
-          }
-        }
-      }
-    `, {
-      priceRule: {
-        title: '朋友邀請折扣',
-        itemEntitlements: {
-          targetAllLineItems: true
-        },
-        validityPeriod: {
-          start: new Date()
-        },
-        allocationMethod: 'EACH',
-        oncePerCustomer: true,
-        customerSelection: {
-          forAllCustomers: false,
-          customerIdsToAdd: [
-            // TODO: getGraphQLID utility method
-            `gid://shopify/Customer/${codeRecord.userId}`,
-            req.session.user.id
-          ],
-          savedSearchIds: []
-        },
-        target: 'LINE_ITEM',
-        value: {
-          fixedAmountValue: '-50'
-        }
-      },
-      priceRuleDiscountCode: {
-        code: shortId.generate()
-      }
-    })
-
-    if (priceRuleUserErrors.length > 0) {
-      return res.send({
-        error: priceRuleUserErrors
-      })
-    }
+    const discountCode = await createDiscountFromInvitation(invitationRecord)
 
     try {
       notifyInvitationComplete(codeRecord.userId, invitedUserId)
@@ -114,7 +70,7 @@ export default async (req, res) => {
     }
 
     return res.send({
-      priceRuleDiscountCode
+      discountCode
     })
   } else {
     return res.send({

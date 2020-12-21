@@ -1,7 +1,10 @@
+import shortId from 'shortid'
+
 import { client } from '../utils/line'
-import { getGraphQLID } from '../utils/id'
+import { getGraphQLID, getLegacyId } from '../utils/id'
 import shopify, { customerFragment } from '../utils/shopify'
 import { getLineUserIdFromCustomer } from '../utils/user'
+import { Discount } from '../utils/models'
 
 const getCustomer = async customerId => {
   const { customer } = await shopify.graphql(`
@@ -52,4 +55,44 @@ export async function notifyInvitationComplete (userId, invitedUserId) {
       }
     }
   }
+}
+
+export async function createDiscountFromInvitation (invitation) {
+  const { userId, invitedUserId } = invitation
+  const code = shortId.generate()
+
+  for (const uid of [userId, invitedUserId]) {
+    await Discount.create({
+      userId: getLegacyId(uid),
+      title: '朋友邀請折扣',
+      value: '-50', // TODO: Change this
+      code,
+      valueType: 'FIXED_AMOUNT'
+    })
+  }
+
+  return code
+}
+
+export async function getAvailableDiscountsFromCustomer (customer) {
+  const userId = getLegacyId(customer.id)
+
+  return Discount.find({
+    userId,
+    usedAt: {
+      $ne: null
+    }
+  })
+}
+
+export async function findAvailableDiscountFromCode (customer, code) {
+  const userId = getLegacyId(customer.id)
+
+  return Discount.findOne({
+    userId,
+    code,
+    usedAt: {
+      $ne: null
+    }
+  })
 }

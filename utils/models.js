@@ -49,6 +49,30 @@ try {
 }
 
 /** @type {mongoose.Model} */
+let Discount
+try {
+  Discount = model('Discount')
+} catch (err) {
+  Discount = model('Discount', new Schema({
+    userId: String,
+    title: String,
+    description: String,
+    code: String,
+    value: String,
+    valueType: {
+      type: String,
+      default: 'FIXED_AMOUNT'
+    },
+    draftOrderId: String,
+    usedAt: Date,
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }))
+}
+
+/** @type {mongoose.Model} */
 let DraftOrderRelation
 try {
   DraftOrderRelation = model('DraftOrderRelation')
@@ -74,5 +98,6 @@ export {
   InvitationCode,
   Invitation,
   DraftOrderRelation,
-  FeedbackSubmission
+  FeedbackSubmission,
+  Discount
 }

@@ -6,6 +6,7 @@ import cheerio from 'cheerio'
 import Ecpay from '../../utils/ecpay'
 import shopify from '../../utils/shopify'
 import { getLineUserIdFromCustomer } from '../../utils/user'
+import { findAvailableDiscountFromCode } from '../../services/discount'
 
 function parseFormData (html) {
   const $ = cheerio.load(html)
@@ -23,7 +24,7 @@ function parseFormData (html) {
 }
 
 export default withSession(async (req, res) => {
-  const { lineItems, shippingAddress, note } = req.body
+  const { lineItems, shippingAddress, note, discountCode } = req.body
   const { user } = req.session
 
   if (!user) {
@@ -42,6 +43,22 @@ export default withSession(async (req, res) => {
     res.writeHead(404, { 'Content-Type': 'text/plain' })
     res.write('Not Found')
     return res.end()
+  }
+
+  let appliedDiscount
+  let discount
+  if (discountCode) {
+    // fill in applied discount
+    discount = await findAvailableDiscountFromCode(user, discountCode)
+
+    if (discount) {
+      appliedDiscount = {
+        title: discount.title,
+        description: discount.description,
+        value: discount.value,
+        valueType: discount.valueType
+      }
+    }
   }
 
   let order
@@ -78,7 +95,8 @@ export default withSession(async (req, res) => {
           }
         ],
         shippingAddress,
-        note
+        note,
+        appliedDiscount
       }
     })
 
@@ -87,6 +105,13 @@ export default withSession(async (req, res) => {
       console.error(userErrors)
       return res.json({
         error: userErrors
+      })
+    }
+
+    if (discount) {
+      discount.update({
+        draftOrderId: draftOrder.legacyResourceId,
+        usedAt: Date.now()
       })
     }
 
