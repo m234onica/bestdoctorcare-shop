@@ -1,5 +1,5 @@
 // TODO: lookup the mapping and make this async
-export const geteEmailFromUserId = userId => `${userId}@lineapp.com`
+export const getEmailFromLineUserId = userId => `${userId}@lineapp.com`
 
 export const getEmailFromCustomer = customer => customer.email
 

@@ -1,10 +1,10 @@
 import { withSession } from 'next-session'
 import shortId from 'shortid'
 
-import shopify, { customerFragment } from '../../utils/shopify'
+import shopify, { customerFragment, findCustomerFromLineUserId } from '../../utils/shopify'
 import { InvitationCode } from '../../utils/models'
 
-import { geteEmailFromUserId } from '../../utils/user'
+import { getEmailFromLineUserId } from '../../utils/user'
 
 export default withSession(async (req, res) => {
   if (req.session.user) {
@@ -27,22 +27,7 @@ export default withSession(async (req, res) => {
 
   const { userId } = lineProfile
 
-  const { customers } = await shopify.graphql(`
-    query ($query: String) {
-      customers (first: 1, query: $query) {
-        edges {
-          node {
-            ...customerFields
-          }
-        }
-      }
-    }
-    ${customerFragment}
-  `, {
-    query: `email:${geteEmailFromUserId(userId)}`
-  })
-
-  const existingUser = customers.edges?.[0]?.node
+  const existingUser = findCustomerFromLineUserId(userId)
   const metafields = existingUser && existingUser.metafields?.edges
   const lineProfileMetafield = metafields && metafields.find(m => m.node.key === 'line_profile')
 
@@ -117,7 +102,7 @@ export default withSession(async (req, res) => {
     `, {
       input: {
         firstName: lineProfile.displayName,
-        email: geteEmailFromUserId(userId),
+        email: getEmailFromLineUserId(userId),
         metafields: [
           {
             key: 'line_user_id',

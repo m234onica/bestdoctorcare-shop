@@ -1,4 +1,5 @@
 import Shopify from 'shopify-api-node'
+import { getEmailFromLineUserId } from './user'
 
 const shopify = new Shopify({
   shopName: process.env.NEXT_PUBLIC_SHOPIFY_STORE_NAME,
@@ -37,3 +38,22 @@ fragment customerFields on Customer {
     }
   }
 }`
+
+export async function findCustomerFromLineUserId (userId) {
+  const { customers } = await shopify.graphql(`
+    query ($query: String) {
+      customers (first: 1, query: $query) {
+        edges {
+          node {
+            ...customerFields
+          }
+        }
+      }
+    }
+    ${customerFragment}
+    `, {
+    query: `email:${getEmailFromLineUserId(userId)}`
+  })
+
+  return customers.edges?.[0]?.node
+}
