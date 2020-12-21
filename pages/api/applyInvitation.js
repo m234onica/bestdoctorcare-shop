@@ -35,6 +35,15 @@ export default async (req, res) => {
 
   const invitedUserId = req.session.user.legacyResourceId
 
+  const existingInvitationRecord = await Invitation.findOne({
+    invitedUserId
+  })
+  if (existingInvitationRecord) {
+    return res.send({
+      error: 'Invitation code applied already'
+    })
+  }
+
   let invitationRecord = await Invitation.findOne({
     userId: codeRecord.userId,
     invitedUserId
