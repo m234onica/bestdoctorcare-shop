@@ -2,7 +2,7 @@ import { withSession } from 'next-session'
 import shortId from 'shortid'
 
 import shopify, { customerFragment, findCustomerFromLineUserId } from '../../utils/shopify'
-import { InvitationCode } from '../../utils/models'
+import prisma from '../../utils/prisma'
 
 import { getEmailFromLineUserId } from '../../utils/user'
 
@@ -121,9 +121,11 @@ export default withSession(async (req, res) => {
     })
 
     // Create invitation code
-    await InvitationCode.create({
-      userId: user.legacyResourceId,
-      code: shortId.generate()
+    await prisma.invitationCode.create({
+      data: {
+        userId: user.legacyResourceId,
+        code: shortId.generate()
+      }
     })
 
     if (userErrors.length > 0) {

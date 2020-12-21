@@ -4,7 +4,7 @@ import { client } from '../utils/line'
 import { getGraphQLID, getLegacyId } from '../utils/id'
 import shopify, { customerFragment, findCustomerFromLineUserId } from '../utils/shopify'
 import { getLineUserIdFromCustomer } from '../utils/user'
-import { Discount } from '../utils/models'
+import primsa from '../utils/prisma'
 
 const getCustomer = async customerId => {
   const { customer } = await shopify.graphql(`
@@ -62,12 +62,14 @@ export async function createDiscountFromInvitation (invitation) {
 
   for (const uid of [userId, invitedUserId]) {
     const code = shortId.generate()
-    await Discount.create({
-      userId: getLegacyId(uid),
-      title: '朋友邀請折扣',
-      value: '-50', // TODO: Change this
-      code,
-      valueType: 'FIXED_AMOUNT'
+    await primsa.discount.create({
+      data: {
+        userId: getLegacyId(uid),
+        title: '朋友邀請折扣',
+        value: '-50', // TODO: Change this
+        code,
+        valueType: 'FIXED_AMOUNT'
+      }
     })
   }
 }
@@ -75,10 +77,12 @@ export async function createDiscountFromInvitation (invitation) {
 export async function getAvailableDiscountsFromCustomer (customer) {
   const userId = getLegacyId(customer.id)
 
-  return Discount.find({
-    userId,
-    usedAt: {
-      $ne: null
+  return primsa.discount.findMany({
+    where: {
+      userId,
+      usedAt: {
+        not: null
+      }
     }
   })
 }
@@ -86,11 +90,13 @@ export async function getAvailableDiscountsFromCustomer (customer) {
 export async function findAvailableDiscountFromCode (customer, code) {
   const userId = getLegacyId(customer.id)
 
-  return Discount.findOne({
-    userId,
-    code,
-    usedAt: {
-      $ne: null
+  return primsa.discount.findFirst({
+    where: {
+      userId,
+      code,
+      usedAt: {
+        not: null
+      }
     }
   })
 }
@@ -103,11 +109,13 @@ export async function createDiscountFromLineUserId (lineUserId) {
   }
 
   const code = shortId.generate()
-  await Discount.create({
-    userId: customer.legacyResourceId,
-    title: '意見回饋折扣',
-    value: '-50', // TODO: Change this
-    code,
-    valueType: 'FIXED_AMOUNT'
+  await primsa.discount.create({
+    data: {
+      userId: customer.legacyResourceId,
+      title: '意見回饋折扣',
+      value: '-50', // TODO: Change this
+      code,
+      valueType: 'FIXED_AMOUNT'
+    }
   })
 }

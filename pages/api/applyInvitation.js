@@ -1,6 +1,6 @@
 import { applySession } from 'next-session'
 
-import { Invitation, InvitationCode } from '../../utils/models'
+import primsa from '../../utils/prisma'
 import { notifyInvitationComplete, createDiscountFromInvitation } from '../../services/discount'
 
 /**
@@ -24,8 +24,10 @@ export default async (req, res) => {
     })
   }
 
-  const codeRecord = await InvitationCode.findOne({
-    code
+  const codeRecord = await primsa.invitationCode.findFirst({
+    where: {
+      code
+    }
   })
   if (!codeRecord) {
     return res.send({
@@ -35,8 +37,11 @@ export default async (req, res) => {
 
   const invitedUserId = req.session.user.legacyResourceId
 
-  const existingInvitationRecord = await Invitation.findOne({
-    invitedUserId
+
+  const existingInvitationRecord = await primsa.invitation.findFirst({
+    where: {
+      invitedUserId
+    }
   })
   if (existingInvitationRecord) {
     return res.send({
@@ -44,9 +49,11 @@ export default async (req, res) => {
     })
   }
 
-  let invitationRecord = await Invitation.findOne({
-    userId: codeRecord.userId,
-    invitedUserId
+  let invitationRecord = await primsa.invitation.findFirst({
+    where: {
+      userId: codeRecord.userId,
+      invitedUserId
+    }
   })
 
   if (invitedUserId === codeRecord.userId) {
@@ -56,9 +63,12 @@ export default async (req, res) => {
   }
 
   if (codeRecord && !invitationRecord && invitedUserId !== codeRecord.userId) {
-    invitationRecord = await Invitation.create({
-      userId: codeRecord.userId,
-      invitedUserId
+
+    invitationRecord = await primsa.invitation.create({
+      data: {
+        userId: codeRecord.userId,
+        invitedUserId
+      }
     })
 
     await createDiscountFromInvitation(invitationRecord)

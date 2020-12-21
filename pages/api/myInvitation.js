@@ -1,4 +1,4 @@
-import { InvitationCode } from '../../utils/models'
+import prisma from '../../utils/prisma'
 import { applySession } from 'next-session'
 
 /**
@@ -14,8 +14,10 @@ export default async (req, res) => {
     })
   }
 
-  const codeRecord = await InvitationCode.findOne({
-    userId: req.session.user.legacyResourceId
+  const codeRecord = await prisma.invitationCode.findFirst({
+    where: {
+      userId: req.session.user.legacyResourceId
+    }
   })
 
   if (codeRecord) {
