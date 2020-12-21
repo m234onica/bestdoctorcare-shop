@@ -61,7 +61,7 @@ export default async (req, res) => {
       invitedUserId
     })
 
-    const discountCode = await createDiscountFromInvitation(invitationRecord)
+    await createDiscountFromInvitation(invitationRecord)
 
     try {
       notifyInvitationComplete(codeRecord.userId, invitedUserId)
@@ -69,9 +69,8 @@ export default async (req, res) => {
       console.error(err)
     }
 
-    return res.send({
-      discountCode
-    })
+    res.statusCode = 200
+    return res.end()
   } else {
     return res.send({
       error: 'invalid invitation code'
