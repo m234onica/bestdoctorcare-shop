@@ -59,9 +59,9 @@ export async function notifyInvitationComplete (userId, invitedUserId) {
 
 export async function createDiscountFromInvitation (invitation) {
   const { userId, invitedUserId } = invitation
-  const code = shortId.generate()
 
   for (const uid of [userId, invitedUserId]) {
+    const code = shortId.generate()
     await Discount.create({
       userId: getLegacyId(uid),
       title: '朋友邀請折扣',
@@ -70,8 +70,6 @@ export async function createDiscountFromInvitation (invitation) {
       valueType: 'FIXED_AMOUNT'
     })
   }
-
-  return code
 }
 
 export async function getAvailableDiscountsFromCustomer (customer) {
