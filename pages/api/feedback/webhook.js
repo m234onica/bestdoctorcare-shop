@@ -4,6 +4,7 @@ import { verifySignature } from '../../../utils/typeform'
 import { runMiddleware } from '../../../utils/middleware'
 import { client } from '../../../utils/line'
 import { hasPreviousSubmissionInThisMonth, upsertFeedbackSubmission } from '../../../services/feedback'
+import { createDiscountFromLineUserId } from '../../../services/discount'
 
 // {
 //   event_id: '01ES6JVT3MJTEG9NCGC60J0YGH',
@@ -40,8 +41,8 @@ async function handler (req, res) {
     return res.end()
   }
 
+  // Verify typeform payload
   const expectedSig = req.headers['typeform-signature']
-
   if (!verifySignature(expectedSig, req.body)) {
     return respondError('verifySignature failed')
   }
@@ -61,6 +62,8 @@ async function handler (req, res) {
 
   if (!hasSubmission) {
     try {
+      await createDiscountFromLineUserId(lineUserId)
+
       await client.pushMessage(lineUserId, [{
         type: 'text',
         text: '恭喜完成本月任務，您已獲得折價券一張。'
@@ -71,10 +74,10 @@ async function handler (req, res) {
         const err = e.originalError
         console.error(err.toJSON())
         console.error(err.response.data)
+      } else {
+        console.error(e)
       }
     }
-
-    // TODO: Add coupon code
   }
 
   res.statusCode = 200

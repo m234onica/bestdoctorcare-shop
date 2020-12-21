@@ -2,7 +2,7 @@ import shortId from 'shortid'
 
 import { client } from '../utils/line'
 import { getGraphQLID, getLegacyId } from '../utils/id'
-import shopify, { customerFragment } from '../utils/shopify'
+import shopify, { customerFragment, findCustomerFromLineUserId } from '../utils/shopify'
 import { getLineUserIdFromCustomer } from '../utils/user'
 import { Discount } from '../utils/models'
 
@@ -94,5 +94,22 @@ export async function findAvailableDiscountFromCode (customer, code) {
     usedAt: {
       $ne: null
     }
+  })
+}
+
+export async function createDiscountFromLineUserId (lineUserId) {
+  const customer = await findCustomerFromLineUserId(lineUserId)
+
+  if (!customer) {
+    throw new Error('Shopify customer not found')
+  }
+
+  const code = shortId.generate()
+  await Discount.create({
+    userId: customer.legacyResourceId,
+    title: '意見回饋折扣',
+    value: '-50', // TODO: Change this
+    code,
+    valueType: 'FIXED_AMOUNT'
   })
 }
