@@ -27,7 +27,7 @@ export default withSession(async (req, res) => {
 
   const { userId } = lineProfile
 
-  const existingUser = findCustomerFromLineUserId(userId)
+  const existingUser = await findCustomerFromLineUserId(userId)
   const metafields = existingUser && existingUser.metafields?.edges
   const lineProfileMetafield = metafields && metafields.find(m => m.node.key === 'line_profile')
 
