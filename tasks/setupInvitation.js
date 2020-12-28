@@ -1,7 +1,7 @@
 // Setup invitation for existing customers in database
 import shortId from 'shortid'
 import shopify from '../utils/shopify'
-import { InvitationCode } from '../utils/models'
+import prisma from '../utils/prisma'
 
 export async function run () {
   let c
@@ -37,14 +37,18 @@ export async function run () {
   }
 
   for (const customer of customers.map(edge => edge.node)) {
-    const codeRecord = await InvitationCode.findOne({
-      userId: customer.legacyResourceId
+    const codeRecord = await prisma.invitationCode.findFirst({
+      where: {
+        userId: customer.legacyResourceId
+      }
     })
 
     if (!codeRecord) {
-      await InvitationCode.create({
-        userId: customer.legacyResourceId,
-        code: shortId()
+      await prisma.invitationCode.create({
+        data: {
+          userId: customer.legacyResourceId,
+          code: shortId()
+        }
       })
     }
   }

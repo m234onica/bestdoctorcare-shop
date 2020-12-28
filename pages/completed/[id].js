@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 import { getBankData, getPaymentType, getPaymentVirtualAccount } from '../../utils/browser'
 
-export default () => {
+const CompletedOrder = () => {
   const router = useRouter()
   const [order, setOrder] = useState(null)
   const { id: orderId } = router.query
@@ -72,3 +72,5 @@ export default () => {
     </div>
   )
 }
+
+export default CompletedOrder

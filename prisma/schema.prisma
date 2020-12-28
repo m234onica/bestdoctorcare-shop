@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Invitation {
+  id            Int      @id @default(autoincrement())
+  userId        String
+  invitedUserId String
+  createdAt     DateTime @default(now())
+}
+
+model InvitationCode {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  code      String
+  createdAt DateTime @default(now())
+}
+
+model Discount {
+  id           Int       @id @default(autoincrement())
+  userId       String
+  title        String
+  description  String?
+  code         String
+  value        String
+  valueType    String    @default("FIXED_AMOUNT")
+  draftOrderId String?
+  usedAt       DateTime?
+  createdAt    DateTime  @default(now())
+}
+
+model DraftOrderRelation {
+  id           Int    @id @default(autoincrement())
+  orderId      String
+  draftOrderId String
+}
+
+model FeedbackSubmission {
+  id          Int      @id @default(autoincrement())
+  lineUserId  String
+  submittedAt DateTime
+}

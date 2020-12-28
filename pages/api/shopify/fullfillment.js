@@ -1,7 +1,7 @@
 import shopify from '../../../utils/shopify'
 import { getLineUserIdFromCustomer } from '../../../utils/user'
 import { client } from '../../../utils/line'
-import { DraftOrderRelation } from '../../../utils/models'
+import prisma from '../../../utils/prisma'
 import { getLegacyId } from '../../../utils/id'
 
 const customerField = `
@@ -41,8 +41,10 @@ async function handler (req, res) {
 
       // fetch draftOrder Id
       const orderId = getLegacyId(order.id)
-      const record = await DraftOrderRelation.findOne({
-        orderId
+      const record = await prisma.draftOrderRelation.findFirst({
+        where: {
+          orderId
+        }
       })
 
       const draftOrderIdText = record ? `#${record.draftOrderId} ` : ''

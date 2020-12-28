@@ -1,19 +1,19 @@
 import shopify from '../utils/shopify'
 import { client } from '../utils/line'
-import { DraftOrderRelation } from '../utils/models'
 import { getLegacyId, getGraphQLID } from '../utils/id'
+import prisma from '../utils/prisma'
 
-export async function createDraftOrderRelation (orderId, draftOrderId) {
+export async function upsertDraftOrderRelation (orderId, draftOrderId) {
   const data = {
     orderId,
     draftOrderId
   }
 
-  const record = await DraftOrderRelation.findOne(data)
-  if (record) {
-    await DraftOrderRelation.update(data)
-  } else {
-    await DraftOrderRelation.create(data)
+  const record = await prisma.draftOrderRelation.findFirst({ where: data })
+  if (!record) {
+    await prisma.draftOrderRelation.create({
+      data
+    })
   }
 }
 
@@ -43,7 +43,7 @@ export async function completeDraftOrder (draftOrderId, lineUserId, tradeAmount)
     throw new DraftOrderCompleteError(JSON.stringify(userErrors))
   }
 
-  await createDraftOrderRelation(getLegacyId(draftOrder.order.id), getLegacyId(draftOrderId))
+  await upsertDraftOrderRelation(getLegacyId(draftOrder.order.id), getLegacyId(draftOrderId))
 
   await client.pushMessage(lineUserId, [{
     type: 'text',

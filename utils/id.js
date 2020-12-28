@@ -18,7 +18,7 @@ export const getGraphQLID = (model, id) => {
   }
 
   if (isGraphQLID(id)) {
-    return id
+    return `${id}`
   }
 
   return `gid://shopify/${model}/${id}`
@@ -33,7 +33,7 @@ export const getLegacyId = (id) => {
   }
 
   if (!isGraphQLID(id)) {
-    return id
+    return `${id}`
   }
 
   const m = id.match(/\d+$/)

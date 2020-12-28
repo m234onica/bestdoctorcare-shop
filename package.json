@@ -20,6 +20,7 @@
     "@babel/core": "^7.10.4",
     "@babel/node": "^7.10.4",
     "@line/liff": "^2.3.0",
+    "@prisma/client": "2.13.1",
     "@yukaii/ecpay_payment_nodejs": "1.0.2",
     "apollo-boost": "^0.4.9",
     "cheerio": "^1.0.0-rc.3",
@@ -46,6 +47,7 @@
     "@ava/babel": "^1.0.1",
     "@babel/cli": "^7.10.4",
     "@line/bot-sdk": "^7.0.0",
+    "@prisma/cli": "2.13.1",
     "ava": "^3.12.1",
     "babel-register": "^6.26.0",
     "standard": "^14.3.4"

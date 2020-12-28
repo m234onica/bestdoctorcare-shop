@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import { getBankData, getPaymentType, getPaymentVirtualAccount } from '../../utils/browser'
 import { orderStatusName } from '../../common/order'
 
-export default () => {
+const Order = () => {
   const router = useRouter()
   const [order, setOrder] = useState(null)
   const { id: orderId } = router.query
@@ -123,3 +123,5 @@ export default () => {
     </div>
   )
 }
+
+export default Order

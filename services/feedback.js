@@ -1,4 +1,4 @@
-import { FeedbackSubmission } from '../utils/models'
+import prisma from '../utils/prisma'
 
 /**
  * @param {string} lineUserId
@@ -6,10 +6,17 @@ import { FeedbackSubmission } from '../utils/models'
  */
 export async function upsertFeedbackSubmission (lineUserId, submittedAt) {
   const data = {
-    lineUserId: lineUserId,
-    submitted_at: submittedAt
+    lineUserId,
+    submittedAt
   }
-  await FeedbackSubmission.findOneAndUpdate(data, data, { upsert: true })
+
+  if ((await prisma.feedbackSubmission.findMany({
+    where: data
+  })).length === 0) {
+   await prisma.feedbackSubmission.create({
+      data
+   })
+  }
 }
 
 /**
@@ -24,11 +31,14 @@ export async function hasPreviousSubmissionInThisMonth (lineUserId, submittedAt)
   monthStart.setUTCMinutes(0)
   monthStart.setUTCMinutes(0)
 
-  const submissions = await FeedbackSubmission.find({
-    lineUserId,
-    submitted_at: {
-      $lt: submittedAt,
-      $gt: monthStart
+
+  const submissions = await prisma.feedbackSubmission.findMany({
+    where: {
+      lineUserId,
+      submittedAt: {
+        lt: submittedAt,
+        gt: monthStart
+      }
     }
   })
 

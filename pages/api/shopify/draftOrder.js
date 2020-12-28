@@ -1,4 +1,4 @@
-import { createDraftOrderRelation } from '../../../services/order'
+import { upsertDraftOrderRelation } from '../../../services/order'
 import { getLegacyId } from '../../../utils/id'
 
 /**
@@ -11,7 +11,7 @@ async function handler (req, res) {
 
   try {
     if (draftOrder.status === 'completed' && orderId) {
-      await createDraftOrderRelation(orderId, getLegacyId(draftOrder.id))
+      await upsertDraftOrderRelation(orderId, getLegacyId(draftOrder.id))
     }
   } catch (err) {
     console.error(err)
