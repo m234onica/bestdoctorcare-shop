@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react'
+import { isDuringLiffRedirect } from '../utils/liff'
 
 /**
  * @typedef LiffState
@@ -50,6 +51,15 @@ export const withUserContext = Components => (props) => {
 
     await liff.init({
       liffId
+    })
+
+    if (isDuringLiffRedirect()) {
+      return
+    }
+
+    setLiffState({
+      ...liffState,
+      loaded: true
     })
 
     let profile

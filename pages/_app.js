@@ -5,13 +5,14 @@ import '../polo/scss/style.scss'
 
 import Header from '../components/Header'
 import Cart from '../components/Cart'
+import FullPageSpinner from '../components/FullPageSpinner'
 
 import { withCartContext } from '../components/CartContext'
 import { withAppContext } from '../components/AppContext'
 import UserContext, { withUserContext } from '../components/UserContext'
 
 const _App = ({ Component, pageProps }) => {
-  const { user } = useContext(UserContext)
+  const { user, liffState } = useContext(UserContext)
 
   return (
     <div>
@@ -20,9 +21,14 @@ const _App = ({ Component, pageProps }) => {
         <link rel='icon' href='/favicon.ico' />
         <meta name='viewport' content='width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1' />
       </Head>
-      <Header user={user} />
-      <Cart />
-      <Component {...pageProps} />
+
+      {
+        liffState.loaded ? <>
+          <Header user={user} />
+          <Cart />
+          <Component {...pageProps} />
+        </> : <FullPageSpinner />
+      }
       <style jsx global>{`
       html,
       body {
