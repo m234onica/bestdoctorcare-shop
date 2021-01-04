@@ -1,43 +1,28 @@
 /* eslint-env browser */
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import cx from 'classnames'
+import { useQuery } from 'react-query'
 
 import { orderStatusName } from '../common/order'
 import { UserContext } from '../components/UserContext'
 
 const Orders = () => {
-  const [, setOrderId] = useState(null)
-  const [orders, setOrders] = useState([])
   const { user } = useContext(UserContext)
   const [tab, setTab] = useState('order')
   const isOrderTab = tab === 'order'
   const isCouponTab = tab === 'coupon'
 
-  useEffect(() => {
-    if (!user) {
-      return
+  const { data: orders /*, error */ } = useQuery('orders', () => fetch('/api/orders').then(r => r.json()).then(d => d.draftOrders.map(order => {
+    return {
+      ...order,
+      createdAt: new Date(order.createdAt),
+      updatedAt: new Date(order.updatedAt)
     }
-
-    fetch('/api/orders')
-      .then(r => r.json())
-      .then(data => {
-        if (data.draftOrders) {
-          // console.log(data.draftOrders)
-          setOrders(data.draftOrders.map(order => {
-            return {
-              ...order,
-              createdAt: new Date(order.createdAt),
-              updatedAt: new Date(order.updatedAt)
-            }
-          }).sort((a, b) => b.createdAt - a.createdAt))
-
-          const params = new URLSearchParams(window.location.search)
-          setOrderId(params.get('orderId'))
-        }
-      })
-  }, [user])
+  }).sort((a, b) => b.createdAt - a.createdAt)), {
+    enabled: !!user
+  })
 
   return (
     <div className='page-container'>
@@ -65,7 +50,7 @@ const Orders = () => {
                 </thead>
                 <tbody>
                   {
-                    orders.map(order => (
+                    orders && orders.map(order => (
                       <tr key={order.id}>
                         <td>
                           <Link href='/orders/[id]' as={`/orders/${order.legacyResourceId}`}>

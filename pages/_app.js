@@ -1,5 +1,11 @@
 import Head from 'next/head'
 import React, { useContext } from 'react'
+import {
+  QueryClient,
+  QueryClientProvider
+} from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
+
 import '../polo/scss/plugins/plugins.css'
 import '../polo/scss/style.scss'
 
@@ -11,11 +17,13 @@ import { withCartContext } from '../components/CartContext'
 import { withAppContext } from '../components/AppContext'
 import UserContext, { withUserContext } from '../components/UserContext'
 
+const queryClient = new QueryClient()
+
 const _App = ({ Component, pageProps }) => {
   const { user, liffState } = useContext(UserContext)
 
   return (
-    <div>
+    <QueryClientProvider client={queryClient}>
       <Head>
         <title>Bestdoctorcare line store</title>
         <link rel='icon' href='/favicon.ico' />
@@ -69,7 +77,8 @@ const _App = ({ Component, pageProps }) => {
       }
     `}
       </style>
-    </div>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   )
 }
 
