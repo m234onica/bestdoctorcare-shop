@@ -85,28 +85,35 @@ export async function getAllDiscountsFromCustomer (customer) {
 }
 
 export async function getAvailableDiscountsFromCustomer (customer) {
-  const userId = getLegacyId(customer.id)
+  const userId = customer.legacyResourceId
 
   return primsa.discount.findMany({
     where: {
       userId,
-      usedAt: {
-        not: null
-      }
+      usedAt: null
     }
   })
 }
 
 export async function findAvailableDiscountFromCode (customer, code) {
-  const userId = getLegacyId(customer.id)
+  const userId = customer.legacyResourceId
 
+  // TODO: check sorting
   return primsa.discount.findFirst({
     where: {
       userId,
       code,
-      usedAt: {
-        not: null
-      }
+      usedAt: null
+    }
+  })
+}
+
+export async function useDiscount (discountId, draftOrderId) {
+  return primsa.discount.update({
+    where: { id: discountId },
+    data: {
+      draftOrderId,
+      usedAt: new Date()
     }
   })
 }

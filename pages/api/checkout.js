@@ -6,7 +6,7 @@ import cheerio from 'cheerio'
 import Ecpay from '../../utils/ecpay'
 import shopify from '../../utils/shopify'
 import { getLineUserIdFromCustomer } from '../../utils/user'
-import { findAvailableDiscountFromCode } from '../../services/discount'
+import { findAvailableDiscountFromCode, useDiscount } from '../../services/discount'
 
 function parseFormData (html) {
   const $ = cheerio.load(html)
@@ -109,10 +109,7 @@ export default withSession(async (req, res) => {
     }
 
     if (discount) {
-      discount.update({
-        draftOrderId: draftOrder.legacyResourceId,
-        usedAt: Date.now()
-      })
+      await useDiscount(discount.id, draftOrder.legacyResourceId)
     }
 
     order = draftOrder
