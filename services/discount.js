@@ -74,6 +74,16 @@ export async function createDiscountFromInvitation (invitation) {
   }
 }
 
+export async function getAllDiscountsFromCustomer (customer) {
+  const userId = customer.legacyResourceId
+
+  return primsa.discount.findMany({
+    where: {
+      userId
+    }
+  })
+}
+
 export async function getAvailableDiscountsFromCustomer (customer) {
   const userId = getLegacyId(customer.id)
 
