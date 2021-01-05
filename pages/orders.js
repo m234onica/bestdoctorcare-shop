@@ -2,6 +2,7 @@
 import React, { useState, useContext } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import cx from 'classnames'
 import { useQuery } from 'react-query'
 
@@ -11,6 +12,7 @@ import dayjs from '../utils/dayjs'
 
 const Orders = () => {
   const { user } = useContext(UserContext)
+  const router = useRouter()
   const [tab, setTab] = useState('order')
   const isOrderTab = tab === 'order'
   const isDiscountTab = tab === 'discount'
@@ -26,6 +28,14 @@ const Orders = () => {
   })
 
   const { data: discounts } = useQuery('discounts', () => fetch('/api/discounts').then(r => r.json()).then(d => d.discounts))
+
+  const onClickDiscountRow = discount => () => {
+    if (!discount.usedAt) {
+      return
+    }
+
+    router.push(`/orders/${discount.draftOrderId}`)
+  }
 
   return (
     <div className='page-container'>
@@ -76,17 +86,40 @@ const Orders = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    { discounts && discounts.map(discount => (<tr key={discount.id}>
-                      <td>{dayjs(discount.createdAt).format('YYYY/MM/DD')}</td>
-                      <td>{discount.value}</td>
-                      <td>{discount.title}</td>
-                      <td>{discount.usedAt ? '已使用' : '未使用'}</td>
-                    </tr>)) }
+                    { discounts && discounts.map(discount => {
+                      const used = !!discount.usedAt
+
+                      return (<tr key={discount.id} className={cx({ used })} onClick={onClickDiscountRow(discount)}>
+                        <td>{dayjs(discount.createdAt).format('YYYY/MM/DD')}</td>
+                        <td>{discount.value}</td>
+                        <td>{discount.title}</td>
+                        <td>{used ? '已使用' : '未使用'}</td>
+                      </tr>)
+                    })}
                   </tbody>
             </table>
           }
         </div>
       </div>
+      <style jsx>{`
+        table {
+          border-collapse: collapse;
+        }
+
+        tr.used td {
+          position: relative;
+        }
+
+        tr.used td:before {
+          content: '';
+          width: 100%;
+          position: absolute;
+          top: 50%;
+          left: 0;
+          border-bottom: 1px solid #111;
+        }
+      `}
+      </style>
     </div>
   )
 }
