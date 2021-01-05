@@ -7,6 +7,7 @@ import { useQuery } from 'react-query'
 
 import { orderStatusName } from '../common/order'
 import { UserContext } from '../components/UserContext'
+import dayjs from '../utils/dayjs'
 
 const Orders = () => {
   const { user } = useContext(UserContext)
@@ -76,7 +77,7 @@ const Orders = () => {
                   </thead>
                   <tbody>
                     { discounts && discounts.map(discount => (<tr key={discount.id}>
-                      <td>{discount.createdAt}</td>
+                      <td>{dayjs(discount.createdAt).format('YYYY/MM/DD')}</td>
                       <td>{discount.value}</td>
                       <td>{discount.title}</td>
                       <td>{discount.usedAt ? '已使用' : '未使用'}</td>
