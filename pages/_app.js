@@ -33,11 +33,9 @@ const _App = ({ Component, pageProps }) => {
       {
         liffState.loaded ? <>
           <Header user={user} />
-          <pre><code>{JSON.stringify(liffState)}</code></pre>
           <Cart />
           <Component {...pageProps} />
         </> : <>
-          <pre><code>{JSON.stringify(liffState)}</code></pre>
           <FullPageSpinner />
         </>
       }
