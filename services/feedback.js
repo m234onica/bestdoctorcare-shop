@@ -13,9 +13,9 @@ export async function upsertFeedbackSubmission (lineUserId, submittedAt) {
   if ((await prisma.feedbackSubmission.findMany({
     where: data
   })).length === 0) {
-   await prisma.feedbackSubmission.create({
+    await prisma.feedbackSubmission.create({
       data
-   })
+    })
   }
 }
 
@@ -30,7 +30,6 @@ export async function hasPreviousSubmissionInThisMonth (lineUserId, submittedAt)
   monthStart.setUTCHours(0)
   monthStart.setUTCMinutes(0)
   monthStart.setUTCMinutes(0)
-
 
   const submissions = await prisma.feedbackSubmission.findMany({
     where: {

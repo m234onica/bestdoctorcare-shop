@@ -23,7 +23,7 @@ export default Playlist
 export async function getServerSideProps (context) {
   const res = await youtube.playlistItems.list({
     part: 'snippet',
-    playlistId: context.query.playlistId,
+    playlistId: context.query.playlistId
   })
 
   return {
@@ -32,4 +32,3 @@ export async function getServerSideProps (context) {
     }
   }
 }
-

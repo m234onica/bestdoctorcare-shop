@@ -27,7 +27,9 @@ const Orders = () => {
     enabled: !!user
   })
 
-  const { data: discounts } = useQuery('discounts', () => fetch('/api/discounts').then(r => r.json()).then(d => d.discounts))
+  const { data: discounts } = useQuery('discounts', () => fetch('/api/discounts').then(r => r.json()).then(d => d.discounts), {
+    enabled: !!user
+  })
 
   const onClickDiscountRow = discount => () => {
     if (!discount.usedAt) {
@@ -46,57 +48,57 @@ const Orders = () => {
       <div className='container'>
         <div className='tabs'>
           <nav className='nav nav-tabs nav-justified'>
-            <a className={cx("nav-item nav-link", { active: isOrderTab })} onClick={() => setTab('order')}>檢視訂單</a>
-            <a className={cx("nav-item nav-link", { active: isDiscountTab })} onClick={() => setTab('discount')}>檢視優惠券</a>
+            <a className={cx('nav-item nav-link', { active: isOrderTab })} onClick={() => setTab('order')}>檢視訂單</a>
+            <a className={cx('nav-item nav-link', { active: isDiscountTab })} onClick={() => setTab('discount')}>檢視優惠券</a>
           </nav>
         </div>
 
         <div className='table table-striped table-responsive'>
           {
             tab === 'order' ? <table className='table'>
-                <thead>
-                  <tr>
-                    <th>訂單編號</th>
-                    <th>金額</th>
-                    <th>狀態</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    orders && orders.map(order => (
-                      <tr key={order.id}>
-                        <td>
-                          <Link href='/orders/[id]' as={`/orders/${order.legacyResourceId}`}>
-                            <a>{order.legacyResourceId}</a>
-                          </Link>
-                        </td>
-                        <td>NT$ {order.totalPrice}</td>
-                        <td>{orderStatusName[order.status]}</td>
-                      </tr>
-                    ))
-                  }
-                </tbody>
-              </table> : <table className='table'>
-                  <thead>
-                    <tr>
-                      <th>取得日期</th>
-                      <th>金額</th>
-                      <th>取得原因</th>
-                      <th>狀態</th>
+              <thead>
+                <tr>
+                  <th>訂單編號</th>
+                  <th>金額</th>
+                  <th>狀態</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  orders && orders.map(order => (
+                    <tr key={order.id}>
+                      <td>
+                        <Link href='/orders/[id]' as={`/orders/${order.legacyResourceId}`}>
+                          <a>{order.legacyResourceId}</a>
+                        </Link>
+                      </td>
+                      <td>NT$ {order.totalPrice}</td>
+                      <td>{orderStatusName[order.status]}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    { discounts && discounts.map(discount => {
-                      const used = !!discount.usedAt
+                  ))
+                }
+              </tbody>
+                              </table> : <table className='table'>
+              <thead>
+                                  <tr>
+                  <th>取得日期</th>
+                  <th>金額</th>
+                  <th>取得原因</th>
+                  <th>狀態</th>
+                </tr>
+                                </thead>
+              <tbody>
+                                  {discounts && discounts.map(discount => {
+                  const used = !!discount.usedAt
 
-                      return (<tr key={discount.id} className={cx({ used })} onClick={onClickDiscountRow(discount)}>
-                        <td>{dayjs(discount.createdAt).format('YYYY/MM/DD')}</td>
-                        <td>{discount.value}</td>
-                        <td>{discount.title}</td>
-                        <td>{used ? '已使用' : '未使用'}</td>
-                      </tr>)
-                    })}
-                  </tbody>
+                  return (<tr key={discount.id} className={cx({ used })} onClick={onClickDiscountRow(discount)}>
+                    <td>{dayjs(discount.createdAt).format('YYYY/MM/DD')}</td>
+                    <td>{discount.value}</td>
+                    <td>{discount.title}</td>
+                    <td>{used ? '已使用' : '未使用'}</td>
+                          </tr>)
+                })}
+                                </tbody>
             </table>
           }
         </div>

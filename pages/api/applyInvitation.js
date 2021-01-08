@@ -37,7 +37,6 @@ export default async (req, res) => {
 
   const invitedUserId = req.session.user.legacyResourceId
 
-
   const existingInvitationRecord = await primsa.invitation.findFirst({
     where: {
       invitedUserId
@@ -63,7 +62,6 @@ export default async (req, res) => {
   }
 
   if (codeRecord && !invitationRecord && invitedUserId !== codeRecord.userId) {
-
     invitationRecord = await primsa.invitation.create({
       data: {
         userId: codeRecord.userId,
