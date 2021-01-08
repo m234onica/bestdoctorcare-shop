@@ -19,11 +19,17 @@ import UserContext, { withUserContext } from '../components/UserContext'
 
 const queryClient = new QueryClient()
 
+const withQueryClient = Components => (props) => (
+  <QueryClientProvider client={queryClient}>
+    <Components {...props} />
+  </QueryClientProvider>
+)
+
 const _App = ({ Component, pageProps }) => {
   const { user, liffState } = useContext(UserContext)
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <>
       <Head>
         <title>Bestdoctorcare line store</title>
         <link rel='icon' href='/favicon.ico' />
@@ -76,9 +82,9 @@ const _App = ({ Component, pageProps }) => {
     `}
       </style>
       <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    </>
   )
 }
 
-const App = withAppContext(withCartContext(withUserContext(_App)))
+const App = withQueryClient(withAppContext((withCartContext(withUserContext(_App)))))
 export default App
