@@ -4,10 +4,11 @@ import { useContext } from 'react'
 import { Navbar, Nav } from 'react-bootstrap'
 
 import UserContext from './UserContext'
+import { getLineProfileFromCustomer } from '../utils/user'
 import { isLiffPages } from '../utils/routesHelper'
 
 const Header = ({ user: serverUser }) => {
-  const { user, getLineProfile } = useContext(UserContext)
+  const { user } = useContext(UserContext)
 
   const router = useRouter()
 
@@ -15,7 +16,7 @@ const Header = ({ user: serverUser }) => {
     return null
   }
 
-  const profile = getLineProfile(serverUser || user) || {
+  const profile = getLineProfileFromCustomer(serverUser || user) || {
     displayName: '訪客',
     pictureUrl: 'https://www.gravatar.com/avatar/'
   }

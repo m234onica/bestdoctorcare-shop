@@ -9,3 +9,17 @@ export const getLineUserIdFromCustomer = customer => {
 
   return idField && idField.value
 }
+
+export const getLineProfileFromCustomer = (customer) => {
+  const metafields = customer && customer.metafields?.edges
+  if (!metafields) {
+    return null
+  }
+
+  const metafield = metafields.find(m => m.node.key === 'line_profile')
+  if (!metafield) {
+    return null
+  }
+
+  return JSON.parse(metafield.node.value)
+}
