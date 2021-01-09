@@ -63,9 +63,15 @@ export const withUserContext = Components => (props) => {
       redirectUri = process.env.NEXT_PUBLIC_LIFF_DOMAIN + window.location.pathname
     }
 
-    await liff.init({
-      liffId
-    })
+    if (liff.isInClient()) {
+      liff.init({
+        liffId
+      })
+    } else {
+      await liff.init({
+        liffId
+      })
+    }
 
     if (isDuringLiffRedirect()) {
       return
