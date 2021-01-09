@@ -5,6 +5,7 @@ import {
   QueryClientProvider
 } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
+import useEffectOnce from 'react-use/lib/useEffectOnce'
 
 import '../polo/scss/plugins/plugins.css'
 import '../polo/scss/style.scss'
@@ -16,6 +17,7 @@ import FullPageSpinner from '../components/FullPageSpinner'
 import { withCartContext } from '../components/CartContext'
 import { withAppContext } from '../components/AppContext'
 import UserContext, { withUserContext } from '../components/UserContext'
+import { initEruda } from '../utils/eruda'
 
 const queryClient = new QueryClient()
 
@@ -27,6 +29,9 @@ const withQueryClient = Components => (props) => (
 
 const _App = ({ Component, pageProps }) => {
   const { user, liffState } = useContext(UserContext)
+  useEffectOnce(() => {
+    initEruda()
+  })
 
   return (
     <>
