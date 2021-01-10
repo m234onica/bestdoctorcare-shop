@@ -3,6 +3,7 @@ import React, { useRef, useContext, useState, useEffect } from 'react'
 import { submitForm } from '../utils/browser'
 import UserContext from '../components/UserContext'
 import CartContext from '../components/CartContext'
+import { useAvailableDiscounts } from '../api/discountQuery'
 
 const Checkout = () => {
   const zip = useRef()
@@ -14,6 +15,8 @@ const Checkout = () => {
 
   const { liffState, user } = useContext(UserContext)
   const { items } = useContext(CartContext)
+
+  const { usedDiscount, isSuccess } = useAvailableDiscounts(user)
 
   useEffect(() => {
     if (user?.defaultAddress) {
@@ -29,6 +32,7 @@ const Checkout = () => {
   }, [user, user?.defaultAddress])
 
   const [submitting, setSubmitting] = useState(false)
+  const checkoutFormValid = !submitting && isSuccess
 
   const checkout = (e) => {
     if (submitting) {
@@ -65,7 +69,8 @@ const Checkout = () => {
       method: 'POST',
       body: JSON.stringify({
         lineItems: items.map(({ variantId, quantity }) => ({ variantId, quantity })),
-        shippingAddress
+        shippingAddress,
+        discountCode: usedDiscount && usedDiscount.code
         // note
       }),
       headers: {
@@ -132,9 +137,21 @@ const Checkout = () => {
             <button disabled className='btn btn-secondary mt-3'>ATM</button>
           </div>
 
+          {
+            usedDiscount && (
+              <div className='form-group'>
+                <label>使用折扣碼</label>
+
+                <div className='col-6 mx-0 px-0'>
+                  <input type='text' name='discount' className='form-control w-30 mr-3 d-inline-block' placeholder='折扣碼' readOnly value={`${usedDiscount.code} (${usedDiscount.title})`} disabled />
+                </div>
+              </div>
+            )
+          }
+
           <div className='text-right'>
             <button className='btn btn-danger mr-3' onClick={clear}>清空</button>
-            <button className='btn' type='submit' onClick={checkout} disabled={submitting}>前往付款</button>
+            <button className='btn' type='submit' onClick={checkout} disabled={!checkoutFormValid}>前往付款</button>
           </div>
         </form>
       </div>

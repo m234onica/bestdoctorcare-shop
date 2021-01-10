@@ -55,7 +55,7 @@ export default withSession(async (req, res) => {
       appliedDiscount = {
         title: discount.title,
         description: discount.description,
-        value: discount.value,
+        value: Math.abs(parseFloat(discount.value)),
         valueType: discount.valueType
       }
     }
