@@ -47,6 +47,7 @@ appliedDiscount {
   amountV2 {
     amount
   }
+  title
   description
 }
 `

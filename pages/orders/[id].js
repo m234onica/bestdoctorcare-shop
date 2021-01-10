@@ -1,28 +1,26 @@
 /* eslint-env browser */
 import { useRouter } from 'next/router'
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { Card } from 'react-bootstrap'
+import { useQuery } from 'react-query'
 import classNames from 'classnames'
+
 import { getBankData, getPaymentType, getPaymentVirtualAccount } from '../../utils/browser'
 import { orderStatusName } from '../../common/order'
+import { UserContext } from '../../components/UserContext'
 
 const Order = () => {
   const router = useRouter()
-  const [order, setOrder] = useState(null)
+  const { user } = useContext(UserContext)
   const { id: orderId } = router.query
 
-  useEffect(() => {
-    if (orderId) {
-      fetch(`/api/orders?orderId=${orderId}`)
-        .then(r => r.json())
-        .then(data => {
-          console.log(data.order)
-          if (data.order) {
-            setOrder(data.order)
-          }
-        })
-    }
-  }, [orderId])
+  const { data } = useQuery('order', () => fetch(`/api/orders?orderId=${orderId}`).then(r => r.json()), {
+    enabled: !!orderId && !!user,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false
+  })
+
+  const order = data?.order
 
   const bankData = useMemo(() => {
     if (order) {
@@ -82,10 +80,13 @@ const Order = () => {
               </table>
 
               <div className='text-right'>
-              總金額： NT$ {order.totalPrice} <br />
                 {
-                  order.appliedDiscount && null /* TODO: render applied discount  */
+                  order.appliedDiscount && <>
+                    使用折扣 -{order.appliedDiscount.amountV2.amount} ({order.appliedDiscount.title})
+                    <br />
+                  </>
                 }
+                總金額： NT$ {order.totalPrice}
               </div>
 
               <h3>付款資訊</h3>
