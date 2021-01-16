@@ -68,7 +68,6 @@ export const withUserContext = Components => (props) => {
         liffId
       })
     } else {
-      console.log(`typeof liff.init = ${typeof liff.init}`)
       await liff.init({
         liffId
       })
