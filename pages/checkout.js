@@ -29,7 +29,7 @@ const Checkout = () => {
       name.current.value = defaultAddress.name || ''
       phone.current.value = defaultAddress.phone || ''
     }
-  }, [user, user?.defaultAddress])
+  }, [user?.defaultAddress])
 
   const [submitting, setSubmitting] = useState(false)
   const checkoutFormValid = !submitting && isSuccess
