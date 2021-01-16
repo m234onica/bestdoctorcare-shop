@@ -19,7 +19,7 @@
   "dependencies": {
     "@babel/core": "^7.10.4",
     "@babel/node": "^7.10.4",
-    "@line/liff": "2.5.0",
+    "@line/liff": "2.7.0",
     "@prisma/client": "2.13.1",
     "@quixo3/prisma-session-store": "^2.0.0",
     "@yukaii/ecpay_payment_nodejs": "1.0.2",
