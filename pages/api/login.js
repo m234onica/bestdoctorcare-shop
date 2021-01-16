@@ -4,6 +4,7 @@ import shopify, { customerFragment, findCustomerFromLineUserId } from '../../uti
 import prisma from '../../utils/prisma'
 import { withSession } from '../../utils/session'
 import { getEmailFromLineUserId } from '../../utils/user'
+import { verifyAccessToken } from '../../utils/line'
 
 export const config = {
   api: {
@@ -16,17 +17,25 @@ export default withSession(async (req, res) => {
     return res.json({
       status: 'ok',
       data: {
-        user: req.session.user
+        user: req.session.user,
+        profile: req.session.profile
       }
     })
   }
 
-  const lineProfile = req.body.profile
+  const { accessToken } = req.body
+  if (!accessToken) {
+    return res.json({
+      status: 'error',
+      message: 'No accessToken provided'
+    })
+  }
 
+  const lineProfile = await verifyAccessToken(accessToken)
   if (!lineProfile) {
     return res.json({
       status: 'error',
-      message: 'No liff account'
+      message: 'Invalid accessToken provided'
     })
   }
 
@@ -38,11 +47,13 @@ export default withSession(async (req, res) => {
 
   if (lineProfileMetafield) {
     req.session.user = existingUser
+    req.session.profile = lineProfile
 
     return res.json({
       status: 'ok',
       data: {
-        user: existingUser
+        user: existingUser,
+        profile: lineProfile
       }
     })
   } else if (existingUser) {
@@ -83,11 +94,13 @@ export default withSession(async (req, res) => {
     }
 
     req.session.user = user
+    req.session.profile = lineProfile
 
     return res.json({
       status: 'ok',
       data: {
-        user
+        user,
+        profile: lineProfile
       }
     })
   } else {
@@ -142,11 +155,13 @@ export default withSession(async (req, res) => {
     }
 
     req.session.user = user
+    req.session.profile = lineProfile
 
     return res.json({
       status: 'ok',
       data: {
-        user
+        user,
+        profile: lineProfile
       }
     })
   }

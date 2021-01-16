@@ -27,3 +27,18 @@ export const useLiffClient = (cb) => {
 
   return [liffClient]
 }
+
+export const getLiffInfo = () => {
+  let liffId, redirectUri
+  if (window.location.pathname === '/liff') {
+    liffId = process.env.NEXT_PUBLIC_INVITATION_LIFF_ID
+    redirectUri = process.env.NEXT_PUBLIC_INVITATION_LIFF_DOMAIN
+  } else {
+    liffId = process.env.NEXT_PUBLIC_LIFF_ID
+    redirectUri = process.env.NEXT_PUBLIC_LIFF_DOMAIN + window.location.pathname
+  }
+
+  return {
+    liffId, redirectUri
+  }
+}

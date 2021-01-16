@@ -1,5 +1,5 @@
-import React, { createContext, useEffect, useState } from 'react'
-import { isDuringLiffRedirect, useLiffClient } from '../utils/liff'
+import React, { createContext, useState } from 'react'
+import { isDuringLiffRedirect, useLiffClient, getLiffInfo } from '../utils/liff'
 
 /**
  * @typedef LiffState
@@ -26,7 +26,6 @@ export const UserContext = createContext({
 export default UserContext
 
 export const withUserContext = Components => (props) => {
-  const [lineProfile, setLineProfile] = useState(null)
   const [liffState, setLiffState] = useState({
     loaded: false,
     isInClient: false,
@@ -37,66 +36,48 @@ export const withUserContext = Components => (props) => {
 
   // init liff client
   const [liffClient] = useLiffClient(async liff => {
-    await initializeLiffClient(liff)
-  })
+    const { liffId, redirectUri } = getLiffInfo()
 
-  useEffect(() => {
-    if (!user && lineProfile && liffClient) {
-      doLogin(liffClient)
-    }
-  }, [
-    lineProfile,
-    liffClient,
-    user
-  ])
+    liff.ready.then(async () => {
+      await initializeLiffClient(liff, redirectUri)
+      doLogin(liff)
+    })
+
+    liff.init({
+      liffId
+    })
+  })
 
   /**
    * @param {import('@line/liff').default} liff
    */
-  const initializeLiffClient = async (liff) => {
-    let liffId, redirectUri
-    if (window.location.pathname === '/liff') {
-      liffId = process.env.NEXT_PUBLIC_INVITATION_LIFF_ID
-      redirectUri = process.env.NEXT_PUBLIC_INVITATION_LIFF_DOMAIN
-    } else {
-      liffId = process.env.NEXT_PUBLIC_LIFF_ID
-      redirectUri = process.env.NEXT_PUBLIC_LIFF_DOMAIN + window.location.pathname
-    }
-
-    if (liff.isInClient()) {
-      liff.init({
-        liffId
-      })
-    } else {
-      await liff.init({
-        liffId
-      })
-    }
-
+  const initializeLiffClient = async (liff, redirectUri) => {
     if (isDuringLiffRedirect()) {
       return
+    }
+
+    if (!liff.isLoggedIn()) {
+      // TODO: handle dynamic path redirection
+      await liff.login({
+        redirectUri
+      })
     }
 
     setLiffState({
       ...liffState,
       loaded: true
     })
-
-    if (liff.isLoggedIn()) {
-      setLineProfile(await liff.getProfile())
-    } else {
-      // TODO: handle dynamic path redirection
-      return await liff.login({
-        redirectUri
-      })
-    }
   }
 
+  /**
+   *
+   * @param {import('@line/liff').default} liff
+   */
   const doLogin = async (liff) => {
     const data = await window.fetch('/api/login', {
       method: 'POST',
       body: JSON.stringify({
-        profile: lineProfile
+        accessToken: liff.getAccessToken()
       }),
       headers: {
         'Content-Type': 'application/json'
@@ -104,15 +85,14 @@ export const withUserContext = Components => (props) => {
     }).then(res => res.json())
 
     if (data.status === 'ok') {
-      const { data: { user } } = data
-
+      const { data: { user, profile } } = data
       setUser(user)
 
       setLiffState({
         isInClient: liff.isInClient(),
         isLoggedIn: liff.isLoggedIn(),
         loaded: true,
-        profile: lineProfile
+        profile
       })
     }
   }
