@@ -1,4 +1,4 @@
-import { withSession } from 'next-session'
+import { withSession } from '../../utils/session'
 import { getAvailableDiscountsFromCustomer } from '../../services/discount'
 
 /**

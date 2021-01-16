@@ -1,11 +1,10 @@
-import { withSession } from 'next-session'
-
 import { v4 as uuid } from 'uuid'
 import cheerio from 'cheerio'
 
 import Ecpay from '../../utils/ecpay'
 import shopify from '../../utils/shopify'
 import { getLineUserIdFromCustomer } from '../../utils/user'
+import { withSession } from '../../utils/session'
 import { findAvailableDiscountFromCode, useDiscount } from '../../services/discount'
 
 function parseFormData (html) {

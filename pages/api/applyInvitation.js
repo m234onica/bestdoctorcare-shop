@@ -1,5 +1,4 @@
-import { applySession } from 'next-session'
-
+import { applySession } from '../../utils/session'
 import primsa from '../../utils/prisma'
 import { notifyInvitationComplete, createDiscountFromInvitation } from '../../services/discount'
 
