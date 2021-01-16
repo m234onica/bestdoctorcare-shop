@@ -1,8 +1,8 @@
-import { applySession } from 'next-session'
 import React, { useContext, useEffect } from 'react'
 
 import UserContext from '../components/UserContext'
 
+import { applySession } from '../utils/session'
 import { getLineUserIdFromCustomer } from '../utils/user'
 
 const redirectFeedbackUrl = (user) => {

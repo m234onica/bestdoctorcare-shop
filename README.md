@@ -42,6 +42,9 @@
 - 跑專案：`yarn build && yarn start`
 - 十分鐘一次的 cronjob: `yarn checkOrderStatus`
 - Database: MySQL -> 設定 `DATABSE_URL`
+- `yarn prisma migrate deploy --preview-feature` 跑 migration
+  - `ALTER TABLE Session MODIFY data TEXT;` 手動執行這行 SQL，修改 Session#data 的資料庫欄位型別。
+  - 為 Prisma ORM 的開發中功能
 
 ## Maintenance scripts
 

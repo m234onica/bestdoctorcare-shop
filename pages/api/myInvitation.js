@@ -1,5 +1,5 @@
+import { applySession } from '../../utils/session'
 import prisma from '../../utils/prisma'
-import { applySession } from 'next-session'
 
 /**
  * @param {import('next/types').NextApiRequest} req

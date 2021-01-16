@@ -1,10 +1,15 @@
-import { withSession } from 'next-session'
 import shortId from 'shortid'
 
 import shopify, { customerFragment, findCustomerFromLineUserId } from '../../utils/shopify'
 import prisma from '../../utils/prisma'
-
+import { withSession } from '../../utils/session'
 import { getEmailFromLineUserId } from '../../utils/user'
+
+export const config = {
+  api: {
+    externalResolver: true
+  }
+}
 
 export default withSession(async (req, res) => {
   if (req.session.user) {

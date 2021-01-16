@@ -1,5 +1,5 @@
-import { withSession } from 'next-session'
 import shopify from '../../utils/shopify'
+import { withSession } from '../../utils/session'
 import { getLegacyId } from '../../utils/id'
 
 const DraftOrderDetailFragment = `

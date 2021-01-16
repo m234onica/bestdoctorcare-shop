@@ -1,5 +1,5 @@
-import { withSession } from 'next-session'
 import { getAllDiscountsFromCustomer } from '../../services/discount'
+import { withSession } from '../../utils/session'
 
 /**
  * @param {import('next/types').NextApiRequest} req
