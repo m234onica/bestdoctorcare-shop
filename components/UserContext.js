@@ -36,22 +36,26 @@ export const withUserContext = Components => (props) => {
 
   // init liff client
   const [liffClient] = useLiffClient(async liff => {
-    const { liffId, redirectUri } = getLiffInfo()
-
-    liff.ready.then(async () => {
-      await initializeLiffClient(liff, redirectUri)
-      doLogin(liff)
-    })
-
-    liff.init({
-      liffId
-    })
+    await initializeLiffClient(liff)
+    doLogin(liff)
   })
 
   /**
    * @param {import('@line/liff').default} liff
    */
-  const initializeLiffClient = async (liff, redirectUri) => {
+  const initializeLiffClient = async (liff) => {
+    const { liffId, redirectUri } = getLiffInfo()
+
+    if (liff.isInClient()) {
+      liff.init({
+        liffId
+      })
+    } else {
+      await liff.init({
+        liffId
+      })
+    }
+
     if (isDuringLiffRedirect()) {
       return
     }
