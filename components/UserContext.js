@@ -60,7 +60,7 @@ export const withUserContext = Components => (props) => {
       return
     }
 
-    if (!liff.isLoggedIn()) {
+    if (!liff.isInClient() && !liff.isLoggedIn()) {
       // TODO: handle dynamic path redirection
       await liff.login({
         redirectUri
