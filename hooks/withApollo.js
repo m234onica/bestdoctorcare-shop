@@ -5,7 +5,7 @@ import { ApolloProvider } from '@apollo/react-hooks'
 export default withApollo(
   ({ initialState }) => {
     return new ApolloClient({
-      uri: `https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_NAME}.myshopify.com/api/graphql`,
+      uri: `https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_NAME}.myshopify.com/api/2020-10/graphql.json`,
       fetchOptions: {
         mode: 'cors'
       },

@@ -19,7 +19,7 @@ function getProductFromCollections (collections, productId) {
 function Product () {
   const { query, push } = useRouter()
   const { collections, collectionsLoading } = useContext(AppContext)
-  const { addVariantToCart } = useContext(CartContext)
+  const { addVariantToCart, items } = useContext(CartContext)
 
   if (collectionsLoading || !collections) {
     return <h1>loading...</h1>
@@ -42,6 +42,16 @@ function Product () {
   const decrement = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1)
+    }
+  }
+
+  const canAddToCart = quantity <= variant.quantityAvailable && variant.availableForSale
+  const onChangeQuantity = (e) => {
+    const value = parseInt(e.target.value, 10)
+    if (isNaN(value)) {
+      setQuantity(1)
+    } else {
+      setQuantity(value)
     }
   }
 
@@ -78,13 +88,16 @@ function Product () {
           <div className='cart-product-quantity'>
             <div className='quantity m-l-5'>
               <input type='button' className='minus mr-1' value='-' onClick={decrement} />
-              <input type='text' className='qty mw-100' value={quantity} pattern='\d*' />
+              <input type='text' className='qty mw-100' value={quantity} pattern='\d*' onChange={onChangeQuantity} />
               <input type='button' className='plus ml-1' value='+' onClick={increment} />
             </div>
           </div>
 
           <div className='m-t-20'>
-            <button className='btn btn-lg' type='button' onClick={() => addVariantToCart(variant, quantity)}>
+            <button className='btn btn-lg' type='button' onClick={() => {
+              if (canAddToCart) {
+                addVariantToCart(variant, quantity)
+              }}} disabled={!canAddToCart}>
               <i className='icon-shopping-cart mr-2' />
               加入購物車
             </button>

@@ -25,6 +25,8 @@ variants(first: 250) {
     node {
       id
       title
+      availableForSale
+      quantityAvailable
       selectedOptions {
         name
         value
