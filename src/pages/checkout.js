@@ -3,7 +3,7 @@ import React, { useRef, useContext, useState, useEffect } from 'react'
 import { submitForm } from '../utils/browser'
 import UserContext from '../components/UserContext'
 import CartContext from '../components/CartContext'
-import { useAvailableDiscounts } from '../src/api/discountQuery'
+import { useAvailableDiscounts } from '../api/discountQuery'
 
 const Checkout = () => {
   const zip = useRef()
