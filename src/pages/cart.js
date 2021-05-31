@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import CartContext from '../components/CartContext'
 import AppContext from '../components/AppContext'
 import UserContext from '../components/UserContext'
-import { useAvailableDiscounts } from '../api/discountQuery'
+import { useAvailableDiscounts } from '../src/api/discountQuery'
 
 const Cart = () => {
   const { items, addVariantToCart, removeVariantFromCart, totalPrice } = useContext(CartContext)
