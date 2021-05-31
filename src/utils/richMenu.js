@@ -104,7 +104,7 @@ async function createRichMenu () {
     ]
   })
 
-  const image = fs.readFileSync(path.join(__dirname, '../resources/menu.jpg'))
+  const image = fs.readFileSync(path.join(__dirname, '../../resources/menu.jpg'))
   await client.setRichMenuImage(menu, image)
 
   await client.setDefaultRichMenu(menu)

@@ -8,10 +8,10 @@
     "build": "next build",
     "start": "next start -p $PORT",
     "lint": "standard",
-    "checkOrderStatus": "babel-node ./tasks/run.js checkOrderStatus",
-    "setupInvitation": "babel-node ./tasks/run.js setupInvitation",
+    "checkOrderStatus": "babel-node ./src/tasks/run.js checkOrderStatus",
+    "setupInvitation": "babel-node ./src/tasks/run.js setupInvitation",
     "test": "ava",
-    "task:createRichMenu": "babel-node utils/richMenu.js"
+    "task:createRichMenu": "babel-node ./src/utils/richMenu.js"
   },
   "cacheDirectories": [
     ".next/cache"

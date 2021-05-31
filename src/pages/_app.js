@@ -7,8 +7,8 @@ import {
 import { ReactQueryDevtools } from 'react-query/devtools'
 import useEffectOnce from 'react-use/lib/useEffectOnce'
 
-import '../polo/scss/plugins/plugins.css'
-import '../polo/scss/style.scss'
+import '../../polo/scss/plugins/plugins.css'
+import '../../polo/scss/style.scss'
 
 import Header from '../components/Header'
 import Cart from '../components/Cart'

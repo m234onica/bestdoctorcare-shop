@@ -5,18 +5,5 @@
     "module": "commonJS",
     "resolveJsonModule": true,
     "jsx": "react"
-  },
-  "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "pages",
-    "common",
-    "components",
-    "hooks",
-    "services",
-    "tasks",
-    "test",
-    "utils"
-  ]
+  }
 }
