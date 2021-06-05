@@ -48,21 +48,6 @@ images:
   - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
 options:
   substitutionOption: ALLOW_LOOSE
-substitutions:
-  _TRIGGER_ID: ''
-  _SERVICE_NAME: ''
-  _DEPLOY_REGION: ''
-  _GCR_HOSTNAME: ''
-  _PLATFORM: ''
-  _LABELS: ''
-  _NEXT_PUBLIC_INVITATION_LIFF_DOMAIN: ''
-  _NEXT_PUBLIC_INVITATION_LIFF_ID: ''
-  _NEXT_PUBLIC_LIFF_DOMAIN: ''
-  _NEXT_PUBLIC_LIFF_ID: ''
-  _NEXT_PUBLIC_SHOPIFY_STORE_FRONT_TOKEN: ''
-  _NEXT_PUBLIC_SHOPIFY_STORE_NAME: ''
-  _NEXT_PUBLIC_RSS: ''
-  _NEXT_PUBLIC_FEEDBACK_FORM: ''
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
