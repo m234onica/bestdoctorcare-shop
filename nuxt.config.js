@@ -22,6 +22,10 @@ export default {
     css: [
     ],
 
+    router: {
+        middleware: "token",
+    },
+
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
     plugins: [
     ],
@@ -38,7 +42,12 @@ export default {
 
     // Modules: https://go.nuxtjs.dev/config-modules
     modules: [
+        "@nuxtjs/axios"
     ],
+
+    axios: {
+        credentials: true
+    },
 
     // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
     vuetify: {
@@ -60,7 +69,11 @@ export default {
     },
 
     serverMiddleware: [
-        '~/api/index.js'
-    ]
+        {
+            path: '/api',
+            handler: '~/api/index.js'
+        }
+
+    ],
 }
 
