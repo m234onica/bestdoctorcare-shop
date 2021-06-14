@@ -42,10 +42,12 @@ export default {
 
     // Modules: https://go.nuxtjs.dev/config-modules
     modules: [
-        "@nuxtjs/axios"
+        "@nuxtjs/axios",
+        "nuxt-shopify"
     ],
 
     axios: {
+        // baseURL: "http://localhost:4000", // Used as fallback if no runtime config is provided
         credentials: true
     },
 
@@ -55,10 +57,10 @@ export default {
         theme: {
             themes: {
                 light: {
-                    primary: colors.purple,
-                    secondary: colors.grey.darken1,
+                    primary: colors.blue,
+                    secondary: colors.blue.darken1,
                     accent: colors.shades.black,
-                    error: colors.red.accent3,
+                    error: colors.red,
                 }
             }
         }
@@ -75,5 +77,28 @@ export default {
         }
 
     ],
+    shopify: {
+        /**
+         * Your shopify domain
+         */
+        domain: process.env.SHOPIFY_API_NAME,
+
+        /**
+         * Your shopify storefront access token
+         */
+        storefrontAccessToken: process.env.STOREFRONT_ACCESS_TOKEN,
+
+        /**
+         * This will be larger than the optimized version, as it will contain all fields that are available in the
+         * Storefront API. (https://help.shopify.com/en/api/custom-storefronts/storefront-api/reference)
+         * This should only be used when you need to add custom queries to supplement the JS Buy SDK queries.
+         */
+        unoptimized: false,
+
+        /**
+         * Set language to return translated content (optional)
+         */
+        // language: 'ja-JP',
+    },
 }
 
