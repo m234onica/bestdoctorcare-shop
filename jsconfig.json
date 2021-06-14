@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "checkJs": true,
-    "module": "commonJS",
-    "resolveJsonModule": true,
-    "jsx": "react"
-  }
-}
