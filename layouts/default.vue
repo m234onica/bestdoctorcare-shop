@@ -17,7 +17,7 @@
                 </v-list>
             </v-navigation-drawer>
             <v-main class="mt-16">
-                <v-container>
+                <v-container class="px-6">
                     <nuxt />
                 </v-container>
             </v-main>
@@ -41,7 +41,7 @@ export default {
                 {
                     icon: "mdi-chart-bubble",
                     title: "邀請碼管理",
-                    to: "/inspire",
+                    to: "/discountCode",
                 },
                 {
                     icon: "mdi-bell",
