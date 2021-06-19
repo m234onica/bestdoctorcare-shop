@@ -20,7 +20,8 @@ app.post(`/announce`, async (req, res) => {
     const result = await prisma.announcement.create({
         data: {
             title: req.body.data.title,
-            content: req.body.data.content
+            content: req.body.data.content,
+            updatedAt: new Date()
         }
     })
     res.status(200).json(result);
@@ -34,7 +35,8 @@ app.post(`/announce/:id`, async (req, res) => {
         },
         data: {
             title: req.body.data.post.title,
-            content: req.body.data.post.content
+            content: req.body.data.post.content,
+            updatedAt: new Date()
         }
     });
     res.json(result);
