@@ -11,12 +11,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
-app.get(`/posts`, async (req, res) => {
+app.get(`/announcements`, async (req, res) => {
     const result = await prisma.announcement.findMany({});
     res.json(result);
 })
 
-app.post(`/announce/post`, async (req, res) => {
+app.post(`/announce`, async (req, res) => {
     const result = await prisma.announcement.create({
         data: {
             title: req.body.data.title,
@@ -24,6 +24,20 @@ app.post(`/announce/post`, async (req, res) => {
         }
     })
     res.status(200).json(result);
+})
+
+app.post(`/announce/:id`, async (req, res) => {
+    const { id } = req.params;
+    const result = await prisma.announcement.update({
+        where: {
+            id: Number(id),
+        },
+        data: {
+            title: req.body.data.post.title,
+            content: req.body.data.post.content
+        }
+    });
+    res.json(result);
 })
 
 app.get(`/discounts`, async (req, res) => {

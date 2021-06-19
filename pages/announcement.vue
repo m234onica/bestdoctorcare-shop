@@ -8,11 +8,11 @@
                         <v-spacer></v-spacer>
                     </v-col>
                     <v-col>
-                        <v-btn color="primary" @click.stop="addDialog = true">新增公告</v-btn>
+                        <v-btn color="primary" @click.stop="createDialog = true">新增公告</v-btn>
                     </v-col>
                 </v-row>
             </template>
-            <add :addDialog="addDialog" @close="close"></add>
+            <create :createDialog="createDialog" @close="close"></create>
             <v-simple-table fixed-header class="mt-8" height="300px">
                 <template v-slot:default>
                     <thead>
@@ -27,9 +27,12 @@
                             <td>{{ item.title }}</td>
                             <td>{{ new Date(item.createdAt).toLocaleString() }}</td>
                             <td>
-                                <v-btn color="teal accent-4" class="white--text">編輯</v-btn>
+                                <template>
+                                    <v-btn color="teal accent-4" class="white--text" @click.stop="editDialog = true">編輯</v-btn>
+                                </template>
                                 <v-btn color="error">刪除</v-btn>
                             </td>
+                            <edit :editDialog="editDialog" :item="item" @close="close"></edit>
                         </tr>
                     </tbody>
                 </template>
@@ -39,24 +42,28 @@
 </template>
 
 <script>
-import add from "../components/announce/add.vue";
+import create from "../components/post/create.vue";
+import edit from "../components/post/edit.vue";
 export default {
     components: {
-        add,
+        create,
+        edit,
     },
     async asyncData({ $axios }) {
-        const data = await $axios.$get(`${process.env.APP_URL}/posts`);
+        const data = await $axios.$get(`${process.env.APP_URL}/announcements`);
         return { data: data };
     },
     middleware: "token",
     data() {
         return {
-            addDialog: false,
+            createDialog: false,
+            editDialog: false,
         };
     },
     methods: {
         close() {
-            this.addDialog = false;
+            this.createDialog = false;
+            this.editDialog = false;
         },
     },
 };

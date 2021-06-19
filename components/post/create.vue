@@ -1,7 +1,7 @@
 <template>
-    <v-dialog v-model="addDialog" max-width="1000">
-        <v-card id="add_dialog">
-            <v-card-title class="text-h5 px-10"
+    <v-dialog v-model="createDialog" max-width="1000">
+        <v-card id="create_dialog">
+            <v-card-title class="text-h5 px-10 pt-8"
                 >新增公告
                 <v-btn color="darken-1" class="mr-4" absolute right icon @click="close">
                     <v-icon>mdi-close</v-icon>
@@ -22,7 +22,7 @@
 </template>
 <script>
 export default {
-    props: ["addDialog"],
+    props: ["createDialog"],
     data() {
         return {
             valid: false,
@@ -42,7 +42,7 @@ export default {
             if (validate) {
                 console.log(`${process.env}`);
                 $vm.$axios
-                    .post(`${process.env.APP_URL}/announce/post`, {
+                    .post(`${process.env.APP_URL}/announce`, {
                         data: $vm.$data,
                     })
                     .then(function (response) {
