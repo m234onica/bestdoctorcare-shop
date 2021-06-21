@@ -52,4 +52,18 @@ router.post(`/announce/:id`, async (req, res) => {
     res.json(result);
 })
 
+router.post(`/announce/delete/:id`, async (req, res) => {
+    const { id } = req.params;
+    const result = await prisma.announcement.update({
+        where: {
+            id: Number(id),
+        },
+        data: {
+            updatedAt: new Date(),
+            deletedAt: new Date()
+        }
+    });
+    res.json(result);
+})
+
 module.exports = router;

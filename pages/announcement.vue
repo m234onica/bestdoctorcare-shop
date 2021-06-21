@@ -28,9 +28,9 @@
                             <td>{{ new Date(item.createdAt).toLocaleString() }}</td>
                             <td>
                                 <template>
-                                    <v-btn color="teal accent-4" class="white--text" @click.stop="editDialog = true">編輯</v-btn>
+                                    <v-btn color="deep-purple" class="white--text" @click.stop="editDialog = true">編輯</v-btn>
                                 </template>
-                                <v-btn color="error">刪除</v-btn>
+                                <v-btn color="red darken-2" class="white--text" @click="deleteAnnounce(item.id)">刪除</v-btn>
                             </td>
                             <edit :editDialog="editDialog" :item="item" @close="close"></edit>
                         </tr>
@@ -80,6 +80,17 @@ export default {
         close() {
             this.createDialog = false;
             this.editDialog = false;
+        },
+        deleteAnnounce(id) {
+            let $vm = this;
+            $vm.$axios
+                .post(`${process.env.APP_URL}/announce/delete/` + id, {})
+                .then(function (response) {
+                    $vm.alert = !$vm.alert;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         },
     },
 };
