@@ -13,7 +13,7 @@
                 </v-row>
             </template>
             <create :createDialog="createDialog" @close="close"></create>
-            <v-simple-table fixed-header class="mt-8" height="300px">
+            <v-simple-table fixed-header class="mt-8">
                 <template v-slot:default>
                     <thead>
                         <tr>
@@ -38,6 +38,9 @@
                 </template>
             </v-simple-table>
         </div>
+        <div class="text-center">
+            <v-pagination absolute v-model="page" :length="totalPages" @input="next"></v-pagination>
+        </div>
     </v-container>
 </template>
 
@@ -49,11 +52,21 @@ export default {
         create,
         edit,
     },
-    async asyncData({ $axios }) {
-        const data = await $axios.$get(`${process.env.APP_URL}/announcements`);
-        return { data: data };
+    async asyncData({ $axios, query }) {
+        try {
+            const page = query.page || 1;
+            let { data } = await $axios.get(`${process.env.APP_URL}/announcements?page=` + page);
+            return {
+                data: data.list,
+                page: parseInt(data.page),
+                totalPages: data.totalPages,
+            };
+        } catch (e) {
+            //  console.log(e); display errors
+        }
     },
     middleware: "token",
+    watchQuery: ["page"],
     data() {
         return {
             createDialog: false,
@@ -61,6 +74,9 @@ export default {
         };
     },
     methods: {
+        next() {
+            this.$router.push({ query: { page: this.page } });
+        },
         close() {
             this.createDialog = false;
             this.editDialog = false;
@@ -68,3 +84,10 @@ export default {
     },
 };
 </script>
+<style lang="scss">
+.v-pagination {
+    position: absolute;
+    bottom: 10px;
+    right: 0px;
+}
+</style>

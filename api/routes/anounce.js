@@ -5,8 +5,25 @@ var router = express.Router();
 var prisma = new PrismaClient();
 
 router.get(`/announcements`, async (req, res) => {
-    const result = await prisma.announcement.findMany({});
-    res.json(result);
+    var listCount = 10;
+    var start = (req.query.page - 1) * listCount;
+    const response = {};
+    const result = await prisma.announcement.findMany({
+        skip: start,
+        take: listCount,
+        where: {
+            deletedAt: null
+        }
+    });
+    const totalPages = await prisma.announcement.count({
+        where: {
+            deletedAt: null
+        }
+    });
+    response.list = result;
+    response.page = req.query.page;
+    response.totalPages = parseInt(totalPages / 10) + 1;
+    res.json(response);
 })
 
 router.post(`/announce`, async (req, res) => {
