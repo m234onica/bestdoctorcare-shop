@@ -23,23 +23,39 @@
                 </template>
             </v-simple-table>
         </div>
+        <div class="text-center">
+            <v-pagination absolute v-model="page" :length="totalPages" @input="next"></v-pagination>
+        </div>
     </v-container>
 </template>
 
 <script>
 export default {
     components: {},
-    async asyncData({ $axios }) {
-        const data = await $axios.$get(`${process.env.APP_URL}/discounts`);
-        return { data: data };
+    async asyncData({ $axios, query }) {
+        try {
+            const page = query.page || 1;
+            const data = await $axios.$get(`${process.env.APP_URL}/discounts?page=` + page);
+            return {
+                data: data.list,
+                page: parseInt(data.page),
+                totalPages: data.totalPages,
+            };
+        } catch (e) {
+            //  console.log(e); display errors
+        }
     },
     middleware: "token",
+    watchQuery: ["page"],
     data() {
         return {
             discountLists: [],
         };
     },
     methods: {
+        next() {
+            this.$router.push({ query: { page: this.page } });
+        },
         getdiscountLists() {
             this.data.forEach((item) => {
                 if (item.usedAt != null) {
