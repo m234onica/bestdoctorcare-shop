@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl"]
 }
 
@@ -50,6 +50,15 @@ model FeedbackSubmission {
 model Session {
   id      String   @id
   sid     String   @unique
-  data    String?
+  data    String?  @db.Text
   expires DateTime
+}
+
+model Announcement {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 }
