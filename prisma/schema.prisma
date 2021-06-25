@@ -9,12 +9,13 @@ datasource db {
 }
 
 model ShopifyUserLineUserRelation {
-  id Int @id @default(autoincrement())
-
-  shopifyUserId String
+  shopifyUserId String @unique
   lineUserId    String
 
-  @@unique([shopifyUserId, lineUserId], name: "ShopifyUserId_LineUserId_index")
+  @@index([shopifyUserId])
+  @@index([lineUserId])
+
+  @@unique([shopifyUserId, lineUserId])
 }
 
 model Invitation {
