@@ -8,6 +8,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model ShopifyUserLineUserRelation {
+  id Int @id @default(autoincrement())
+
+  shopifyUserId String
+  lineUserId    String
+
+  @@unique([shopifyUserId, lineUserId], name: "ShopifyUserId_LineUserId_index")
+}
+
 model Invitation {
   id            Int      @id @default(autoincrement())
   userId        String
@@ -55,10 +64,10 @@ model Session {
 }
 
 model Announcement {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   title     String
-  content   String?  @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  content   String?   @db.Text
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
