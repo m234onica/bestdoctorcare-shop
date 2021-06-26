@@ -2,6 +2,16 @@
     <v-container>
         <div id="discountCode">
             <h1 fixed>折扣碼管理</h1>
+            <template>
+                <v-row>
+                    <v-col :cols="10" class="pa-0">
+                        <v-spacer></v-spacer>
+                    </v-col>
+                    <v-col>
+                        <v-btn color="primary" @click.stop="exportData()">匯出CSV檔</v-btn>
+                    </v-col>
+                </v-row>
+            </template>
             <v-simple-table fixed-header class="mt-8" height="300px">
                 <template v-slot:default>
                     <thead>
@@ -56,6 +66,9 @@ export default {
         next() {
             this.$router.push({ query: { page: this.page } });
         },
+        exportData() {
+
+        },
         getdiscountLists() {
             this.data.forEach((item) => {
                 if (item.usedAt != null) {
@@ -72,3 +85,14 @@ export default {
     },
 };
 </script>
+
+<style lang="scss">
+.v-data-table__wrapper {
+    height: calc(100% - 44px);
+}
+.v-pagination {
+    position: absolute;
+    bottom: 10px;
+    right: 0px;
+}
+</style>
