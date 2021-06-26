@@ -18,26 +18,26 @@
                     <thead>
                         <tr>
                             <th class="text-left">標題</th>
-                            <th class="text-left">發布時間</th>
-                            <th class="text-left">動作</th>
+                            <th class="text-left" width="300">發布時間</th>
+                            <th class="text-left" width="200">動作</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in data" :key="item.id">
+                        <tr v-for="(item, index) in data" :key="item.id">
                             <td>{{ item.title }}</td>
                             <td>{{ new Date(item.createdAt).toLocaleString() }}</td>
                             <td>
                                 <template>
-                                    <v-btn color="deep-purple" class="white--text" @click.stop="editDialog = true">編輯</v-btn>
+                                    <v-btn color="deep-purple" class="white--text" @click.stop="openEditDialog(index)">編輯</v-btn>
                                 </template>
                                 <v-btn color="red darken-2" class="white--text" @click="deleteAnnounce(item.id)">刪除</v-btn>
                             </td>
-                            <edit :editDialog="editDialog" :item="item" @close="close"></edit>
                         </tr>
                     </tbody>
                 </template>
             </v-simple-table>
         </div>
+        <edit :item="dialogData" :editDialog="editDialog" @close="close"></edit>
         <div class="text-center">
             <v-pagination absolute v-model="page" :length="totalPages" @input="next"></v-pagination>
         </div>
@@ -70,7 +70,18 @@ export default {
     data() {
         return {
             createDialog: false,
-            editDialog: false,
+            editDialog: [],
+            post: {
+                id: null,
+                title: null,
+                content: null,
+            },
+            editDialog:false,
+            dialogData:{
+                id: null,
+                title: null,
+                content: null,
+            }
         };
     },
     methods: {
@@ -81,12 +92,16 @@ export default {
             this.createDialog = false;
             this.editDialog = false;
         },
+        openEditDialog(index) {
+            this.editDialog = true;
+            this.dialogData = this.data[index];
+        },
         deleteAnnounce(id) {
             let $vm = this;
             $vm.$axios
                 .post(`${process.env.APP_URL}/announce/delete/` + id, {})
                 .then(function (response) {
-                    $vm.alert = !$vm.alert;
+                    window.location.reload();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -96,6 +111,9 @@ export default {
 };
 </script>
 <style lang="scss">
+.v-data-table__wrapper {
+    height: calc(100% - 44px);
+}
 .v-pagination {
     position: absolute;
     bottom: 10px;

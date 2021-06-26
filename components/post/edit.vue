@@ -9,15 +9,8 @@
             </v-card-title>
             <v-card-text class="mt-5 px-10">
                 <v-form id="login_input_field" ref="form" v-model="valid" lazy-validation>
-                    <v-text-field v-model="post.title" label="標題" :rules="titleRules" outlined required dense></v-text-field>
-                    <v-textarea
-                        v-model="post.content"
-                        label="內容"
-                        name="input-7-4"
-                        :rules="contentRules"
-                        class="mb-0 pb-0"
-                        outlined
-                    ></v-textarea>
+                    <v-text-field v-model="item.title" label="標題" :rules="titleRules" outlined required dense></v-text-field>
+                    <v-textarea v-model="item.content" label="內容" name="input-7-4" :rules="contentRules" class="mb-0 pb-0" outlined></v-textarea>
                     <v-row class="pr-4 mb-4">
                         <v-spacer></v-spacer>
                         <v-btn id="submit" color="primary" @click="submit()">送出</v-btn>
@@ -33,16 +26,9 @@ export default {
     data() {
         return {
             valid: false,
-            post: {
-                title: "",
-                content: "",
-            },
             titleRules: [(v) => !!v || "標題為必填欄位"],
             contentRules: [(v) => !!v || "內容為必填欄位"],
         };
-    },
-    mounted() {
-        this.post = this.item;
     },
     methods: {
         close() {
@@ -54,7 +40,7 @@ export default {
             if (validate) {
                 console.log(`${process.env}`);
                 $vm.$axios
-                    .post(`${process.env.APP_URL}/announce/` + $vm.post.id, {
+                    .post(`${process.env.APP_URL}/announce/` + $vm.item.id, {
                         data: $vm.$data,
                     })
                     .then(function (response) {
