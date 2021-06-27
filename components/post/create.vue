@@ -10,24 +10,32 @@
             <v-card-text class="mt-5 px-10">
                 <v-form id="login_input_field" ref="form" v-model="valid" lazy-validation>
                     <v-text-field v-model="title" label="標題" :rules="titleRules" outlined required dense></v-text-field>
-                    <v-textarea v-model="content" label="內容" name="input-7-4" :rules="contentRules" class="mb-0 pb-0" outlined></v-textarea>
-                    <v-row class="pr-4 mb-4">
-                        <v-spacer></v-spacer>
-                        <v-btn id="submit" color="primary" @click="submit()">送出</v-btn>
-                    </v-row>
+                    <rich-text-editor v-model="content"></rich-text-editor>
+                    <v-card class="mt-5 px-5">
+                        <p v-if="content == '<p></p>'" class="pt-5" style="color: rgba(0, 0, 0, 0.6)">預覽</p>
+                        <div id="preview_content" class="py-5" v-html="content"></div>
+                    </v-card>
                 </v-form>
             </v-card-text>
+            <v-card-actions class="py-5 px-10">
+                <v-spacer></v-spacer>
+                <v-btn id="submit" color="primary" @click="submit()">送出</v-btn>
+            </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
 <script>
+import richTextEditor from "../UI/richTextEditor.vue";
 export default {
     props: ["createDialog"],
+    components: {
+        richTextEditor,
+    },
     data() {
         return {
             valid: false,
             title: "",
-            content: "",
+            content: "<p></p>",
             titleRules: [(v) => !!v || "標題為必填欄位"],
             contentRules: [(v) => !!v || "內容為必填欄位"],
         };
@@ -47,6 +55,7 @@ export default {
                     })
                     .then(function (response) {
                         $vm.close();
+                        window.location.reload();
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -56,3 +65,9 @@ export default {
     },
 };
 </script>
+<style lang="scss" scpoed>
+#preview_content {
+    border-radius: 4px;
+    min-height: 50px;
+}
+</style>

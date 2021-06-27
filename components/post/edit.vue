@@ -10,24 +10,31 @@
             <v-card-text class="mt-5 px-10">
                 <v-form id="login_input_field" ref="form" v-model="valid" lazy-validation>
                     <v-text-field v-model="item.title" label="標題" :rules="titleRules" outlined required dense></v-text-field>
-                    <v-textarea v-model="item.content" label="內容" name="input-7-4" :rules="contentRules" class="mb-0 pb-0" outlined></v-textarea>
-                    <v-row class="pr-4 mb-4">
-                        <v-spacer></v-spacer>
-                        <v-btn id="submit" color="primary" @click="submit()">送出</v-btn>
-                    </v-row>
+                    <rich-text-editor v-model="item.content"></rich-text-editor>
+                    <v-card id="preview_content" class="mt-5 px-5">
+                        <p v-if="item.content == '<p></p>'" class="pt-5">預覽</p>
+                        <div class="py-5" v-html="item.content"></div>
+                    </v-card>
                 </v-form>
             </v-card-text>
+            <v-card-actions class="py-5 px-10">
+                <v-spacer></v-spacer>
+                <v-btn id="submit" color="primary" @click="submit()">送出</v-btn>
+            </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
 <script>
+import richTextEditor from "../UI/richTextEditor.vue";
 export default {
     props: ["editDialog", "item"],
+    components: {
+        richTextEditor,
+    },
     data() {
         return {
             valid: false,
             titleRules: [(v) => !!v || "標題為必填欄位"],
-            contentRules: [(v) => !!v || "內容為必填欄位"],
         };
     },
     methods: {
@@ -38,13 +45,13 @@ export default {
             let $vm = this;
             let validate = $vm.$refs.form.validate();
             if (validate) {
-                console.log(`${process.env}`);
                 $vm.$axios
                     .post(`${process.env.APP_URL}/announce/` + $vm.item.id, {
-                        data: $vm.$data,
+                        data: $vm.item,
                     })
                     .then(function (response) {
                         $vm.close();
+                        window.location.reload();
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -54,3 +61,10 @@ export default {
     },
 };
 </script>
+<style lang="scss" scoped>
+#preview_content {
+    p {
+        color: rgba(0, 0, 0, 0.6);
+    }
+}
+</style>

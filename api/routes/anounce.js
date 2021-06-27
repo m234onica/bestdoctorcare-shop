@@ -44,8 +44,8 @@ router.post(`/announce/:id`, async (req, res) => {
             id: Number(id),
         },
         data: {
-            title: req.body.data.post.title,
-            content: req.body.data.post.content,
+            title: req.body.data.title,
+            content: req.body.data.content,
             updatedAt: new Date()
         }
     });
