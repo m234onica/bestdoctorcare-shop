@@ -1,65 +1,45 @@
 <template>
-    <div>
-        <!-- Use the component in the right place of the template -->
-        <tiptap-vuetify :value="value" :extensions="extensions" placeholder="內容" @input="$emit('input', arguments[0])" />
-    </div>
+    <quill-editor :content="editedContent" @change="onEditorChange($event)" style="height: 250px"> </quill-editor>
 </template>
 <script>
-// import the component and the necessary extensions
-import {
-    TiptapVuetify,
-    Heading,
-    Bold,
-    Italic,
-    Strike,
-    Underline,
-    Code,
-    Paragraph,
-    BulletList,
-    OrderedList,
-    ListItem,
-    Link,
-    Blockquote,
-    HardBreak,
-    HorizontalRule,
-    History,
-} from "tiptap-vuetify";
-
+import { debounce } from "vue-debounce";
 export default {
-    components: { TiptapVuetify },
+    // 如果是編輯文章，則會從parent收到文章當前的content
     props: {
-        value: {
+        content: {
             type: String,
-            default: `
-                <h1>Yay Headlines!</h1>
-                <p>All these <strong>cool tags</strong> are working now.</p>`,
+            default: () => "",
         },
     },
-    data: () => ({
-        extensions: [
-            History,
-            Blockquote,
-            Link,
-            Underline,
-            Strike,
-            Italic,
-            ListItem,
-            BulletList,
-            OrderedList,
-            [
-                Heading,
-                {
-                    options: {
-                        levels: [1, 2, 3],
+    data() {
+        return {
+            editedContent: this.content,
+            // 所有文本編輯器功能設定均寫在editorOption
+            editorOption: {
+                theme: "snow", // 可換
+                modules: {
+                    toolbar: {
+                        // container這裡是個大坑，[]表分群
+                        container: [
+                            ["bold", "italic", "underline", "strike", "code"],
+                            ["blockquote", "code-block"],
+                            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                            [{ list: "ordered" }, { list: "bullet" }],
+                            [{ indent: "-1" }, { indent: "+1" }],
+                            [{ color: [] }, { background: [] }],
+                            [{ align: [] }],
+                            ["clean"],
+                            ["link", "image", "video"],
+                        ],
                     },
                 },
-            ],
-            Bold,
-            Code,
-            HorizontalRule,
-            Paragraph,
-            HardBreak,
-        ],
-    }),
+            },
+        };
+    },
+    methods: {
+        onEditorChange({ editor, html, text }) {
+            this.$emit("quillEdit", html);
+        },
+    },
 };
 </script>

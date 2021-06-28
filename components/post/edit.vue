@@ -10,11 +10,7 @@
             <v-card-text class="mt-5 px-10">
                 <v-form id="login_input_field" ref="form" v-model="valid" lazy-validation>
                     <v-text-field v-model="item.title" label="標題" :rules="titleRules" outlined required dense></v-text-field>
-                    <rich-text-editor v-model="item.content"></rich-text-editor>
-                    <v-card id="preview_content" class="mt-5 px-5">
-                        <p v-if="item.content == '<p></p>'" class="pt-5">預覽</p>
-                        <div class="py-5" v-html="item.content"></div>
-                    </v-card>
+                    <rich-text-editor :content="item.content" @quillEdit="quillEdit"></rich-text-editor>
                 </v-form>
             </v-card-text>
             <v-card-actions class="py-5 px-10">
@@ -41,6 +37,9 @@ export default {
         close() {
             this.$emit("close");
         },
+        quillEdit(data) {
+            this.item.content = data;
+        },
         submit() {
             let $vm = this;
             let validate = $vm.$refs.form.validate();
@@ -61,10 +60,3 @@ export default {
     },
 };
 </script>
-<style lang="scss" scoped>
-#preview_content {
-    p {
-        color: rgba(0, 0, 0, 0.6);
-    }
-}
-</style>

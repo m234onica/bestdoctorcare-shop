@@ -20,6 +20,9 @@ export default {
 
     // Global CSS: https://go.nuxtjs.dev/config-css
     css: [
+        'quill/dist/quill.snow.css',
+        'quill/dist/quill.bubble.css',
+        'quill/dist/quill.core.css'
     ],
 
     router: {
@@ -28,7 +31,7 @@ export default {
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
     plugins: [
-        { src: "~/plugins/tiptapVuetify.js" }
+        { src: '~plugins/vueQuillEditor.js', ssr: false }
     ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
