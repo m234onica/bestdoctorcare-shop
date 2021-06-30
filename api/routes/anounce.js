@@ -15,14 +15,22 @@ router.get(`/announcements`, async (req, res) => {
             deletedAt: null
         }
     });
-    const totalPages = await prisma.announcement.count({
+
+    var totalPages = 0;
+    const announcementCount = await prisma.announcement.count({
         where: {
             deletedAt: null
         }
     });
     response.list = result;
     response.page = req.query.page;
-    response.totalPages = parseInt(totalPages / 10) + 1;
+
+    if (announcementCount % 10 == 0) {
+        totalPages = parseInt(announcementCount / 10);
+    } else {
+        totalPages = parseInt(announcementCount / 10) + 1;
+    }
+    response.totalPages = totalPages;
     res.json(response);
 })
 

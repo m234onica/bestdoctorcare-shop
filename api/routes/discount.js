@@ -12,10 +12,17 @@ router.get(`/discounts`, async (req, res) => {
         skip: start,
         take: listCount
     });
-    const totalPages = await prisma.discount.count();
+
+    var totalPages = 0;
+    const discountCount = await prisma.discount.count();
     response.list = result;
     response.page = req.query.page;
-    response.totalPages = parseInt(totalPages / 10) + 1;
+    if (discountCount % 10 == 0) {
+        totalPages = parseInt(discountCount / 10);
+    } else {
+        totalPages = parseInt(discountCount / 10) + 1;
+    }
+    response.totalPages = totalPages;
     res.json(response);
 })
 
