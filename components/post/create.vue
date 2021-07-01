@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="createDialog" max-width="1000" persistent>
+    <v-dialog v-model="createDialog" fullscreen persistent>
         <v-card id="create_dialog">
             <v-card-title class="text-h5 px-10 pt-8"
                 >新增公告
@@ -10,7 +10,7 @@
             <v-card-text class="mt-5 px-10">
                 <v-form id="login_input_field" ref="form" v-model="valid" lazy-validation>
                     <v-text-field v-model="title" label="標題" :rules="titleRules" outlined required dense></v-text-field>
-                    <quill-editor v-model="content" ref="richTextEditor" :options="editorOption" style="height: 250px"></quill-editor>
+                    <quill-editor v-model="content" ref="richTextEditor" :options="editorOption" style="height: 500px"></quill-editor>
                 </v-form>
             </v-card-text>
             <v-card-actions class="py-5 px-10">
@@ -21,12 +21,8 @@
     </v-dialog>
 </template>
 <script>
-import richTextEditor from "../UI/richTextEditor.vue";
 export default {
     props: ["createDialog"],
-    components: {
-        richTextEditor,
-    },
     data() {
         return {
             valid: false,
@@ -37,21 +33,28 @@ export default {
             editorOption: {
                 theme: "snow", // 可換
                 modules: {
-                    toolbar: {
-                        // container這裡是個大坑，[]表分群
-                        container: [
-                            ["bold", "italic", "underline", "strike", "code"],
-                            ["blockquote", "code-block"],
-                            [{ header: [1, 2, 3, 4, 5, 6, false] }],
-                            [{ list: "ordered" }, { list: "bullet" }],
-                            [{ indent: "-1" }, { indent: "+1" }],
-                            [{ size: ["small", false, "large", "huge"] }],
-                            [{ color: [] }, { background: [] }],
-                            [{ align: [] }],
-                            ["clean"],
-                            ["link", "image"],
-                        ],
+                    imageResize: {
+                        //添加
+                        displayStyles: {
+                            //添加
+                            backgroundColor: "black",
+                            border: "none",
+                            color: "white",
+                        },
+                        modules: ["Resize", "DisplaySize", "Toolbar"], //添加
                     },
+                    toolbar: [
+                        ["bold", "italic", "underline", "strike", "code"],
+                        ["blockquote", "code-block"],
+                        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                        [{ list: "ordered" }, { list: "bullet" }],
+                        [{ indent: "-1" }, { indent: "+1" }],
+                        [{ size: ["small", false, "large", "huge"] }],
+                        [{ color: [] }, { background: [] }],
+                        [{ align: [] }],
+                        ["clean"],
+                        ["link", "image"],
+                    ],
                 },
             },
         };
@@ -60,6 +63,33 @@ export default {
         close() {
             this.$emit("close");
         },
+        uploadFunction(e) {
+            this.selectedFile = e.target.files[0];
+
+            var form = new FormData();
+            form.append("file", this.selectedFile);
+            form.append("name", this.selectedFile.name);
+
+            //upload image to server
+            axios
+                .post("media-save", form, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
+                .then((r) => {
+                    console.log("success");
+
+                    //this code to set your position cursor
+                    const range = this.$refs.quillEdit.quill.getSelection();
+                    //this code to set image on your server to quill editor
+                    this.$refs.quillEdit.quill.insertEmbed(range.index, "image", `http://your.api/${r}`);
+                })
+                .catch((e) => {
+                    console.log("error");
+                });
+        },
+
         submit() {
             let $vm = this;
             let validate = $vm.$refs.form.validate();
@@ -84,7 +114,7 @@ export default {
 <style lang="scss" scpoed>
 #create_dialog {
     .v-card__text {
-        min-height: 370px;
+        min-height: 600px;
     }
 }
 </style>

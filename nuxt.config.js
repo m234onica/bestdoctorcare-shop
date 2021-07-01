@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+const webpack = require("webpack")
 
 export default {
     // Global page headers: https://go.nuxtjs.dev/config-head
@@ -71,7 +72,13 @@ export default {
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {
-        transpile: ['vuetify/lib', "tiptap-vuetify"]
+        plugins: [
+            new webpack.ProvidePlugin({
+                'window.Quill': 'quill/dist/quill.js',
+                'Quill': 'quill/dist/quill.js'
+            }),
+        ]
+
     },
 
     serverMiddleware: [
