@@ -73,13 +73,15 @@ model Announcement {
 }
 
 model EventLog {
-  id      Int     @id @default(autoincrement())
-  type    String
-  userId  String?
-  payload Json?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id        Int      @id @default(autoincrement())
+  type      String
+  productId String?
+  userId    String?
+  payload   Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([type])
   @@index([userId])
+  @@index([productId])
 }
