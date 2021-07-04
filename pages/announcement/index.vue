@@ -45,8 +45,8 @@
 </template>
 
 <script>
-import create from "../components/post/create.vue";
-import edit from "../components/post/edit.vue";
+import create from "../../components/post/create"
+import edit from "../../components/post/edit";
 export default {
     components: {
         create,
