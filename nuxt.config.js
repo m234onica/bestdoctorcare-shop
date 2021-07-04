@@ -32,7 +32,8 @@ export default {
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
     plugins: [
-        { src: '~plugins/vueQuillEditor.js', ssr: false }
+        { src: '~plugins/vueQuillEditor.js', ssr: false },
+        { src: '~plugins/axios.js' },
     ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
@@ -51,8 +52,10 @@ export default {
     ],
 
     axios: {
-        // baseURL: "http://localhost:4000", // Used as fallback if no runtime config is provided
-        credentials: true
+        proxy: true
+    },
+    proxy: {
+        "/api": `${process.env.APP_URL}`
     },
 
     // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -77,7 +80,8 @@ export default {
                 'window.Quill': 'quill/dist/quill.js',
                 'Quill': 'quill/dist/quill.js'
             }),
-        ]
+        ],
+        vendor: ["axios"]
 
     },
 
