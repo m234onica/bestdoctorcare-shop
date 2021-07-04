@@ -13,7 +13,7 @@
                     <quill-editor v-model="content" ref="richTextEditor" :options="editorOption" style="height: 500px"></quill-editor>
                 </v-form>
             </v-card-text>
-            <v-card-actions class="py-5 px-10">
+            <v-card-actions class="mt-5 py-5 px-10">
                 <v-spacer></v-spacer>
                 <v-btn id="submit" color="primary" @click="submit()">送出</v-btn>
             </v-card-actions>
@@ -63,38 +63,10 @@ export default {
         close() {
             this.$emit("close");
         },
-        uploadFunction(e) {
-            this.selectedFile = e.target.files[0];
-
-            var form = new FormData();
-            form.append("file", this.selectedFile);
-            form.append("name", this.selectedFile.name);
-
-            //upload image to server
-            axios
-                .post("media-save", form, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                })
-                .then((r) => {
-                    console.log("success");
-
-                    //this code to set your position cursor
-                    const range = this.$refs.quillEdit.quill.getSelection();
-                    //this code to set image on your server to quill editor
-                    this.$refs.quillEdit.quill.insertEmbed(range.index, "image", `http://your.api/${r}`);
-                })
-                .catch((e) => {
-                    console.log("error");
-                });
-        },
-
         submit() {
             let $vm = this;
             let validate = $vm.$refs.form.validate();
             if (validate) {
-                console.log(`${process.env}`);
                 $vm.$axios
                     .post(`${process.env.APP_URL}/announce`, {
                         data: $vm.$data,

@@ -81,6 +81,13 @@ export default {
                 'Quill': 'quill/dist/quill.js'
             }),
         ],
+        extend(config, { isDev, isClient }) {
+
+            config.node = {
+                fs: 'empty',
+                child_process: 'empty'
+            }
+        },
         vendor: ["axios"]
 
     },

@@ -91,3 +91,6 @@ sw.*
 *.swp
 
 .github
+
+#gcs
+google-cloud-key.json
