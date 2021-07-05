@@ -47,9 +47,9 @@ export default {
             const page = query.page || 1;
             let data = await $axios.get(`${process.env.APP_URL}/discounts?page=` + page);
             return {
-                data: data.list,
-                page: parseInt(data.page),
-                totalPages: data.totalPages,
+                data: data.data.list,
+                page: parseInt(data.data.page),
+                totalPages: data.data.totalPages,
             };
         } catch (e) {
             //  console.log(e); display errors

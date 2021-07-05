@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import create from "../../components/post/create"
+import create from "../../components/post/create";
 import edit from "../../components/post/edit";
 export default {
     components: {
@@ -57,9 +57,9 @@ export default {
             const page = query.page || 1;
             let data = await $axios.get(`${process.env.APP_URL}/announcements?page=` + page);
             return {
-                data: data.list,
-                page: parseInt(data.page),
-                totalPages: data.totalPages,
+                data: data.data.list,
+                page: parseInt(data.data.page),
+                totalPages: data.data.totalPages,
             };
         } catch (e) {
             //  console.log(e); display errors
@@ -69,6 +69,7 @@ export default {
     watchQuery: ["page"],
     data() {
         return {
+            loading: true,
             createDialog: false,
             editDialog: [],
             post: {
@@ -76,13 +77,16 @@ export default {
                 title: null,
                 content: null,
             },
-            editDialog:false,
-            dialogData:{
+            editDialog: false,
+            dialogData: {
                 id: null,
                 title: null,
                 content: null,
-            }
+            },
         };
+    },
+    mounted() {
+        this.loading = false;
     },
     methods: {
         next() {
