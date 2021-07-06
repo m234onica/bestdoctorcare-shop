@@ -100,17 +100,6 @@ export default {
                 },
                 persisting: false,
             },
-            dev: {
-                httpEndpoint:
-                    `${process.env.SHOPIFY_API_URL}/api/2020-04/graphql.json`,
-                httpLinkOptions: {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-Shopify-Access-Token": process.env.STOREFRONT_ACCESS_TOKEN
-                    }
-                },
-                persisting: false,
-            }
         }
     },
 
