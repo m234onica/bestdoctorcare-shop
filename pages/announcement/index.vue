@@ -55,7 +55,7 @@ export default {
     async asyncData({ $axios, query }) {
         try {
             const page = query.page || 1;
-            let data = await $axios.get(`${process.env.APP_URL}/announcements?page=` + page);
+            let data = await $axios.get("/announcements?page=" + page);
             return {
                 data: data.data.list,
                 page: parseInt(data.data.page),
@@ -103,7 +103,7 @@ export default {
         deleteAnnounce(id) {
             let $vm = this;
             $vm.$axios
-                .post(`${process.env.APP_URL}/announce/delete/` + id, {})
+                .post("/announce/delete/" + id, {})
                 .then(function (response) {
                     window.location.reload();
                 })

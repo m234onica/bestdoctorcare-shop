@@ -45,7 +45,7 @@ export default {
     async asyncData({ $axios, query }) {
         try {
             const page = query.page || 1;
-            let data = await $axios.get(`${process.env.APP_URL}/discounts?page=` + page);
+            let data = await $axios.get("/discounts?page=" + page);
             return {
                 data: data.data.list,
                 page: parseInt(data.data.page),
