@@ -39,7 +39,7 @@
                 </v-col>
 
                 <v-col class="d-flex" cols="12" sm="4">
-                    <v-select v-model="tags" :items="tagItems" label="商品種類" dense></v-select>
+                    <v-select v-model="defaultCollection" :items="collectionsItems" label="商品種類" dense></v-select>
                 </v-col>
             </v-row>
             <v-textarea outlined name="input-7-4" label="通知內容" value="" class="mb-0 pb-0" :messages="message"></v-textarea>
@@ -51,12 +51,21 @@
     </v-container>
 </template>
 <script>
+import Collections from "../../graphQL/query/collections.gql";
 export default {
+    async asyncData({ app }) {
+        const collections = await app.apolloProvider.defaultClient.query({
+            query: Collections,
+        });
+        return {
+            collections: collections.data.collections.edges,
+        };
+    },
     data: () => ({
         customer: "所有人",
         customerItems: ["所有人", "購買", "檢視"],
-        tags: "全部",
-        tagItems: ["全部", "保健食品類"],
+        defaultCollection: "全部",
+        collectionsItems: ["全部"],
         dates: [],
         menu: false,
         msgCount: 0,
@@ -64,6 +73,9 @@ export default {
         message: "",
     }),
     mounted() {
+        this.collections.forEach((item) => {
+            this.collectionsItems.push(item.node.handle);
+        });
         this.message = "則數提醒：目前共 " + this.msgCount + " 則，發送給  人，共計送出 " + this.totalMsgCount + " 則";
     },
 };

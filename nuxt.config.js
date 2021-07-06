@@ -48,6 +48,7 @@ export default {
     // Modules: https://go.nuxtjs.dev/config-modules
     modules: [
         "@nuxtjs/axios",
+        "@nuxtjs/apollo",
     ],
 
     axios: {
@@ -85,6 +86,32 @@ export default {
             }
         },
 
+    },
+    apollo: {
+        clientConfigs: {
+            default: {
+                httpEndpoint:
+                    `${process.env.SHOPIFY_API_URL}/api/2021-04/graphql.json`,
+                httpLinkOptions: {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Shopify-Access-Token": process.env.STOREFRONT_ACCESS_TOKEN
+                    }
+                },
+                persisting: false,
+            },
+            dev: {
+                httpEndpoint:
+                    `${process.env.SHOPIFY_API_URL}/api/2020-04/graphql.json`,
+                httpLinkOptions: {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Shopify-Access-Token": process.env.STOREFRONT_ACCESS_TOKEN
+                    }
+                },
+                persisting: false,
+            }
+        }
     },
 
     serverMiddleware: [
