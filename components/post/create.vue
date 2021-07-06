@@ -68,7 +68,7 @@ export default {
             let validate = $vm.$refs.form.validate();
             if (validate) {
                 $vm.$axios
-                    .post(`${process.env.APP_URL}/announce`, {
+                    .post("/announce", {
                         data: $vm.$data,
                     })
                     .then(function (response) {

@@ -50,7 +50,9 @@ export default {
         "@nuxtjs/axios",
     ],
 
-    axios: {},
+    axios: {
+        baseURL: process.env.APP_URL
+    },
 
     // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
     vuetify: {
