@@ -1,8 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 var express = require("express");
+var Shopify = require('shopify-api-node');
 
 var router = express.Router();
 var prisma = new PrismaClient();
+var shopify = new Shopify({
+    shopName: process.env.SHOPIFY_API_URL,
+    apiKey: process.env.SHOPIFY_API_KEY,
+    password: process.env.SHOPIFY_ACCESS_TOKEN
+});
 
 router.get(`/discounts`, async (req, res) => {
     var listCount = 10;
@@ -12,6 +18,21 @@ router.get(`/discounts`, async (req, res) => {
         skip: start,
         take: listCount
     });
+
+    const customerFields = ["id", "first_name"].join(',');
+    const customers = await shopify.customer.list({
+        fields: customerFields
+    });
+
+    result.forEach((item) => {
+        customers.forEach((customer) => {
+            var userId = item.userId;
+            if (customer.id == userId) {
+                item.customerName = customer.first_name;
+            }
+        });
+    });
+
 
     var totalPages = 0;
     const discountCount = await prisma.discount.count();

@@ -12,7 +12,7 @@
                     </v-col>
                 </v-row>
             </template>
-            <v-simple-table fixed-header class="mt-8" height="300px">
+            <v-simple-table fixed-header class="mt-8">
                 <template v-slot:default>
                     <thead>
                         <tr>
@@ -23,9 +23,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in discountLists" :key="item.name">
+                        <tr v-for="item in data" :key="item.name">
                             <td>{{ item.createdAt }}</td>
-                            <td>{{ item.userId }}</td>
+                            <td>{{ item.customerName }}</td>
                             <td>{{ item.title }}</td>
                             <td>{{ item.status }}</td>
                         </tr>
@@ -42,17 +42,25 @@
 <script>
 export default {
     components: {},
-    async asyncData({ $axios, query }) {
+    async asyncData({ $axios, query}) {
         try {
             const page = query.page || 1;
             let data = await $axios.get("/discounts?page=" + page);
+            let discounts = data.data.list;
+            discounts.forEach((item) => {
+                if (item.usedAt != null) {
+                    item.status = "已使用";
+                } else {
+                    item.status = "尚未使用";
+                }
+            });
             return {
-                data: data.data.list,
+                data: discounts,
                 page: parseInt(data.data.page),
                 totalPages: data.data.totalPages,
             };
         } catch (e) {
-            //  console.log(e); display errors
+            // console.log(e);
         }
     },
     middleware: "token",
@@ -66,22 +74,6 @@ export default {
         next() {
             this.$router.push({ query: { page: this.page } });
         },
-        exportData() {
-
-        },
-        getdiscountLists() {
-            this.data.forEach((item) => {
-                if (item.usedAt != null) {
-                    item.status = "已使用";
-                } else {
-                    item.status = "尚未使用";
-                }
-                this.discountLists.push(item);
-            });
-        },
-    },
-    mounted() {
-        this.getdiscountLists();
     },
 };
 </script>
