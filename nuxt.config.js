@@ -1,3 +1,4 @@
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
 import colors from 'vuetify/es5/util/colors'
 const webpack = require("webpack")
 
@@ -42,7 +43,7 @@ export default {
     buildModules: [
         // https://go.nuxtjs.dev/vuetify
         '@nuxtjs/vuetify',
-        ["@nuxtjs/dotenv", { filename: ".env." + process.env.NODE_ENV }], //這是給預設 .env 使用
+        ['@nuxtjs/dotenv', { filename: `.env.${process.env.NODE_ENV}`, path: './' }], //這是給預設 .env 使用
     ],
 
     // Modules: https://go.nuxtjs.dev/config-modules
