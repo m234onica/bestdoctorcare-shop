@@ -28,6 +28,7 @@
                                 readonly
                                 v-bind="attrs"
                                 v-on="on"
+                                :disabled="disabled"
                             ></v-combobox>
                         </template>
                         <v-date-picker v-model="dates" multiple no-title scrollable>
@@ -39,7 +40,7 @@
                 </v-col>
 
                 <v-col class="d-flex" cols="12" sm="4">
-                    <v-select v-model="defaultCollection" :items="collectionsItems" label="商品種類" dense></v-select>
+                    <v-select v-model="defaultCollection" :items="collectionsItems" label="商品種類" dense :disabled="disabled"></v-select>
                 </v-col>
             </v-row>
             <v-textarea outlined name="input-7-4" label="通知內容" value="" class="mb-0 pb-0" :messages="message"></v-textarea>
@@ -71,6 +72,15 @@ export default {
         totalMsgCount: 0,
         message: "",
     }),
+    computed: {
+        disabled() {
+            var disabled = false;
+            if (this.customer == "所有人") {
+                disabled = true;
+            }
+            return disabled;
+        },
+    },
     mounted() {
         this.collections.forEach((item) => {
             this.collectionsItems.push(item.handle);
