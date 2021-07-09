@@ -51,15 +51,14 @@
     </v-container>
 </template>
 <script>
-import Collections from "../../graphQL/query/collections.gql";
 export default {
-    async asyncData({ app }) {
-        const collections = await app.apolloProvider.defaultClient.query({
-            query: Collections,
-        });
-        return {
-            collections: collections.data.collections.edges,
-        };
+    async asyncData({ $axios }) {
+        try {
+            let collection = await $axios.get("/collection");
+            return { collections: collection.data.collections };
+        } catch (e) {
+            //  console.log(e);
+        }
     },
     data: () => ({
         customer: "所有人",
@@ -74,7 +73,7 @@ export default {
     }),
     mounted() {
         this.collections.forEach((item) => {
-            this.collectionsItems.push(item.node.handle);
+            this.collectionsItems.push(item.handle);
         });
         this.message = "則數提醒：目前共 " + this.msgCount + " 則，發送給  人，共計送出 " + this.totalMsgCount + " 則";
     },

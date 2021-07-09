@@ -10,7 +10,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 var announce = require("./routes/anounce");
 var discount = require("./routes/discount");
+var notification = require("./routes/notification");
+
 app.use("/", announce);
 app.use("/", discount);
+app.use("/", notification);
 
 module.exports = app;

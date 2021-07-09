@@ -1,9 +1,0 @@
-query Collections {
-    collections(first: 100) {
-        edges {
-            node {
-                handle
-            }
-        }
-    }
-}
