@@ -49,7 +49,7 @@
                 name="input-7-4"
                 label="通知內容"
                 v-model="content"
-                class="mb-0 pb-0"
+                class="mt-1 mb-0 pb-0"
                 :error="notifyFail"
                 :messages="errorMsg"
                 @blur="clearError"
