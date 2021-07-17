@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 var express = require("express");
-var Shopify = require('shopify-api-node');
+var Shopify = require("shopify-api-node");
+var { AsyncParser } = require("json2csv");
+var fs = require("fs");
 
 var router = express.Router();
 var prisma = new PrismaClient();
@@ -45,6 +47,56 @@ router.get(`/discounts`, async (req, res) => {
     }
     response.totalPages = totalPages;
     res.json(response);
+})
+
+router.post("/export", async (req, res) => {
+    const result = await prisma.discount.findMany({
+        select: {
+            userId: true,
+            title: true,
+            description: true,
+            code: true,
+            value: true
+        }
+    });
+    const customerFields = ["id", "first_name"].join(',');
+    const customers = await shopify.customer.list({
+        fields: customerFields
+    });
+
+    result.forEach((item) => {
+        customers.forEach((customer) => {
+            var userId = item.userId;
+            if (customer.id == userId) {
+                item.customerName = customer.first_name;
+            }
+        });
+        if (item.usedAt != null) {
+            item.status = "已使用";
+        } else {
+            item.status = "尚未使用";
+        }
+    });
+
+    const fields = ["userId", "title", "description", "code", "value", "customerName", "status"];
+    const opts = { fields };
+    const transformOpts = { highWaterMark: 8192 };
+
+    const asyncParser = new AsyncParser(opts, transformOpts);
+
+    let csv = "";
+    asyncParser.processor
+        .on("data", chunk => (csv += chunk.toString()))
+        .on("end", () => {
+            fs.writeFile('export.csv', csv, function (err) {
+                if (err) throw err;
+            });
+            res.send(csv);
+        })
+        .on("error", err => console.error(err));
+
+    asyncParser.input.push(JSON.stringify(result));
+    asyncParser.input.push(null);
 })
 
 module.exports = router;
