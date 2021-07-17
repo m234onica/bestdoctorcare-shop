@@ -13,7 +13,7 @@ var shopify = new Shopify({
 });
 
 router.get(`/discounts`, async (req, res) => {
-    var listCount = 10;
+    var listCount = 9;
     var start = (req.query.page - 1) * listCount;
     const response = {};
     const result = await prisma.discount.findMany({
@@ -40,10 +40,10 @@ router.get(`/discounts`, async (req, res) => {
     const discountCount = await prisma.discount.count();
     response.list = result;
     response.page = req.query.page;
-    if (discountCount % 10 == 0) {
-        totalPages = parseInt(discountCount / 10);
+    if (discountCount % 9 == 0) {
+        totalPages = parseInt(discountCount / 9);
     } else {
-        totalPages = parseInt(discountCount / 10) + 1;
+        totalPages = parseInt(discountCount / 9) + 1;
     }
     response.totalPages = totalPages;
     res.json(response);
