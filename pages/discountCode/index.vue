@@ -42,7 +42,7 @@
 <script>
 export default {
     components: {},
-    async asyncData({ $axios, query}) {
+    async asyncData({ $axios, query }) {
         try {
             const page = query.page || 1;
             let data = await $axios.get("/discounts?page=" + page);
@@ -73,6 +73,27 @@ export default {
     methods: {
         next() {
             this.$router.push({ query: { page: this.page } });
+        },
+        exportData() {
+            this.$axios
+                .get("/export", { responseType: "blob" })
+                .then(function (response) {
+                    if (!window.navigator.msSaveOrOpenBlob) {
+                        // BLOB NAVIGATOR
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement("a");
+                        link.href = url;
+                        link.setAttribute("download", "export.csv");
+                        document.body.appendChild(link);
+                        link.click();
+                    } else {
+                        // BLOB FOR EXPLORER 11
+                        const url = window.navigator.msSaveOrOpenBlob(new Blob([response.data]), "export.csv");
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         },
     },
 };

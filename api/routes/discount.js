@@ -49,16 +49,8 @@ router.get(`/discounts`, async (req, res) => {
     res.json(response);
 })
 
-router.post("/export", async (req, res) => {
-    const result = await prisma.discount.findMany({
-        select: {
-            userId: true,
-            title: true,
-            description: true,
-            code: true,
-            value: true
-        }
-    });
+router.get("/export", async (req, res) => {
+    const result = await prisma.discount.findMany({});
     const customerFields = ["id", "first_name"].join(',');
     const customers = await shopify.customer.list({
         fields: customerFields
@@ -78,7 +70,38 @@ router.post("/export", async (req, res) => {
         }
     });
 
-    const fields = ["userId", "title", "description", "code", "value", "customerName", "status"];
+    const fields = [
+        {
+            value: "customerName",
+            label: "使用者"
+        },
+        {
+            value: "userId",
+            label: "Shopify ID"
+        },
+        {
+            value: "title",
+            label: "發送因由"
+        },
+        {
+            value: "description",
+            label: "描述"
+        },
+        {
+            value: "code",
+            label: "折扣碼"
+        }
+        ,
+        {
+            value: "value",
+            label: "折扣金額"
+        }
+        ,
+        {
+            value: "status",
+            label: "狀態"
+        }
+    ];
     const opts = { fields };
     const transformOpts = { highWaterMark: 8192 };
 
@@ -87,12 +110,7 @@ router.post("/export", async (req, res) => {
     let csv = "";
     asyncParser.processor
         .on("data", chunk => (csv += chunk.toString()))
-        .on("end", () => {
-            fs.writeFile('export.csv', csv, function (err) {
-                if (err) throw err;
-            });
-            res.send(csv);
-        })
+        .on("end", () => res.send(csv))
         .on("error", err => console.error(err));
 
     asyncParser.input.push(JSON.stringify(result));
