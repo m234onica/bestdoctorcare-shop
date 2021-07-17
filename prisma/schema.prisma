@@ -32,16 +32,16 @@ model InvitationCode {
 }
 
 model Discount {
-  id           Int       @id @default(autoincrement())
-  userId       String
-  title        String
-  description  String?
-  code         String
-  value        String
-  valueType    String    @default("FIXED_AMOUNT")
-  draftOrderId String?
-  usedAt       DateTime?
-  createdAt    DateTime  @default(now())
+  id          Int       @id @default(autoincrement())
+  userId      String
+  title       String
+  description String?
+  code        String
+  value       String
+  valueType   String    @default("FIXED_AMOUNT")
+  orderId     String?
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
 }
 
 model DraftOrderRelation {
