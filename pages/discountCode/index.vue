@@ -40,6 +40,8 @@
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
     components: {},
     async asyncData({ $axios, query }) {
@@ -48,6 +50,7 @@ export default {
             let data = await $axios.get("/discounts?page=" + page);
             let discounts = data.data.list;
             discounts.forEach((item) => {
+                item.createdAt = moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss");
                 if (item.usedAt != null) {
                     item.status = "已使用";
                 } else {

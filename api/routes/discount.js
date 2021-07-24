@@ -3,6 +3,7 @@ var express = require("express");
 var Shopify = require("shopify-api-node");
 var { AsyncParser } = require("json2csv");
 var fs = require("fs");
+var moment = require("moment");
 
 var router = express.Router();
 var prisma = new PrismaClient();
@@ -64,10 +65,9 @@ router.get("/export", async (req, res) => {
             }
         });
         if (item.usedAt != null) {
-            item.status = "已使用";
-        } else {
-            item.status = "尚未使用";
+            item.usedAt = moment(item.usedAt).format("YYYY-MM-DD HH:mm:ss");
         }
+        item.createdAt = moment(item.createdAt).format("YYYY-MM-DD HH:m:s");
     });
 
     const fields = [
@@ -84,22 +84,20 @@ router.get("/export", async (req, res) => {
             label: "發送因由"
         },
         {
-            value: "description",
-            label: "描述"
-        },
-        {
             value: "code",
             label: "折扣碼"
-        }
-        ,
+        },
         {
             value: "value",
             label: "折扣金額"
-        }
-        ,
+        },
         {
-            value: "status",
-            label: "狀態"
+            value: "usedAt",
+            label: "使用時間"
+        },
+        {
+            value: "createdAt",
+            label: "建立時間"
         }
     ];
     const opts = { fields };

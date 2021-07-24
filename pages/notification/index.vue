@@ -20,27 +20,33 @@
                         <template v-slot:activator="{ on, attrs }">
                             <v-combobox
                                 v-model="dates"
-                                multiple
-                                chips
-                                small-chips
                                 label="日期範圍"
                                 prepend-icon="mdi-calendar"
-                                readonly
                                 v-bind="attrs"
                                 v-on="on"
+                                range
                                 :disabled="disabled"
                             ></v-combobox>
                         </template>
-                        <v-date-picker v-model="dates" multiple no-title scrollable>
+                        <v-date-picker v-model="dates" range no-title scrollable>
                             <v-spacer></v-spacer>
                             <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
-                            <v-btn text color="primary" @click="$refs.menu.save(dates)"> OK </v-btn>
+                            <v-btn
+                                text
+                                color="primary"
+                                @click="
+                                    $refs.menu.save(dates);
+                                    getLineIdArry();
+                                "
+                            >
+                                OK
+                            </v-btn>
                         </v-date-picker>
                     </v-menu>
                 </v-col>
 
                 <v-col class="d-flex" cols="12" sm="4">
-                    <v-select v-model="defaultCollection" :items="collectionsItems" label="商品種類" dense :disabled="disabled"></v-select>
+                    <v-select v-model="collection" :items="collectionsItems" label="商品種類" dense :disabled="disabled" @change="getLineIdArry"></v-select>
                 </v-col>
             </v-row>
             <span id="msg_count">則數提醒：目前共 {{ msgCount }} 則，發送給 {{ lineIdCount }} 人，共計送出 {{ totalMsgCount }} 則</span>
@@ -76,7 +82,7 @@ export default {
         type: null,
         customer: "所有人",
         customerItems: ["所有人", "購買", "檢視"],
-        defaultCollection: "全部",
+        collection: "全部",
         collectionsItems: ["全部"],
         dates: [],
         menu: false,
@@ -109,18 +115,15 @@ export default {
         this.getLineIdArry(this.customer);
     },
     methods: {
-        getLineIdArry(customer) {
+        getLineIdArry() {
             let $vm = this;
+            var actionUrl = "/lineId?" + "customer=" + this.customer + "&dateRange=" + this.dates.sort() + "&collection=" + this.collection;
             $vm.lineIdArry = [];
-            if (customer == "所有人") {
-                $vm.$axios.get("/lineId").then(function (response) {
-                    response.data.forEach((item) => {
-                        $vm.lineIdArry.push(item.lineUserId);
-                    });
+            $vm.$axios.get(actionUrl).then(function (response) {
+                response.data.forEach((item) => {
+                    $vm.lineIdArry.push(item.lineUserId);
                 });
-            } else if (customer == "檢視") {
-            } else {
-            }
+            });
         },
         clearError() {
             this.errorMsg = "";

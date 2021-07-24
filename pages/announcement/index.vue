@@ -23,9 +23,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item, index) in data" :key="item.id">
+                        <tr v-for="(item, index) in announcement" :key="item.id">
                             <td>{{ item.title }}</td>
-                            <td>{{ new Date(item.createdAt).toLocaleString() }}</td>
+                            <td>{{ item.createdAt }}</td>
                             <td>
                                 <template>
                                     <v-btn color="deep-purple" class="white--text" @click.stop="openEditDialog(index)">編輯</v-btn>
@@ -47,6 +47,8 @@
 <script>
 import create from "../../components/post/create";
 import edit from "../../components/post/edit";
+import moment from "moment";
+
 export default {
     components: {
         create,
@@ -56,8 +58,12 @@ export default {
         try {
             const page = query.page || 1;
             let data = await $axios.get("/announcements?page=" + page);
+            const announcement = data.data.list;
+            announcement.forEach((item) => {
+                item.createdAt = moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss");
+            });
             return {
-                data: data.data.list,
+                announcement: announcement,
                 page: parseInt(data.data.page),
                 totalPages: data.data.totalPages,
             };
@@ -98,7 +104,7 @@ export default {
         },
         openEditDialog(index) {
             this.editDialog = true;
-            this.dialogData = this.data[index];
+            this.dialogData = this.announcement[index];
         },
         deleteAnnounce(id) {
             let $vm = this;
