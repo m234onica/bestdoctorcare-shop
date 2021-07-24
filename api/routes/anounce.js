@@ -33,6 +33,9 @@ router.get(`/announcements`, async (req, res) => {
         take: listCount,
         where: {
             deletedAt: null
+        },
+        orderBy: {
+            createdAt: "desc"
         }
     });
 
