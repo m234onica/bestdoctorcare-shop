@@ -51,7 +51,11 @@ router.get(`/discounts`, async (req, res) => {
 })
 
 router.get("/export", async (req, res) => {
-    const result = await prisma.discount.findMany({});
+    const result = await prisma.$queryRaw(`
+        SELECT * FROM Discount
+        LEFT JOIN ShopifyUserLineUserRelation
+        ON Discount.userId = ShopifyUserLineUserRelation.shopifyUserId;
+    `);
     const customerFields = ["id", "first_name"].join(',');
     const customers = await shopify.customer.list({
         fields: customerFields
@@ -78,6 +82,10 @@ router.get("/export", async (req, res) => {
         {
             value: "userId",
             label: "Shopify ID"
+        },
+        {
+            value: "lineUserId",
+            label: "Line ID"
         },
         {
             value: "title",
