@@ -19,7 +19,10 @@ router.get(`/discounts`, async (req, res) => {
     const response = {};
     const result = await prisma.discount.findMany({
         skip: start,
-        take: listCount
+        take: listCount,
+        orderBy: {
+            createdAt: "desc"
+        }
     });
 
     const customerFields = ["id", "first_name"].join(',');
@@ -54,7 +57,9 @@ router.get("/export", async (req, res) => {
     const result = await prisma.$queryRaw(`
         SELECT * FROM Discount
         LEFT JOIN ShopifyUserLineUserRelation
-        ON Discount.userId = ShopifyUserLineUserRelation.shopifyUserId;
+        ON Discount.userId = ShopifyUserLineUserRelation.shopifyUserId
+        ORDER BY createdAt DESC
+        ;
     `);
     const customerFields = ["id", "first_name"].join(',');
     const customers = await shopify.customer.list({
