@@ -60,8 +60,8 @@ router.get(`/announcements`, async (req, res) => {
 router.post(`/announce`, async (req, res) => {
     const result = await prisma.announcement.create({
         data: {
-            title: req.body.data.title,
-            content: req.body.data.content,
+            title: req.body.title,
+            content: req.body.content,
             updatedAt: new Date()
         }
     })
@@ -104,7 +104,6 @@ router.post('/upload', multer.single('file'), (req, res, next) => {
     });
 
     blobStream.end(req.files[0].buffer);
-    console.log(blobStream);
 });
 
 
