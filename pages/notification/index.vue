@@ -46,7 +46,16 @@
                 </v-col>
 
                 <v-col class="d-flex" cols="12" sm="4">
-                    <v-select v-model="collection" :items="collectionsItems" label="商品種類" dense :disabled="disabled" @change="getLineIdArry"></v-select>
+                    <v-select
+                        v-model="collection"
+                        :items="collectionsItems"
+                        item-value="collection_id"
+                        item-text="handle"
+                        label="商品種類"
+                        dense
+                        :disabled="disabled"
+                        @change="getLineIdArry"
+                    ></v-select>
                 </v-col>
             </v-row>
             <span id="msg_count">則數提醒：目前共 {{ msgCount }} 則，發送給 {{ lineIdCount }} 人，共計送出 {{ totalMsgCount }} 則</span>
@@ -110,14 +119,20 @@ export default {
     },
     mounted() {
         this.collections.forEach((item) => {
-            this.collectionsItems.push(item.handle);
+            this.collectionsItems.push(item);
         });
         this.getLineIdArry(this.customer);
     },
     methods: {
         getLineIdArry() {
             let $vm = this;
-            var actionUrl = "/lineId?" + "customer=" + this.customer + "&dateRange=" + this.dates.sort() + "&collection=" + this.collection;
+            var type = "ALL";
+            if (this.customer == "檢視") {
+                var type = "VIEW_PRODUCT";
+            } else if (this.customer == "購買") {
+                var type = "ORDER_PRODUCT";
+            }
+            var actionUrl = "/lineId?" + "type=" + type + "&dateRange=" + this.dates.sort() + "&collection=" + this.collection;
             $vm.lineIdArry = [];
             $vm.$axios.get(actionUrl).then(function (response) {
                 response.data.forEach((item) => {
