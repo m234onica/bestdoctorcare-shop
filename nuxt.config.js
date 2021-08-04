@@ -49,6 +49,7 @@ export default {
     // Modules: https://go.nuxtjs.dev/config-modules
     modules: [
         "@nuxtjs/axios",
+        'nuxt-basic-auth-module'
     ],
 
     axios: {
@@ -85,7 +86,12 @@ export default {
                 child_process: 'empty'
             }
         },
+    },
 
+    basic: {
+        name: process.env.BASIC_ADMIN,
+        pass: process.env.BASIC_PASSWORD,
+        enabled: process.env.BASIC_ENABLED === 'true' // require boolean value(nullable)
     },
 
     serverMiddleware: [
