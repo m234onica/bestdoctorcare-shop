@@ -42,7 +42,7 @@ export default {
                             [{ color: [] }, { background: [] }],
                             [{ align: [] }],
                             ["clean"],
-                            ["link", "image"],
+                            // ["link", "image"],
                         ],
                     },
                 },
