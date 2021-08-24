@@ -31,6 +31,9 @@
     GOOGLE_CLOUD_PROJECT_ID=
     GCLOUD_STORAGE_BUCKET=
 ```
+- Google Cloud Storage
+    記得新增 GCS 金鑰 (service account)，並命名為 `google-cloud-key.json`
+    如何新增金鑰請看官方文件：https://cloud.google.com/iam/docs/creating-managing-service-account-keys
 
 ### Build Setup
 ```bash
