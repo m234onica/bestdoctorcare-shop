@@ -79,24 +79,30 @@ router.get(`/lineId`, async (req, res) => {
 router.post(`/sendMessage`, async (req, res) => {
     var content = req.body.content;
     var lineIdArry = req.body.lineIdArry;
+    var response = {};
     var status = 200;
+
     if (content.length == 0) {
         status = 404;
         response.message = "通知內容為必填！";
+        res.status(status).json(response);
+
     } else if (lineIdArry.length == 0) {
         status = 404;
         response.message = "沒有可發送的客戶！";
+        res.status(status).json(response);
+
     } else {
         client.multicast(lineIdArry, { type: "text", text: content })
             .then(() => {
                 response.message = "發送成功，共發送了" + lineIdArry.length + "則通知！";
+                res.status(status).json(response);
             })
             .catch((err) => {
-                if (err instanceof Line.RequestError || err instanceof Line.HTTPError) {
-                    res.status(err.statusCode).json(err.message);
-                }
+                status = 404;
+                response.message = "系統出現問題，重整後再試。"
+                res.status(status).json(response);
             });
     };
-    res.status(status).json(response);
 })
 module.exports = router;

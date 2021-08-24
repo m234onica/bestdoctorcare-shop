@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <div id="notification">
-            <v-alert :color="type" v-if="type" dense text>{{ responseMsg }}</v-alert>
+            <v-alert v-model="alert" :color="msgType" v-if="msgType" dense text dismissible>{{ responseMsg }}</v-alert>
             <h1 fixed>發送通知</h1>
             <v-row align="center" class="mt-8">
                 <v-col class="d-flex" cols="12" sm="4">
@@ -88,7 +88,8 @@ export default {
         }
     },
     data: () => ({
-        type: null,
+        alert: false,
+        msgType: null,
         customer: "所有人",
         customerItems: ["所有人", "購買", "檢視"],
         collection: "全部",
@@ -100,7 +101,7 @@ export default {
         notifyFail: false,
         msgCount: 1,
         lineIdArry: [],
-        responseMsg: null,
+        responseMsg: "",
     }),
     computed: {
         disabled() {
@@ -146,6 +147,7 @@ export default {
         },
         submit() {
             let $vm = this;
+            $vm.alert = true;
             if ($vm.content.length != 0) {
                 $vm.$axios
                     .post("/sendMessage", {
@@ -153,12 +155,12 @@ export default {
                         content: $vm.$data.content,
                     })
                     .then((response) => {
-                        this.type = "success";
+                        this.msgType = "success";
                         this.responseMsg = response.data.message;
+                        this.content = "";
                     })
                     .catch((error) => {
-                        this.type = "error";
-                        console.log(error);
+                        this.msgType = "error";
                         this.responseMsg = error.response.data.message;
                     });
             } else {
