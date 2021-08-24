@@ -10,7 +10,7 @@
             <v-card-text class="mt-5 px-10">
                 <v-form id="login_input_field" ref="form" v-model="valid" lazy-validation>
                     <v-text-field v-model="item.title" label="標題" :rules="titleRules" outlined required dense></v-text-field>
-                    <quill-editor :content="item.content" v-model="item.content" ref="richTextEditor" :options="editorOption" style="height: 250px"></quill-editor>
+                    <quill-editor :content="item.content" v-model="item.content" ref="richTextEditor" @ready="onEditorReady($event)" :options="editorOption" style="height: 250px"></quill-editor>
                 </v-form>
             </v-card-text>
             <v-card-actions class="py-5 px-10">
@@ -42,8 +42,11 @@ export default {
                             [{ color: [] }, { background: [] }],
                             [{ align: [] }],
                             ["clean"],
-                            // ["link", "image"],
+                            ["link", "image"],
                         ],
+                        handlers: {
+                            image: this.imageHandler,
+                        },
                     },
                 },
             },
@@ -52,6 +55,71 @@ export default {
     methods: {
         close() {
             this.$emit("close");
+        },
+        onEditorReady(editor) {
+            if (this.value) {
+                this.content = this.value;
+            }
+            this.editor = editor;
+        },
+        imageHandler() {
+            this.imageFail = false;
+            if (this.isUploading) {
+                this.imageFail = true;
+                this.errorMsg = "正在上傳...";
+                return;
+            }
+            const input = document.createElement("input");
+            input.setAttribute("type", "file");
+            input.click();
+            // Listen upload local image and save to server
+            input.onchange = () => {
+                const file = input.files[0];
+                const formData = new FormData();
+                const maxSize = 5120 * 1024;
+
+                formData.set("file", file);
+                if (file.size > maxSize) {
+                    this.imageFail = true;
+                    this.errorMsg = "圖片尺寸過大！";
+                    return;
+                }
+                // file type is only image.
+                if (/^image\//.test(file.type)) {
+                    this.uploadImage(formData, "item");
+                } else {
+                    console.log(103);
+                    this.imageFail = true;
+                    this.errorMsg = "圖片格式不正確";
+                }
+            };
+        },
+        insertToEditor(url) {
+            // push image url to rich editor.
+            const range = this.editor.getSelection();
+            this.editor.insertEmbed((range && range.index) || 1, "image", url);
+        },
+        async uploadImage(file, type) {
+            this.isUploading = true;
+            let $vm = this;
+            try {
+                await $vm.$axios
+                    .post("/upload", file, {
+                        headers: {
+                            "content-type": "multipart/form-data", // do not forget this
+                        },
+                    })
+                    .then(function (response) {
+                        $vm.insertToEditor(response.data);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                this.isUploading = false;
+            } catch (err) {
+                this.errorMsg = "上傳失敗";
+                this.isUploading = false;
+            }
         },
         submit() {
             let $vm = this;
