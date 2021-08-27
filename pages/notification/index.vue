@@ -19,7 +19,7 @@
                     >
                         <template v-slot:activator="{ on, attrs }">
                             <v-combobox
-                                v-model="dates"
+                                v-model="dateRangeText"
                                 label="日期範圍"
                                 prepend-icon="mdi-calendar"
                                 v-bind="attrs"
@@ -104,6 +104,9 @@ export default {
         responseMsg: "",
     }),
     computed: {
+        dateRangeText() {
+            return this.dates.join(" ~ ");
+        },
         disabled() {
             var disabled = false;
             if (this.customer == "所有人") {
