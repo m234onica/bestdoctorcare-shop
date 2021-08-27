@@ -50,7 +50,7 @@
                         v-model="collection"
                         :items="collectionsItems"
                         item-value="collection_id"
-                        item-text="handle"
+                        item-text="title"
                         label="商品種類"
                         dense
                         :disabled="disabled"

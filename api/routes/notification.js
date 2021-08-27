@@ -30,7 +30,7 @@ const client = new Line.Client({
 router.get(`/collection`, async (req, res) => {
     await shopify.collectionListing.list({
         limit: 30,
-        fields: ["id", "handle"]
+        fields: ["id", "title"]
     }).then(data => {
         res.send({ success: true, collections: data });
     })
