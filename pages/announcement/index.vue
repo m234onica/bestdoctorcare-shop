@@ -30,7 +30,7 @@
                                 <template>
                                     <v-btn color="deep-purple" class="white--text" @click.stop="openEditDialog(index)">編輯</v-btn>
                                 </template>
-                                <v-btn color="red darken-2" class="white--text" @click="deleteAnnounce(item.id)">刪除</v-btn>
+                                <v-btn color="red darken-2" class="white--text" @click.stop="openDeleteDialog(index)">刪除</v-btn>
                             </td>
                         </tr>
                     </tbody>
@@ -38,6 +38,34 @@
             </v-simple-table>
         </div>
         <edit :item="dialogData" :editDialog="editDialog" @close="close"></edit>
+        <v-dialog v-model="deleteDialog" max-width="290">
+            <v-card>
+                <v-card-title> 是否要刪除公告？ </v-card-title>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn class="fs-14" color="grey lighten-2" @click="deleteDialog = false"> 取消 </v-btn>
+                    <v-btn
+                        class="fs-14 white--text"
+                        color="red"
+                        @click="
+                            deleteAnnounce(deleteId);
+                            openUpdateDialog();
+                        "
+                    >
+                        確定
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="updateDialog" max-width="290">
+            <v-card>
+                <v-card-title> 刪除公告完成！ </v-card-title>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn class="fs-14 white--text" color="primary" @click="closeUpdateDialog"> 確定 </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
         <div class="text-center">
             <v-pagination absolute v-model="page" :length="totalPages" @input="next" :total-visible="10"></v-pagination>
         </div>
@@ -89,6 +117,10 @@ export default {
                 title: null,
                 content: null,
             },
+            deleteDialog: false,
+            deleteId: null,
+
+            updateDialog: false,
         };
     },
     mounted() {
@@ -106,12 +138,24 @@ export default {
             this.editDialog = true;
             this.dialogData = this.announcement[index];
         },
+        openDeleteDialog(index) {
+            this.deleteDialog = true;
+            this.deleteId = this.announcement[index].id;
+        },
+        openUpdateDialog() {
+            this.deleteDialog = false;
+            this.updateDialog = true;
+        },
+        closeUpdateDialog() {
+            this.updateDialog = false;
+            window.location.reload();
+        },
         deleteAnnounce(id) {
             let $vm = this;
             $vm.$axios
                 .post("/announce/delete/" + id, {})
                 .then(function (response) {
-                    window.location.reload();
+                    $vm.openUpdateDialog();
                 })
                 .catch(function (error) {
                     console.log(error);

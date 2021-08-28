@@ -1,24 +1,42 @@
 <template>
-    <v-dialog v-model="editDialog" max-width="1000" persistent>
-        <v-card id="edit_dialog">
-            <v-card-title class="text-h5 px-10 pt-8"
-                >編輯公告
-                <v-btn color="darken-1" class="mr-4" absolute right icon @click="close">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-card-title>
-            <v-card-text class="mt-5 px-10">
-                <v-form id="login_input_field" ref="form" v-model="valid" lazy-validation>
-                    <v-text-field v-model="item.title" label="標題" :rules="titleRules" outlined required dense></v-text-field>
-                    <quill-editor :content="item.content" v-model="item.content" ref="richTextEditor" @ready="onEditorReady($event)" :options="editorOption" style="height: 250px"></quill-editor>
-                </v-form>
-            </v-card-text>
-            <v-card-actions class="py-5 px-10">
-                <v-spacer></v-spacer>
-                <v-btn id="submit" color="primary" @click="submit()">送出</v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
+    <div>
+        <v-dialog v-model="editDialog" max-width="1000" persistent>
+            <v-card id="edit_dialog">
+                <v-card-title class="text-h5 px-10 pt-8"
+                    >編輯公告
+                    <v-btn color="darken-1" class="mr-4" absolute right icon @click="close">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                </v-card-title>
+                <v-card-text class="mt-5 px-10">
+                    <v-form id="login_input_field" ref="form" v-model="valid" lazy-validation>
+                        <v-text-field v-model="item.title" label="標題" :rules="titleRules" outlined required dense></v-text-field>
+                        <quill-editor
+                            :content="item.content"
+                            v-model="item.content"
+                            ref="richTextEditor"
+                            @ready="onEditorReady($event)"
+                            :options="editorOption"
+                            style="height: 250px"
+                        ></quill-editor>
+                    </v-form>
+                </v-card-text>
+                <v-card-actions class="py-5 px-10">
+                    <v-spacer></v-spacer>
+                    <v-btn id="submit" color="primary" @click="submit()">送出</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="updateDialog" max-width="290">
+            <v-card>
+                <v-card-title> 修改公告完成！ </v-card-title>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn class="fs-14 white--text" color="primary" @click="closeUpdateDialog"> 確定 </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+    </div>
 </template>
 <script>
 export default {
@@ -26,6 +44,7 @@ export default {
     data() {
         return {
             valid: false,
+            updateDialog: false,
             titleRules: [(v) => !!v || "標題為必填欄位"],
             editorOption: {
                 theme: "snow", // 可換
@@ -55,6 +74,13 @@ export default {
     methods: {
         close() {
             this.$emit("close");
+        },
+        openUpdateDialog() {
+            this.updateDialog = true;
+        },
+        closeUpdateDialog() {
+            this.updateDialog = false;
+            window.location.reload();
         },
         onEditorReady(editor) {
             if (this.value) {
@@ -130,8 +156,8 @@ export default {
                         data: $vm.item,
                     })
                     .then(function (response) {
+                        $vm.openUpdateDialog();
                         $vm.close();
-                        window.location.reload();
                     })
                     .catch(function (error) {
                         console.log(error);
