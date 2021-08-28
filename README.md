@@ -30,10 +30,11 @@
     # 公告圖片上傳至 GCS
     GOOGLE_CLOUD_PROJECT_ID=
     GCLOUD_STORAGE_BUCKET=
+    GOOGLE_CREDENTIAL=
 ```
 - Google Cloud Storage
-    記得新增 GCS 金鑰 (service account)，並命名為 `google-cloud-key.json`
-    如何新增金鑰請看官方文件：https://cloud.google.com/iam/docs/creating-managing-service-account-keys
+    記得新增 GCS 金鑰 (service account)，並將存放路徑放入 env 的 `GOOGLE_CREDENTIAL`
+    > 如何新增金鑰請看官方文件：https://cloud.google.com/iam/docs/creating-managing-service-account-keys
 
 ### Build Setup
 ```bash
