@@ -81,17 +81,18 @@ export default {
             this.$axios
                 .get("/export", { responseType: "blob" })
                 .then(function (response) {
+                    const timeStamp = Date.now();
                     if (!window.navigator.msSaveOrOpenBlob) {
                         // BLOB NAVIGATOR
                         const url = window.URL.createObjectURL(new Blob([response.data]));
                         const link = document.createElement("a");
                         link.href = url;
-                        link.setAttribute("download", "export.csv");
+                        link.setAttribute("download", "export_" + timeStamp + ".csv");
                         document.body.appendChild(link);
                         link.click();
                     } else {
                         // BLOB FOR EXPLORER 11
-                        const url = window.navigator.msSaveOrOpenBlob(new Blob([response.data]), "export.csv");
+                        const url = window.navigator.msSaveOrOpenBlob(new Blob([response.data]), "export_" + timeStamp + ".csv");
                     }
                 })
                 .catch(function (error) {
