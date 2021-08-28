@@ -39,7 +39,7 @@
         </div>
         <edit :item="dialogData" :editDialog="editDialog" @close="close"></edit>
         <div class="text-center">
-            <v-pagination absolute v-model="page" :length="totalPages" @input="next"></v-pagination>
+            <v-pagination absolute v-model="page" :length="totalPages" @input="next" :total-visible="10"></v-pagination>
         </div>
     </v-container>
 </template>

@@ -25,7 +25,7 @@ const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
 
 
 router.get(`/announcements`, async (req, res) => {
-    var listCount = 9;
+    var listCount = parseInt(process.env.LIST_COUNT);
     var start = (req.query.page - 1) * listCount;
     const response = {};
     const result = await prisma.announcement.findMany({
