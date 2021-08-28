@@ -17,7 +17,7 @@ const multer = Multer({
 router.use(multer.array('file'));
 
 const storage = new Storage({
-    keyFilename: path.join(__dirname, "../../google-cloud-key.json"),
+    keyFilename: path.join(__dirname, process.env.GOOGLE_CREDENTIAL),
     projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
 });
 
