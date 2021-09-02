@@ -56,6 +56,7 @@ export default {
         baseURL: process.env.APP_URL
     },
 
+    loading: "~/components/UI/loadingUI.vue",
     // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
     vuetify: {
         customVariables: ['~/assets/variables.scss'],

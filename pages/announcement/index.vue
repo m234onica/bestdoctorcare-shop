@@ -103,7 +103,6 @@ export default {
     watchQuery: ["page"],
     data() {
         return {
-            loading: true,
             createDialog: false,
             editDialog: [],
             post: {
@@ -122,9 +121,6 @@ export default {
 
             updateDialog: false,
         };
-    },
-    mounted() {
-        this.loading = false;
     },
     methods: {
         next() {
