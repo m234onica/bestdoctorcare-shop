@@ -13,6 +13,9 @@
     # 連接資料庫路徑
     DATABASE_URL=
 
+    # 分頁資料數量
+    LIST_COUNT=
+
     # 網站驗證，若要使用，BASIC_ENABLED 須為 true
     BASIC_ENABLED=
     BASIC_ADMIN=
