@@ -2,7 +2,7 @@
     <v-container>
         <loadingUI :customLoading="isLoading"></loadingUI>
         <div id="discountCode">
-            <h1 fixed>折扣碼管理</h1>
+            <h1 fixed>邀請碼管理</h1>
             <template>
                 <v-row>
                     <v-col :cols="10" class="pa-0">
