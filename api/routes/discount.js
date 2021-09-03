@@ -45,9 +45,9 @@ router.get(`/discounts`, async (req, res) => {
     response.list = result;
     response.page = req.query.page;
     if (discountCount % 9 == 0) {
-        totalPages = parseInt(discountCount / 9);
+        totalPages = parseInt(discountCount / listCount);
     } else {
-        totalPages = parseInt(discountCount / 9) + 1;
+        totalPages = parseInt(discountCount / listCount) + 1;
     }
     response.totalPages = totalPages;
     res.json(response);

@@ -49,9 +49,9 @@ router.get(`/announcements`, async (req, res) => {
     response.page = req.query.page;
 
     if (announcementCount % 9 == 0) {
-        totalPages = parseInt(announcementCount / 9);
+        totalPages = parseInt(announcementCount / listCount);
     } else {
-        totalPages = parseInt(announcementCount / 9) + 1;
+        totalPages = parseInt(announcementCount / listCount) + 1;
     }
     response.totalPages = totalPages;
     res.json(response);
