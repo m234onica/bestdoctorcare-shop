@@ -1,52 +1,49 @@
 <template>
-    <v-container>
+    <v-container id="discountCode">
         <loadingUI :customLoading="isLoading"></loadingUI>
-        <div id="discountCode">
-            <h1 fixed>邀請碼管理</h1>
-            <template>
-                <v-row>
-                    <v-col :cols="10" class="pa-0">
-                        <v-spacer></v-spacer>
-                    </v-col>
-                    <v-col>
-                        <v-btn color="primary" @click.stop="exportData()">匯出CSV檔</v-btn>
-                    </v-col>
-                </v-row>
+        <template>
+            <v-row class="mt-3">
+                <v-col :cols="10">
+                    <h1 fixed>邀請碼管理</h1>
+                </v-col>
+                <v-col>
+                    <v-btn color="primary" @click.stop="exportData()">匯出CSV檔</v-btn>
+                </v-col>
+            </v-row>
+        </template>
+        <v-simple-table fixed-header class="mt-8">
+            <template v-slot:default>
+                <thead>
+                    <tr>
+                        <th class="text-left">發送日期</th>
+                        <th class="text-left">獲得者</th>
+                        <th class="text-left">發送因由</th>
+                        <th class="text-left">狀態</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in data" :key="item.name">
+                        <td>{{ item.createdAt }}</td>
+                        <td>{{ item.customerName }}</td>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.status }}</td>
+                    </tr>
+                </tbody>
             </template>
-            <v-simple-table fixed-header class="mt-8">
-                <template v-slot:default>
-                    <thead>
-                        <tr>
-                            <th class="text-left">發送日期</th>
-                            <th class="text-left">獲得者</th>
-                            <th class="text-left">發送因由</th>
-                            <th class="text-left">狀態</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="item in data" :key="item.name">
-                            <td>{{ item.createdAt }}</td>
-                            <td>{{ item.customerName }}</td>
-                            <td>{{ item.title }}</td>
-                            <td>{{ item.status }}</td>
-                        </tr>
-                    </tbody>
-                </template>
-            </v-simple-table>
-        </div>
+        </v-simple-table>
         <div class="text-center">
-            <v-pagination class="mt-4" relative v-model="page" :length="totalPages" @input="next" :total-visible="10"></v-pagination>
+            <v-pagination class="my-4" relative v-model="page" :length="totalPages" @input="next" :total-visible="10"></v-pagination>
         </div>
     </v-container>
 </template>
 
 <script>
 import moment from "moment";
-import LoadingUI from '../../components/UI/loadingUI.vue';
+import LoadingUI from "../../components/UI/loadingUI.vue";
 
 export default {
     components: {
-        LoadingUI
+        LoadingUI,
     },
     async asyncData({ $axios, query }) {
         try {
@@ -113,6 +110,7 @@ export default {
 
 <style lang="scss">
 .v-data-table__wrapper {
+    height: 70vh;
     min-height: 65vh;
     max-height: 80vh;
     table {

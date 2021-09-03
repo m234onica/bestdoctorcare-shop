@@ -1,42 +1,39 @@
 <template>
-    <v-container>
-        <div id="announcement">
-            <h1 fixed>公告管理</h1>
-            <template>
-                <v-row>
-                    <v-col :cols="10" class="pa-0">
-                        <v-spacer></v-spacer>
-                    </v-col>
-                    <v-col>
-                        <v-btn color="primary" @click.stop="createDialog = true">新增公告</v-btn>
-                    </v-col>
-                </v-row>
+    <v-container id="announcement">
+        <template>
+            <v-row class="mt-3">
+                <v-col :cols="10">
+                    <h1 fixed>公告管理</h1>
+                </v-col>
+                <v-col>
+                    <v-btn color="primary" @click.stop="createDialog = true">新增公告</v-btn>
+                </v-col>
+            </v-row>
+        </template>
+        <create :createDialog="createDialog" @close="close"></create>
+        <v-simple-table fixed-header class="mt-8">
+            <template v-slot:default>
+                <thead>
+                    <tr>
+                        <th class="text-left">標題</th>
+                        <th class="text-left" width="300">發布時間</th>
+                        <th class="text-left" width="200">動作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, index) in announcement" :key="item.id">
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.createdAt }}</td>
+                        <td>
+                            <template>
+                                <v-btn color="deep-purple" class="white--text" @click.stop="openEditDialog(index)">編輯</v-btn>
+                            </template>
+                            <v-btn color="red darken-2" class="white--text" @click.stop="openDeleteDialog(index)">刪除</v-btn>
+                        </td>
+                    </tr>
+                </tbody>
             </template>
-            <create :createDialog="createDialog" @close="close"></create>
-            <v-simple-table fixed-header class="mt-8">
-                <template v-slot:default>
-                    <thead>
-                        <tr>
-                            <th class="text-left">標題</th>
-                            <th class="text-left" width="300">發布時間</th>
-                            <th class="text-left" width="200">動作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(item, index) in announcement" :key="item.id">
-                            <td>{{ item.title }}</td>
-                            <td>{{ item.createdAt }}</td>
-                            <td>
-                                <template>
-                                    <v-btn color="deep-purple" class="white--text" @click.stop="openEditDialog(index)">編輯</v-btn>
-                                </template>
-                                <v-btn color="red darken-2" class="white--text" @click.stop="openDeleteDialog(index)">刪除</v-btn>
-                            </td>
-                        </tr>
-                    </tbody>
-                </template>
-            </v-simple-table>
-        </div>
+        </v-simple-table>
         <edit :item="dialogData" :editDialog="editDialog" @close="close"></edit>
         <v-dialog v-model="deleteDialog" max-width="290">
             <v-card>
@@ -162,6 +159,7 @@ export default {
 </script>
 <style lang="scss">
 .v-data-table__wrapper {
+    height: 70vh;
     min-height: 65vh;
     max-height: 80vh;
     table {
