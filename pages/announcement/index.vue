@@ -172,5 +172,6 @@ export default {
     position: absolute;
     bottom: 10px;
     right: 0px;
+    background-color: white;
 }
 </style>
