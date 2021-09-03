@@ -1,11 +1,17 @@
 <template>
-    <div v-if="loading" class="loadingUI">
+    <div v-if="loading || customLoading" class="loadingUI">
         <div class="cp-spinner cp-hue"></div>
     </div>
 </template>
 
 <script>
 export default {
+    props: {
+        customLoading: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             loading: false,

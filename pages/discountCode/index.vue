@@ -1,5 +1,6 @@
 <template>
     <v-container>
+        <loadingUI :customLoading="isLoading"></loadingUI>
         <div id="discountCode">
             <h1 fixed>折扣碼管理</h1>
             <template>
@@ -41,9 +42,12 @@
 
 <script>
 import moment from "moment";
+import LoadingUI from '../../components/UI/loadingUI.vue';
 
 export default {
-    components: {},
+    components: {
+        LoadingUI
+    },
     async asyncData({ $axios, query }) {
         try {
             const page = query.page || 1;
@@ -70,6 +74,7 @@ export default {
     watchQuery: ["page"],
     data() {
         return {
+            isLoading: false,
             discountLists: [],
         };
     },
@@ -78,7 +83,9 @@ export default {
             this.$router.push({ query: { page: this.page } });
         },
         exportData() {
-            this.$axios
+            this.isLoading = true;
+            $vm = this;
+            $vm.$axios
                 .get("/export", { responseType: "blob" })
                 .then(function (response) {
                     const timeStamp = Date.now();
@@ -94,6 +101,7 @@ export default {
                         // BLOB FOR EXPLORER 11
                         const url = window.navigator.msSaveOrOpenBlob(new Blob([response.data]), "export_" + timeStamp + ".csv");
                     }
+                    $vm.isLoading = false;
                 })
                 .catch(function (error) {
                     console.log(error);
