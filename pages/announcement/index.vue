@@ -67,7 +67,7 @@
             </v-card>
         </v-dialog>
         <div class="text-center">
-            <v-pagination absolute v-model="page" :length="totalPages" @input="next" :total-visible="10"></v-pagination>
+            <v-pagination class="mt-4" relative v-model="page" :length="totalPages" @input="next" :total-visible="10"></v-pagination>
         </div>
     </v-container>
 </template>
@@ -162,7 +162,11 @@ export default {
 </script>
 <style lang="scss">
 .v-data-table__wrapper {
-    height: calc(100% - 44px);
+    min-height: 65vh;
+    max-height: 80vh;
+    table {
+        margin-bottom: 28px;
+    }
 }
 .v-pagination {
     position: absolute;

@@ -35,7 +35,7 @@
             </v-simple-table>
         </div>
         <div class="text-center">
-            <v-pagination absolute v-model="page" :length="totalPages" @input="next" :total-visible="10"></v-pagination>
+            <v-pagination class="mt-4" relative v-model="page" :length="totalPages" @input="next" :total-visible="10"></v-pagination>
         </div>
     </v-container>
 </template>
@@ -83,8 +83,8 @@ export default {
             this.$router.push({ query: { page: this.page } });
         },
         exportData() {
+            let $vm = this;
             this.isLoading = true;
-            $vm = this;
             $vm.$axios
                 .get("/export", { responseType: "blob" })
                 .then(function (response) {
@@ -113,7 +113,11 @@ export default {
 
 <style lang="scss">
 .v-data-table__wrapper {
-    height: calc(100% - 44px);
+    min-height: 65vh;
+    max-height: 80vh;
+    table {
+        margin-bottom: 28px;
+    }
 }
 .v-pagination {
     position: absolute;
