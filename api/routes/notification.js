@@ -59,12 +59,14 @@ router.get(`/lineId`, async (req, res) => {
             var data = await axios.get(url);
             var products = data.data.products;
             var arryProductId = [];
+            var collectionRaw = `AND productId is NULL`;
 
             products.forEach(product => {
                 arryProductId.push(product.id);
             });
-
-            var collectionRaw = `AND productId in (${arryProductId.join()})`;
+            if (arryProductId.length != 0) {
+                collectionRaw = `AND productId in (${arryProductId.join()})`;
+            }
         }
 
         const raw = `SELECT * FROM ShopifyUserLineUserRelation WHERE shopifyUserId IN (
