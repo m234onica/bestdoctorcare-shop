@@ -22,14 +22,19 @@
                     </v-form>
                 </v-card-text>
                 <v-card-actions class="mt-5 py-5 px-10">
+                    <v-checkbox v-model="checkboxNotify">
+                        <template v-slot:label>
+                            <span>發給所有人(共發送 {{ notificationCount }} 則訊息)</span>
+                        </template>
+                    </v-checkbox>
                     <v-spacer></v-spacer>
                     <v-btn id="submit" color="primary" @click="submit()">送出</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="updateDialog" max-width="290">
+        <v-dialog v-model="updateDialog" align="left" max-width="380">
             <v-card>
-                <v-card-title> 新增公告完成！ </v-card-title>
+                <v-card-title> {{ submitMsg }} </v-card-title>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn class="fs-14 white--text" color="primary" @click="closeUpdateDialog"> 確定 </v-btn>
@@ -45,6 +50,9 @@ export default {
         return {
             valid: false,
             updateDialog: false,
+            checkboxNotify: false,
+            lineIdArry: [],
+            submitMsg: null,
             title: "",
             content: "",
             errorMsg: "",
@@ -75,6 +83,14 @@ export default {
                 },
             },
         };
+    },
+    mounted() {
+        this.getLineIdArry();
+    },
+    computed: {
+        notificationCount() {
+            return this.lineIdArry.length;
+        },
     },
     methods: {
         close() {
@@ -152,6 +168,16 @@ export default {
                 this.isUploading = false;
             }
         },
+        getLineIdArry() {
+            let $vm = this;
+            var actionUrl = "/lineId?type=ALL&dateRange=&collection=";
+            $vm.lineIdArry = [];
+            $vm.$axios.get(actionUrl).then(function (response) {
+                response.data.forEach((item) => {
+                    $vm.lineIdArry.push(item.lineUserId);
+                });
+            });
+        },
         submit() {
             let $vm = this;
             let validate = $vm.$refs.form.validate();
@@ -160,8 +186,12 @@ export default {
                     .post("/announce", {
                         title: $vm.title,
                         content: $vm.content,
+                        checkboxNotify: $vm.checkboxNotify,
+                        lineIdArry: $vm.lineIdArry,
                     })
                     .then(function (response) {
+                        console.log(response.data);
+                        $vm.submitMsg = response.data.message;
                         $vm.close();
                         $vm.openUpdateDialog();
                     })
