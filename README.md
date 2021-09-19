@@ -12,9 +12,6 @@
     # 為 `localhost:{{ port }} + /api`
     APP_URL=
 
-    # 公告連結
-    ANNOUNCEMENT_URL=
-
     # 連接資料庫路徑
     DATABASE_URL=
 
@@ -34,6 +31,9 @@
     # 發送 Line 推播
     LINE_ACCESS_TOKEN=
     LINE_CHANNEL_SECRET=
+
+    # Line 發送公告的連結
+    LINE_LIFF_ANNOUNCEMENT_URL=
 
     # 公告圖片上傳至 GCS
     GOOGLE_CLOUD_PROJECT_ID=
