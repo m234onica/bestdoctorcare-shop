@@ -114,7 +114,7 @@ router.post(`/announce`, async (req, res) => {
                                 "action": {
                                     "type": "uri",
                                     "label": "檢視公告",
-                                    "uri": process.env.ANNOUNCEMENT_URL + result.id
+                                    "uri": process.env.ANNOUNCEMENT_URL + "/" + result.id
                                 }
                             }
                         ],
