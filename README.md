@@ -1,15 +1,20 @@
 # bestdoctorcare-admin
 
-
 ### ENV
-- 在執行前，需先建立 `.env` 
+
+-   在執行前，需先建立 `.env`
     執行開發環境請建立 `.env.dev`
-- 內容參照 `.env.example`
+-   內容參照 `.env.example`
+
 ```shell
     # 需設定 dev
     NODE_ENV=
     # 為 `localhost:{{ port }} + /api`
     APP_URL=
+
+    # 公告連結
+    ANNOUNCEMENT_URL=
+
     # 連接資料庫路徑
     DATABASE_URL=
 
@@ -35,11 +40,13 @@
     GCLOUD_STORAGE_BUCKET=
     GOOGLE_CREDENTIAL=
 ```
-- Google Cloud Storage
+
+-   Google Cloud Storage
     記得新增 GCS 金鑰 (service account)，並將存放路徑放入 env 的 `GOOGLE_CREDENTIAL`
     > 如何新增金鑰請看官方文件：https://cloud.google.com/iam/docs/creating-managing-service-account-keys
 
 ### Build Setup
+
 ```bash
 # install dependencies
 $ npm install
